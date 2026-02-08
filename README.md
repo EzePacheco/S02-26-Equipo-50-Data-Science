@@ -152,11 +152,11 @@ Para verificar que el sistema está funcionando correctamente, acceder al endpoi
 
 Este proyecto fue desarrollado como parte de la Simulación Laboral de NoCountry - Febrero 2026.
 
-- **Nombre Completo** - Rol - [GitHub](enlace) - [LinkedIn](enlace)
-- **Nombre Completo** - Rol - [GitHub](enlace) - [LinkedIn](enlace)
-- **Nombre Completo** - Rol - [GitHub](enlace) - [LinkedIn](enlace)
-- **Nombre Completo** - Rol - [GitHub](enlace) - [LinkedIn](enlace)
-- **Nombre Completo** - Rol - [GitHub](enlace) - [LinkedIn](enlace)
+- **Ezequiel Pacheco** - Fullstack Developer & Scrum Master - [GitHub](https://github.com/EzePacheco) - [LinkedIn](https://www.linkedin.com/in/ezepacheco-dev/)
+- **Estrella Cruz Ulloa** - Data & Frontend Developer - [GitHub](https://github.com/estrellacruzulloa) - [LinkedIn](enlace)
+- **Nelson Alexander Borbor Diaz** - Data & Fullstack Developer - [GitHub](https://github.com/NelsonBorbor98) - [LinkedIn](enlace)
+- **Jose Ardilez Ugaz** - Data Scientist & Frontend Developer - [GitHub](https://github.com/JoseloArdiles) - [LinkedIn](enlace)
+- **Daniel Lara** - Data Scientist & Backend Developer - [GitHub](https://github.com/Sts87) - [LinkedIn](enlace)
 
 ## Acerca de NoCountry
 
