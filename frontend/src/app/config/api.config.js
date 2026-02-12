@@ -1,0 +1,44 @@
+// api.config.js
+// API configuration
+
+const API_CONFIG = {
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  TIMEOUT: 10000,
+  HEADERS: {
+    'Content-Type': 'application/json'
+  }
+};
+
+export const apiClient = async (endpoint, options = {}) => {
+  // TODO: Implementar cliente API con:
+  // - Concatenación de URL base
+  // - Headers por defecto
+  // - Manejo de timeout
+  // - Manejo de errores
+  // - Inyección de token (cuando auth esté listo)
+  
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+  
+  const config = {
+    ...options,
+    headers: {
+      ...API_CONFIG.HEADERS,
+      ...options.headers
+    }
+  };
+
+  try {
+    const response = await fetch(url, config);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+};
+
+export default API_CONFIG;
