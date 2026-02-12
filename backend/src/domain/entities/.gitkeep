@@ -1,0 +1,3 @@
+// Domain: Pure business entities
+// These represent the core business objects and rules
+// No external dependencies allowed here
