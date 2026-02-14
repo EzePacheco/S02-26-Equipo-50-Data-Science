@@ -1,4 +1,4 @@
-class Customer {
+export default class Customer {
   constructor({ id, name, email, phone, createdAt }) {
     this.id = id;
     this.name = name;
@@ -8,4 +8,4 @@ class Customer {
   }
 }
 
-module.exports = Customer;
+

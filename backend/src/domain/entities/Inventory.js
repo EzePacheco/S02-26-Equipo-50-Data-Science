@@ -1,4 +1,4 @@
-class Inventory {
+export default class Inventory {
   constructor({ id, productId, quantity, minStock }) {
     this.id = id;
     this.productId = productId;
@@ -17,5 +17,3 @@ class Inventory {
     this.quantity += amount;
   }
 }
-
-module.exports = Inventory;

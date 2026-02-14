@@ -3,4 +3,4 @@ const ProductCategory = Object.freeze({
   CALZADO: 'CALZADO',
 });
 
-module.exports = ProductCategory;
+export default ProductCategory;

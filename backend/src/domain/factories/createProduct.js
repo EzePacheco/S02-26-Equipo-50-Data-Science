@@ -1,4 +1,4 @@
-const Product = require('../entities/Product');
-const ProductSchema = require('../schemas/product.schema');
+import Product from '../entities/Product.js';
+import ProductSchema from '../schemas/product.schema.js';
 
-module.exports = (data) => new Product(ProductSchema.parse(data));
+export default (data) => new Product(ProductSchema.parse(data));

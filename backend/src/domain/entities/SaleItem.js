@@ -1,4 +1,4 @@
-class SaleItem {
+export default class SaleItem {
   constructor({ productId, productName, quantity, unitPrice }) {
     this.productId = productId;
     this.productName = productName;
@@ -8,4 +8,3 @@ class SaleItem {
   }
 }
 
-module.exports = SaleItem;

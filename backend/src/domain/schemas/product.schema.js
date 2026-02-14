@@ -1,7 +1,7 @@
-const { z } = require('zod');
-const ProductCategory = require('../enums/ProductCategory');
+import { z } from 'zod';
+import ProductCategory from '../enums/ProductCategory.js';
 
-module.exports = z.object({
+const ProductSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1),
   sku: z.string().min(1),
@@ -9,3 +9,5 @@ module.exports = z.object({
   category: z.enum(Object.values(ProductCategory)),
   active: z.boolean().optional(),
 });
+
+export default ProductSchema;

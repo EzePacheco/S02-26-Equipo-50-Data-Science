@@ -1,4 +1,4 @@
-class Sale {
+export default class Sale {
   constructor({ id, userId, customerId, items }) {
     this.id = id;
     this.userId = userId;
@@ -12,5 +12,3 @@ class Sale {
     return this.items.reduce((sum, item) => sum + item.subtotal, 0);
   }
 }
-
-module.exports = Sale;

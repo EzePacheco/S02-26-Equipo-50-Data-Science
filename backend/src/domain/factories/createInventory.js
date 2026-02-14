@@ -1,4 +1,4 @@
-const Inventory = require('../entities/Inventory');
-const InventorySchema = require('../schemas/inventory.schema');
+import Inventory from '../entities/Inventory.js';
+import InventorySchema from '../schemas/inventory.schema.js';
 
-module.exports = (data) => new Inventory(InventorySchema.parse(data));
+export default (data) => new Inventory(InventorySchema.parse(data));

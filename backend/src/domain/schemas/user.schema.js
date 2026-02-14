@@ -1,9 +1,11 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
-module.exports = z.object({
+const UserSchema = z.object({
   id: z.string().uuid().optional(),
   email: z.string().email(),
   name: z.string().min(1),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
+
+export default UserSchema;

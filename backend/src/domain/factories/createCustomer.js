@@ -1,4 +1,4 @@
-const Customer = require('../entities/Customer');
-const CustomerSchema = require('../schemas/customer.schema');
+import Customer from'../entities/Customer.js';
+import CustomerSchema from '../schemas/customer.schema.js';
 
-module.exports = (data) => new Customer(CustomerSchema.parse(data));
+export default (data) => new Customer(CustomerSchema.parse(data));

@@ -1,4 +1,4 @@
-class Product {
+export default class Product {
   constructor({ id, name, sku, price, category, active = true }) {
     this.id = id;
     this.name = name;
@@ -12,5 +12,3 @@ class Product {
     this.active = false;
   }
 }
-
-module.exports = Product;

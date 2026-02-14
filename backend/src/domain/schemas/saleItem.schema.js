@@ -1,8 +1,10 @@
-const { z } = require('zod');
+import { z } from'zod';
 
-module.exports = z.object({
+const SaleItemSchema = z.object({
   productId: z.string().uuid(),
   productName: z.string().min(1),
   quantity: z.number().int().positive(),
   unitPrice: z.number().positive(),
 });
+
+export default SaleItemSchema;

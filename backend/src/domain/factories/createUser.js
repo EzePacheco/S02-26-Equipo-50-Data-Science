@@ -1,4 +1,4 @@
-const User = require('../entities/User');
-const UserSchema = require('../schemas/user.schema');
+import User from'../entities/User.js';
+import UserSchema from'../schemas/user.schema.js';
 
-module.exports = (data) => new User(UserSchema.parse(data));
+export default (data) => new User(UserSchema.parse(data));

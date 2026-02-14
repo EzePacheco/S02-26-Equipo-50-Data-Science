@@ -1,7 +1,7 @@
-const Sale = require('../entities/Sale');
-const SaleSchema = require('../schemas/sale.schema');
+import Sale from'../entities/Sale.js';
+import SaleSchema from '../schemas/sale.schema.js';
 
-module.exports = (data) => {
+export default (data) => {
   const validatedData = SaleSchema.parse(data);
   return new Sale(validatedData);
 };
