@@ -2,8 +2,12 @@
 // Routes configuration constants
 
 export const ROUTES = {
-  HOME: '/',
+  // Rutas públicas
+  LANDING: '/',    //Asegurar bien las rutas
   LOGIN: '/login',
+  REGISTER: '/registro',
+  // Rutas protegidas
+  DASHBOARD: '/dashboard',
   SALES: '/ventas',
   PRODUCTS: '/productos',
   CUSTOMERS: '/clientes',
@@ -12,6 +16,9 @@ export const ROUTES = {
 };
 
 export const ROUTE_LABELS = {
+  [ROUTES.LANDING]: 'Inicio',
+  [ROUTES.LOGIN]: 'Iniciar Sesión',
+  [ROUTES.REGISTER]: 'Registro',
   [ROUTES.HOME]: 'Dashboard',
   [ROUTES.SALES]: 'Ventas',
   [ROUTES.PRODUCTS]: 'Productos',
@@ -20,12 +27,20 @@ export const ROUTE_LABELS = {
   [ROUTES.SETTINGS]: 'Configuración'
 };
 
+// Rutas públicas (no requieren autenticación)
+export const PUBLIC_ROUTES = [
+  ROUTES.LANDING,
+  ROUTES.LOGIN,
+  ROUTES.REGISTER
+];
+// Rutas protegidas (requieren autenticación)
 export const PROTECTED_ROUTES = [
-  ROUTES.HOME,
+  ROUTES.DASHBOARD,
   ROUTES.SALES,
   ROUTES.PRODUCTS,
   ROUTES.CUSTOMERS,
-  ROUTES.INVENTORY
+  ROUTES.INVENTORY,
+  ROUTES.SETTINGS
 ];
 
 export default ROUTES;
