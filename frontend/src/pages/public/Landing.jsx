@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Button } from '../../shared/components/Button';
 import { Card, CardContent } from '../../shared/components/Card';
 import ROUTES from '../../app/routes/route.config';
@@ -48,10 +47,10 @@ const FEATURES = [
 ];
 
 const BENEFITS = [
-  'xxx',
+  'Dejaras de perder dinero por falta de control',
   'Funciona desde cualquier dispositivo',
-  'xxx',
-  'xxx',
+  'Podras ver cómo va tu negocio en segundos',
+  'Revisar tu negocio desde tu celular',
 ];
 
 export default function Landing() {
@@ -59,7 +58,7 @@ export default function Landing() {
     <div className="min-h-screen bg-white">
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8 py-3 md:py-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
               <Store className="w-5 h-5 text-blue-600" />
@@ -79,7 +78,7 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="max-w-7xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1.5 rounded-full">
               <Zap className="w-3.5 h-3.5" />
@@ -110,7 +109,7 @@ export default function Landing() {
 
       {/* Features */}
       <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
               Todo lo que necesitas para tu negocio
@@ -122,7 +121,7 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {FEATURES.map(({ icon: Icon, title, description }) => (
               <Card key={title} className="border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardContent className="p-6 space-y-3">
+                <CardContent className="p-6 pt-6 space-y-3">
                   <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-blue-600" />
                   </div>
@@ -137,11 +136,11 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <Card className="border-0 bg-blue-600 text-white overflow-hidden relative">
             <CardContent className="p-8 md:p-12 text-center space-y-6 relative z-10">
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-                Empieza a organizar tu tienda hoy
+                Empieza a organizar tu negocio hoy
               </h2>
               <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-blue-50">
                 {BENEFITS.map((b) => (
@@ -168,7 +167,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 py-8">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <Store className="w-4 h-4 text-blue-600" />
             <span className="font-medium text-gray-900">Pordefinir</span>
