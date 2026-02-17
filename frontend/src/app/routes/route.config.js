@@ -6,6 +6,7 @@ export const ROUTES = {
   LANDING: '/',    //Asegurar bien las rutas
   LOGIN: '/login',
   REGISTER: '/registro',
+  ONBOARDING: '/onboarding',
   // Rutas protegidas
   DASHBOARD: '/dashboard',
   SALES: '/ventas',
@@ -31,7 +32,8 @@ export const ROUTE_LABELS = {
 export const PUBLIC_ROUTES = [
   ROUTES.LANDING,
   ROUTES.LOGIN,
-  ROUTES.REGISTER
+  ROUTES.REGISTER,
+  ROUTES.ONBOARDING
 ];
 // Rutas protegidas (requieren autenticación)
 export const PROTECTED_ROUTES = [

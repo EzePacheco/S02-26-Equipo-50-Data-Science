@@ -1,17 +1,17 @@
-import { Button } from '../../shared/components/Button';
-import { Card, CardContent } from '../../shared/components/Card';
-import ROUTES from '../../app/routes/route.config';
-import { 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  BarChart3, 
-  Smartphone, 
+import { Button } from '../../../shared/components/Button';
+import { Card, CardContent } from '../../../shared/components/Card';
+import ROUTES from '../../../app/routes/route.config';
+import {
+  Package,
+  ShoppingCart,
+  Users,
+  BarChart3,
+  Smartphone,
   Zap,
   ArrowRight,
-  Check,
-  Store
+  Check
 } from 'lucide-react';
+import logoDatamark from '../../../assets/datamark.png';
 
 const FEATURES = [
   {
@@ -58,12 +58,14 @@ export default function Landing() {
     <div className="min-h-screen bg-white">
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8 py-3 md:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between pl-4 pr-6 md:pl-6 md:pr-8 lg:pl-8 lg:pr-10 py-3 md:py-4">
+
+
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Store className="w-5 h-5 text-blue-600" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img src={logoDatamark} alt="DATAMARK" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-bold tracking-tight text-gray-900">Pordefinir</span>
+            <span className="text-lg font-bold tracking-tight text-gray-900">DATAMARK</span>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" to={ROUTES.LOGIN}>
@@ -80,10 +82,6 @@ export default function Landing() {
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="max-w-2xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1.5 rounded-full">
-              <Zap className="w-3.5 h-3.5" />
-              Para tiendas de ropa y calzado en Perú
-            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
               Tu tienda organizada,{' '}
               <span className="text-blue-600">tus ventas en orden</span>
@@ -119,17 +117,21 @@ export default function Landing() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {FEATURES.map(({ icon: Icon, title, description }) => (
-              <Card key={title} className="border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardContent className="p-6 pt-6 space-y-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900">{title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={feature.title} className="border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
+                  <CardContent className="p-6 pt-6 space-y-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900">{feature.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+
           </div>
         </div>
       </section>
@@ -150,10 +152,10 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button 
-                size="lg" 
-                variant="secondary" 
-                className="gap-2 text-base font-semibold bg-white text-blue-600 hover:bg-gray-100" 
+              <Button
+                size="lg"
+                variant="secondary"
+                className="gap-2 text-base font-semibold bg-white text-blue-600 hover:bg-gray-100"
                 to={ROUTES.REGISTER}
               >
                 Crear cuenta gratis
@@ -169,10 +171,12 @@ export default function Landing() {
       <footer className="border-t border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
-            <Store className="w-4 h-4 text-blue-600" />
-            <span className="font-medium text-gray-900">Pordefinir</span>
+            <div className="w-6 h-6 flex items-center justify-center">
+              <img src={logoDatamark} alt="DATAMARK" className="w-full h-full object-contain" />
+            </div>
+            <span className="font-medium text-gray-900">DATAMARK</span>
           </div>
-          <p>© {new Date().getFullYear()} Pordefinir.</p>
+          <p>© {new Date().getFullYear()} DATAMARK.</p>
         </div>
       </footer>
     </div>

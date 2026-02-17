@@ -5,16 +5,20 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ROUTES from './route.config';
 
 
-import Landing from '../../pages/public/Landing';
+import Landing from '../../features/landing/components/landing';
+import Login from '../../features/auth/components/Login';
+import Register from '../../features/auth/components/Register';
+import Onboarding from '../../features/onboarding/components/onboarding';
 
 const AppRoutes = () => {
   return (
     <Routes>
       {/* ===== RUTAS PÚBLICAS ===== */}
       <Route path={ROUTES.LANDING} element={<Landing />} />
-      <Route path={ROUTES.LOGIN} element={<div>Login (TODO)</div>} />
-      <Route path={ROUTES.REGISTER} element={<div>Registro (TODO)</div>} />
-      
+      <Route path={ROUTES.LOGIN} element={<Login />} />
+      <Route path={ROUTES.REGISTER} element={<Register />} />
+      <Route path={ROUTES.ONBOARDING} element={<Onboarding />} />  
+          
       {/* ===== RUTAS PROTEGIDAS ===== */}
       {/* Se debe Agregar componente ProtectedRoute cuando implementes autenticación <=<=<=<=<=<=<=<=<=<=<=<= */}  
       <Route path={ROUTES.DASHBOARD} element={<div>Dashboard (TODO)</div>} />

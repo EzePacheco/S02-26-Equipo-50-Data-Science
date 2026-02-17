@@ -6,6 +6,23 @@ const API_CONFIG = {
   TIMEOUT: 10000,
   HEADERS: {
     'Content-Type': 'application/json'
+  },
+  // Endpoints de la API
+  ENDPOINTS: {
+    // Autenticación
+    AUTH: {
+      LOGIN: '/auth/login',
+      REGISTER: '/auth/register',
+      LOGOUT: '/auth/logout',
+      REFRESH: '/auth/refresh',
+    },
+    
+    // Tiendas (Onboarding)
+    STORES: {
+      CREATE: '/stores',              // POST - Crear tienda
+      GET_MY_STORE: '/stores/my-store', // GET - Obtener mi tienda
+      UPDATE: '/stores',              // PATCH - Actualizar tienda
+    },
   }
 };
 
