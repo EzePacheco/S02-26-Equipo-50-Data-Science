@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum ProductCategory {
@@ -16,9 +15,20 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
+  store     Store?   // Relación 1:1 opcional - un usuario puede tener una tienda
   sales     Sale[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Store {
+  id          String          @id @default(uuid())
+  name        String          // Nombre de la tienda
+  category    ProductCategory // Categoría: ROPA o CALZADO
+  userId      String          @unique // 1:1 con User - cada usuario tiene una sola tienda
+  user        User            @relation(fields: [userId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 model Sale {
