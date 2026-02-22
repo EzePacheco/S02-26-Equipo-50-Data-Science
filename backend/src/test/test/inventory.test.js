@@ -30,4 +30,14 @@ describe('Inventory Domain Logic', () => {
     const inventory = InventoryFactory(inventoryData);
     expect(() => inventory.increase(-5)).toThrow('El importe debe ser positivo');
   });
+
+  test('Debe identificar cuando el stock es bajo', () => {
+  const inventory = InventoryFactory({
+    productId: '550e8400-e29b-41d4-a716-446655440000',
+    quantity: 5,
+    minStock: 10
+  });
+  
+  expect(inventory.isLowStock()).toBe(true);
+});
 });

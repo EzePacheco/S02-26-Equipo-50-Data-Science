@@ -1,4 +1,4 @@
-// IInventoryRepository.js
+// domain/repositories/IInventoryRepository.js
 // Capa de dominio: Contrato de repositorio para la entidad Inventario
 
 class IInventoryRepository {
@@ -14,7 +14,7 @@ class IInventoryRepository {
     throw new Error('Method not implemented');
   }
 
-  async update(id, inventoryData) {
+  async update(inventoryEntity) {
     throw new Error('Method not implemented');
   }
 
