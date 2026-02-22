@@ -31,6 +31,18 @@ class InventoryService {
   async adjustStock(productId, adjustment) {
     // TODO: Implementar ajuste de stock
     // Positivo: agregar stock, Negativo: remover stock
+    const invetoryData = await this.inventoryRepository.findByProductId(productId);
+    if (!invetoryData) throw new Error('Producto no encontrado en inventario');
+
+    const inventoryEntity = InventoryFactory(invetoryData);
+
+    if (adjustment < 0 && inventoryEntity.quantity + adjustment < 0) {
+      inventoryEntity.decrease(Math.abs(adjustment));
+    } else {
+      inventoryEntity.increase(adjustment);
+    }
+
+    return await this.inventoryRepository.update(inventoryEntity);
   }
 
   async setMinStock(productId, minStock) {

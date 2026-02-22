@@ -40,6 +40,10 @@ export function configureRoutes(controllers) {
     router.use('/stores', configureStoreRoutes(controllers.storeController));
   }
 
+  if (controllers?.inventoryController) {
+    router.use('/inventory', configureInventoryRoutes(controllers.inventoryController));
+  }
+
   return router;
 }
 

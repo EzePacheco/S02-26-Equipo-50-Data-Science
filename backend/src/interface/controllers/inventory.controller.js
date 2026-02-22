@@ -23,6 +23,19 @@ class InventoryController {
   async updateStock(req, res, next) {
     // TODO: Implementar manejador updateStock
     // Extraer productId de req.params y quantity de req.body
+    try {
+      const { productId } = req.params;
+      const { quantity } = req.body;
+
+      const updatedInventory = await this.inventoryService.adjustStock(productId, quantity);
+      return res.status(200).json({
+        success: true,
+        message: 'Stock actualizado exitosamente',
+        data: updatedInventory
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async setMinStock(req, res, next) {
