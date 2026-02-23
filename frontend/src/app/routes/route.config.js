@@ -4,6 +4,7 @@
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  DASHBOARD: 'Dashboard',
   SALES: '/ventas',
   PRODUCTS: '/productos',
   CUSTOMERS: '/clientes',
@@ -12,7 +13,8 @@ export const ROUTES = {
 };
 
 export const ROUTE_LABELS = {
-  [ROUTES.HOME]: 'Dashboard',
+  [ROUTES.HOME]: '/',
+  [ROUTES.DASHBOARD]: 'Dashboard',
   [ROUTES.SALES]: 'Ventas',
   [ROUTES.PRODUCTS]: 'Productos',
   [ROUTES.CUSTOMERS]: 'Clientes',
@@ -22,6 +24,7 @@ export const ROUTE_LABELS = {
 
 export const PROTECTED_ROUTES = [
   ROUTES.HOME,
+  ROUTES.DASHBOARD,
   ROUTES.SALES,
   ROUTES.PRODUCTS,
   ROUTES.CUSTOMERS,
