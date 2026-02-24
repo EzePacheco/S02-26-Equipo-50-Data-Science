@@ -2,7 +2,7 @@
 // Capa de aplicación: Lógica de negocio para operaciones de Producto
 
 class ProductService {
-  constructor(productRepository) inventoryRepository) {
+  constructor(productRepository, inventoryRepository) {
     this.productRepository = productRepository;
     this.inventoryRepository = inventoryRepository;
   }
