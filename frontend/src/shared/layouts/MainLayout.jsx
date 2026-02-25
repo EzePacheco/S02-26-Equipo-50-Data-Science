@@ -3,16 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { Button } from '../../shared/components/Button';
 import ROUTES from '../../app/routes/route.config';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
   LogOut,
   Menu,
   X,
-  Store,
-  Settings
+  Store
 } from 'lucide-react';
 import logoDatamark from '../../assets/datamark.png';
 const cn = (...classes) => classes.filter(Boolean).join(' ');
@@ -22,7 +21,6 @@ const NAV_ITEMS = [
   { path: ROUTES.INVENTORY, label: 'Inventario', icon: Package },
   { path: ROUTES.SALES, label: 'Ventas', icon: ShoppingCart },
   { path: ROUTES.CUSTOMERS, label: 'Clientes', icon: Users },
-  { path: ROUTES.SETTINGS, label: 'Configuración', icon: Settings },
 ];
 
 export default function MainLayout({ children }) {
@@ -50,7 +48,7 @@ export default function MainLayout({ children }) {
             </div>
             <p className="font-semibold text-sm">{storeName}</p>
           </div>
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 hover:bg-gray-100 rounded-lg"
           >
@@ -58,28 +56,13 @@ export default function MainLayout({ children }) {
           </button>
         </div>
 
+        {/* Solo mostrar el botón de cerrar sesión en mobile (la nav inferior gestiona la navegación) */}
         {mobileMenuOpen && (
           <nav className="absolute top-full left-0 right-0 bg-white border-b shadow-lg">
             <div className="p-2">
-              {NAV_ITEMS.map(({ path, label, icon: Icon }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
-                    location.pathname === path
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  )}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{label}</span>
-                </Link>
-              ))}
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 mt-2"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="font-medium">Cerrar sesión</span>

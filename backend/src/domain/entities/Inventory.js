@@ -3,7 +3,7 @@ export default class Inventory {
     this.id = id;
     this.productId = productId;
     this.quantity = quantity;
-    this.minStock = minStock ?? null;
+    this.minStock = minStock ?? 0;
   }
 
   decrease(amount) {
@@ -15,5 +15,14 @@ export default class Inventory {
   increase(amount) {
     if (amount <= 0) throw new Error('El importe debe ser positivo');
     this.quantity += amount;
+  }
+
+  isLowStock() {
+    return this.quantity <= this.minStock;
+  }
+
+  updateMinStock(newMin) {
+    if (newMin < 0) throw new Error('El stock mínimo no puede ser negativo');
+    this.minStock = newMin;
   }
 }

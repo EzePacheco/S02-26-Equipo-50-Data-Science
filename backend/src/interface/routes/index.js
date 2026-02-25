@@ -7,7 +7,7 @@ import userRoutes from './user.routes.js';
 import customerRoutes from './customer.routes.js';
 import productRoutes from './product.routes.js';
 import saleRoutes from './sale.routes.js';
-import inventoryRoutes from './inventory.routes.js';
+import configureInventoryRoutes from './inventory.routes.js';
 import { configureStoreRoutes } from './store.routes.js';
 
 const router = Router();
@@ -38,6 +38,10 @@ export function configureRoutes(controllers) {
   // Se monta con el controlador inyectado para permitir inyección de dependencias
   if (controllers?.storeController) {
     router.use('/stores', configureStoreRoutes(controllers.storeController));
+  }
+
+  if (controllers?.inventoryController) {
+    router.use('/inventory', configureInventoryRoutes(controllers.inventoryController));
   }
 
   return router;

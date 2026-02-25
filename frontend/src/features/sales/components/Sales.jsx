@@ -4,7 +4,7 @@ import MainLayout from '../../../shared/layouts/MainLayout';
 import { Card, CardContent } from '../../../shared/components/Card';
 import { Badge } from '../../../shared/components/Badge';
 import { Button } from '../../../shared/components/Button';
-import  Input  from '../../../shared/components/Input';
+import Input from '../../../shared/components/Input';
 import { Label } from '../../../shared/components/Label';
 import { Skeleton } from '../../../shared/components/Skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
@@ -14,26 +14,27 @@ import { useProducts } from '../../products/hooks/useProducts';
 import { useCustomers } from '../../customers/hooks/useCustomers';
 import { cn } from '../../../shared/utils/cn';
 import { formatCurrency } from '../../../shared/utils/formatters';
-import {
-    Plus,
-    ShoppingCart,
-    Loader2,
-    X,
-    Banknote,
-    CreditCard,
-    Smartphone
-} from 'lucide-react';
+import { Plus, ShoppingCart, Loader2, X } from 'lucide-react';
+import imgYape from '../../../assets/yape-logo-fondo-transparente.png';
+import imgPlin from '../../../assets/plin-logo.png';
+import imgEfectivo from '../../../assets/efectivo.png';
+import imgTarjeta from '../../../assets/tarjeta.png';
 
 export default function Sales() {
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const { sales, isLoading, totalSales, addSale, cancelSale } = useSales('today');
 
+    const PAYMENT_IMAGES = {
+        efectivo: imgEfectivo,
+        tarjeta: imgTarjeta,
+        yape: imgYape,
+        plin: imgPlin,
+    };
+
     const getPaymentIcon = (method) => {
-        switch (method) {
-            case 'efectivo': return <Banknote className="w-4 h-4" />;
-            case 'tarjeta': return <CreditCard className="w-4 h-4" />;
-            default: return <Smartphone className="w-4 h-4" />;
-        }
+        const src = PAYMENT_IMAGES[method];
+        if (src) return <img src={src} alt={method} className="w-5 h-5 object-contain" />;
+        return null;
     };
 
     const formatTime = (date) => {
@@ -294,14 +295,21 @@ function SaleForm({ onSubmit, isLoading }) {
                             type="button"
                             variant={paymentMethod === value ? 'default' : 'outline'}
                             className={cn(
-                                'h-12',
+                                'h-12 flex items-center gap-2',
                                 paymentMethod === value && 'ring-2 ring-blue-500 ring-offset-2'
                             )}
                             onClick={() => setPaymentMethod(value)}
                         >
-                            {value === 'efectivo' && <Banknote className="w-4 h-4 mr-2" />}
-                            {value === 'tarjeta' && <CreditCard className="w-4 h-4 mr-2" />}
-                            {(value === 'yape' || value === 'plin') && <Smartphone className="w-4 h-4 mr-2" />}
+                            <img
+                                src={{
+                                    efectivo: imgEfectivo,
+                                    tarjeta: imgTarjeta,
+                                    yape: imgYape,
+                                    plin: imgPlin,
+                                }[value]}
+                                alt={label}
+                                className="w-6 h-6 object-contain"
+                            />
                             {label}
                         </Button>
                     ))}

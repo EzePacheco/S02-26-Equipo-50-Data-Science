@@ -29,7 +29,6 @@ const AppRoutes = () => {
       <Route path={ROUTES.PRODUCTS} element={<div>Productos (TODO)</div>} />
       <Route path={ROUTES.CUSTOMERS} element={<div>Clientes (TODO)</div>} />
       <Route path={ROUTES.INVENTORY} element={<Inventory />} />
-      <Route path={ROUTES.SETTINGS} element={<div>Configuración (TODO)</div>} />
 
       {/* Redirect to home for unknown routes */}
       <Route path="*" element={<Navigate to="/" replace />} />
