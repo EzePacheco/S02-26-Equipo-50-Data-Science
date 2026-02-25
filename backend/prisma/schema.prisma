@@ -6,12 +6,90 @@ datasource db {
   provider = "postgresql"
 }
 
-// Modelo de ejemplo - Usuario
+enum ProductCategory {
+  ROPA
+  CALZADO
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  name      String?
+  name      String
+  store     Store?   // Relación 1:1 opcional - un usuario puede tener una tienda
+  sales     Sale[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Store {
+  id          String          @id @default(uuid())
+  name        String          // Nombre de la tienda
+  category    ProductCategory // Categoría: ROPA o CALZADO
+  userId      String          @unique // 1:1 con User - cada usuario tiene una sola tienda
+  user        User            @relation(fields: [userId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Sale {
+  id           String      @id @default(uuid())
+  userId       String
+  customerId   String?
+  totalAmount  Decimal     @db.Decimal(10, 2)
+
+  user         User        @relation(fields: [userId], references: [id])
+  customer     Customer?   @relation(fields: [customerId], references: [id])
+  items        SaleItem[]
+
+  createdAt    DateTime    @default(now())
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  sales     Sale[]
+  createdAt DateTime @default(now())
+}
+
+model SaleItem {
+  id           String   @id @default(uuid())
+  saleId       String
+  productId    String
+
+  productName  String
+  quantity     Int
+  unitPrice    Decimal  @db.Decimal(10, 2)
+  subtotal     Decimal  @db.Decimal(10, 2)
+
+  sale         Sale     @relation(fields: [saleId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id])
+}
+
+model Product {
+  id        String           @id @default(uuid())
+  name      String
+  sku       String           @unique
+  price     Decimal          @db.Decimal(10, 2)
+  category  ProductCategory
+  active    Boolean          @default(true)
+
+  inventory Inventory?
+  saleItems SaleItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inventory {
+  id        String   @id @default(uuid())
+  productId String   @unique
+  quantity  Int
+  minStock  Int?
+
+  product   Product  @relation(fields: [productId], references: [id])
+
   updatedAt DateTime @updatedAt
 }
 
