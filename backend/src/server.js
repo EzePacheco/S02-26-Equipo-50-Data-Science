@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import productRoutes from './routes/product.routes.js';
 
 // Cargamos las variables de entorno
 dotenv.config();
@@ -22,8 +23,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+app.use('/api/products', productRoutes);
+
 // Manejo de rutas no encontradas
-app.use('*', (req, res) => {
+app.use(/(.*)/, (req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada.'});
 });
 
