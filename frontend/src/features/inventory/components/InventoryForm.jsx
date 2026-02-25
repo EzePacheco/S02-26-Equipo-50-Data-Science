@@ -75,7 +75,7 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
             id="inv-size"
             value={formData.size}
             onChange={set('size')}
-            placeholder="S, M, L, XL..."
+            placeholder="S, M, 34, 36..."
             className="h-12"
           />
         </div>
