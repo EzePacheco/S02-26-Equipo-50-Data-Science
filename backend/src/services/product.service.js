@@ -36,3 +36,52 @@ export const createProductService = async (productData) => {
 
   return newProduct;
 };
+
+
+export const getAllProductsService = async () => {
+  const products = await prisma.product.findMany({
+    
+    include: {
+      variants: true,
+    },
+    
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+
+  return products;
+};
+
+
+export const getProductByIdService = async (id) => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      variants: true,
+    },
+  });
+
+  return product;
+};
+
+export const deleteProductService = async (id) => {
+
+  const product = await prisma.product.findUnique({
+    where: { id: id }
+  });
+
+  if (!product) return null;
+
+  await prisma.productVariant.deleteMany({
+    where: { productId: id }
+  });
+
+  const deletedProduct = await prisma.product.delete({
+    where: { id: id }
+  });
+
+  return deletedProduct;
+};
