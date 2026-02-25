@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
-import { Button } from './Button';
+import { Button } from '../../shared/components/Button';
 import ROUTES from '../../app/routes/route.config';
 import { 
   LayoutDashboard, 
@@ -14,7 +14,7 @@ import {
   Store,
   Settings
 } from 'lucide-react';
-
+import logoDatamark from '../../assets/datamark.png';
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 const NAV_ITEMS = [
@@ -37,7 +37,7 @@ export default function MainLayout({ children }) {
   };
 
   const userData = user || JSON.parse(localStorage.getItem('user') || '{}');
-  const storeName = userData?.store_name || 'VentaFácil';
+  const storeName = userData?.store_name || 'DATAMARK';
 
   return (
     <div className="min-h-screen bg-gray-50">
