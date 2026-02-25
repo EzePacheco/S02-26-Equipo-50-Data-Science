@@ -8,7 +8,7 @@ export const ROUTES = {
   REGISTER: '/registro',
   ONBOARDING: '/onboarding',
   // Rutas protegidas
-  DASHBOARD: '/dashboard',
+  DASHBOARD: 'Dashboard',
   SALES: '/ventas',
   PRODUCTS: '/productos',
   CUSTOMERS: '/clientes',
