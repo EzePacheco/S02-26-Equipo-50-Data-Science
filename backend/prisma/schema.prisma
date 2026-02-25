@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // Modelo de ejemplo - Usuario
@@ -14,4 +13,38 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// 1. El Producto Base (Catálogo)
+model Product {
+  id          String   @id @default(uuid())
+  name        String   // Ej: "Zapatillas Nike Air"
+  description String?  
+  category    String?  // Ej: "Calzado", "Ropa"
+  gender      String?  // Ej: "Hombre", "Mujer", "Unisex", "Infantil"
+  style       String?  // Ej: "Deportivo", "Casual", "Formal", "Trabajo"
+  
+  // Relación: Un producto tiene MUCHAS variantes
+  variants    ProductVariant[] 
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 2. La Variante Física (Inventario real)
+model ProductVariant {
+  id          String   @id @default(uuid())
+  
+  // Clave foránea que lo conecta con el Producto Base
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku         String   @unique // Código de barras único para esta talla/color
+  size        String   // Ej: "40", "M", "Única"
+  color       String?  // Ej: "Rojo", "Azul marino"
+  price       Float    // El precio está aquí porque una talla XXL podría ser más cara
+  stock       Int      @default(0) // El inventario real de esta talla específica
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
