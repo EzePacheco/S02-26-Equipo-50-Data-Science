@@ -1,17 +1,20 @@
-// user.routes.js
-// Capa de interfaz: Rutas HTTP de Usuario
-
 import { Router } from 'express';
-// TODO: Importar controlador
-// import UserController from '../controllers/user.controller.js';
 
 const router = Router();
 
-// TODO: Definir rutas
-// router.post('/', UserController.create);
-// router.get('/', UserController.getAll);
-// router.get('/:id', UserController.getById);
-// router.put('/:id', UserController.update);
-// router.delete('/:id', UserController.delete);
+/**
+ * Configura las rutas de Usuario con el controlador inyectado
+ * @param {import('../controllers/user.controller.js').default} userController
+ * @returns {Router}
+ */
+export function configureUserRoutes(userController) {
+  router.post('/', (req, res, next) => userController.create(req, res, next));
+  router.get('/', (req, res, next) => userController.getAll(req, res, next));
+  router.get('/:id', (req, res, next) => userController.getById(req, res, next));
+  router.put('/:id', (req, res, next) => userController.update(req, res, next));
+  router.delete('/:id', (req, res, next) => userController.delete(req, res, next));
+
+  return router;
+}
 
 export default router;

@@ -1,36 +1,110 @@
-// CustomerService.js
-// Capa de aplicación: Lógica de negocio para operaciones de Cliente
+import ValidationError from '../../domain/errors/ValidationError.js';
+import NotFoundError from '../../domain/errors/NotFoundError.js';
 
 class CustomerService {
+  /**
+   * @param {import('../../domain/repositories/ICustomerRepository.js').default} customerRepository
+   */
   constructor(customerRepository) {
     this.customerRepository = customerRepository;
   }
 
-  async createCustomer(createCustomerDTO) {
-    // TODO: Implementar lógica de crear cliente
-    // 1. Validar DTO
-    // 2. Verificar si el email o teléfono existen
-    // 3. Crear cliente
+  /**
+   * Crea un nuevo cliente
+   * @param {Object} customerData
+   * @returns {Promise<Object>}
+   */
+  async createCustomer(customerData) {
+    if (!customerData.name) {
+      throw new ValidationError('El nombre es requerido');
+    }
+
+    if (customerData.email) {
+      const existingEmail = await this.customerRepository.findByEmail(customerData.email);
+      if (existingEmail) {
+        throw new ValidationError('El email ya esta en uso');
+      }
+    }
+
+    if (customerData.phone) {
+      const existingPhone = await this.customerRepository.findByPhone(customerData.phone);
+      if (existingPhone) {
+        throw new ValidationError('El telefono ya esta en uso');
+      }
+    }
+
+    return await this.customerRepository.create(customerData);
   }
 
+  /**
+   * Obtiene un cliente por ID
+   * @param {string} id
+   * @returns {Promise<Object|null>}
+   */
   async getCustomerById(id) {
-    // TODO: Implementar lógica de obtener cliente
+    const customer = await this.customerRepository.findById(id);
+    if (!customer) {
+      throw new NotFoundError('Cliente no encontrado');
+    }
+    return customer;
   }
 
+  /**
+   * Obtiene todos los clientes
+   * @returns {Promise<Array>}
+   */
   async getAllCustomers() {
-    // TODO: Implementar lógica de obtener todos los clientes
+    return await this.customerRepository.findAll();
   }
 
-  async updateCustomer(id, updateCustomerDTO) {
-    // TODO: Implementar lógica de actualizar cliente
+  /**
+   * Actualiza un cliente
+   * @param {string} id
+   * @param {Object} customerData
+   * @returns {Promise<Object>}
+   */
+  async updateCustomer(id, customerData) {
+    const existingCustomer = await this.customerRepository.findById(id);
+    if (!existingCustomer) {
+      throw new NotFoundError('Cliente no encontrado');
+    }
+
+    if (customerData.email && customerData.email !== existingCustomer.email) {
+      const emailInUse = await this.customerRepository.findByEmail(customerData.email);
+      if (emailInUse) {
+        throw new ValidationError('El email ya esta en uso');
+      }
+    }
+
+    return await this.customerRepository.update(id, customerData);
   }
 
+  /**
+   * Elimina un cliente
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
   async deleteCustomer(id) {
-    // TODO: Implementar lógica de eliminar cliente
+    const existingCustomer = await this.customerRepository.findById(id);
+    if (!existingCustomer) {
+      throw new NotFoundError('Cliente no encontrado');
+    }
+    return await this.customerRepository.delete(id);
   }
 
+  /**
+   * Busca clientes por nombre o email
+   * @param {string} query
+   * @returns {Promise<Array>}
+   */
   async searchCustomers(query) {
-    // TODO: Implementar lógica de búsqueda
+    const allCustomers = await this.customerRepository.findAll();
+    const lowerQuery = query.toLowerCase();
+    
+    return allCustomers.filter(customer => 
+      customer.name.toLowerCase().includes(lowerQuery) ||
+      (customer.email && customer.email.toLowerCase().includes(lowerQuery))
+    );
   }
 }
 

@@ -3,7 +3,7 @@
 // Maneja la persistencia de tiendas usando Prisma ORM
 
 import IStoreRepository from '../../../domain/repositories/IStoreRepository.js';
-import prisma from '../client.js';
+import prisma from '../prisma/client.js';
 import Store from '../../../domain/entities/Store.js';
 
 class PrismaStoreRepository extends IStoreRepository {

@@ -1,36 +1,64 @@
-// PrismaCustomerRepository.js
-// Capa de infraestructura: Implementación Prisma de ICustomerRepository
-
 import ICustomerRepository from '../../../domain/repositories/ICustomerRepository.js';
-import prisma from '../client.js';
+import prisma from '../prisma/client.js';
 
 class PrismaCustomerRepository extends ICustomerRepository {
   async findById(id) {
-    // TODO: Implementar usando prisma.customer.findUnique
+    return await prisma.customer.findUnique({
+      where: { id },
+      include: {
+        sales: true,
+      },
+    });
   }
 
   async findByEmail(email) {
-    // TODO: Implementar usando prisma.customer.findUnique
-  }
-
-  async create(customerData) {
-    // TODO: Implementar usando prisma.customer.create
-  }
-
-  async update(id, customerData) {
-    // TODO: Implementar usando prisma.customer.update
-  }
-
-  async delete(id) {
-    // TODO: Implementar usando prisma.customer.delete
-  }
-
-  async findAll() {
-    // TODO: Implementar usando prisma.customer.findMany
+    return await prisma.customer.findUnique({
+      where: { email },
+    });
   }
 
   async findByPhone(phone) {
-    // TODO: Implementar usando prisma.customer.findUnique
+    return await prisma.customer.findFirst({
+      where: { phone },
+    });
+  }
+
+  async create(customerData) {
+    return await prisma.customer.create({
+      data: {
+        name: customerData.name,
+        email: customerData.email,
+        phone: customerData.phone,
+      },
+    });
+  }
+
+  async update(id, customerData) {
+    return await prisma.customer.update({
+      where: { id },
+      data: {
+        name: customerData.name,
+        email: customerData.email,
+        phone: customerData.phone,
+      },
+    });
+  }
+
+  async delete(id) {
+    return await prisma.customer.delete({
+      where: { id },
+    });
+  }
+
+  async findAll() {
+    return await prisma.customer.findMany({
+      include: {
+        sales: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }
 

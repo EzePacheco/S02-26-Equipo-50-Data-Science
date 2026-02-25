@@ -1,32 +1,86 @@
-// UserService.js
-// Capa de aplicación: Lógica de negocio para operaciones de Usuario
+import ValidationError from '../../domain/errors/ValidationError.js';
+import NotFoundError from '../../domain/errors/NotFoundError.js';
 
 class UserService {
+  /**
+   * @param {import('../../domain/repositories/IUserRepository.js').default} userRepository
+   */
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
 
-  async createUser(createUserDTO) {
-    // TODO: Implementar lógica de crear usuario
-    // 1. Validar DTO
-    // 2. Verificar si el email existe
-    // 3. Crear usuario
+  /**
+   * Crea un nuevo usuario
+   * @param {Object} userData
+   * @returns {Promise<Object>}
+   */
+  async createUser(userData) {
+    if (!userData.name || !userData.email) {
+      throw new ValidationError('Nombre y email son requeridos');
+    }
+
+    const existingUser = await this.userRepository.findByEmail(userData.email);
+    if (existingUser) {
+      throw new ValidationError('El email ya esta en uso');
+    }
+
+    return await this.userRepository.create(userData);
   }
 
+  /**
+   * Obtiene un usuario por ID
+   * @param {string} id
+   * @returns {Promise<Object|null>}
+   */
   async getUserById(id) {
-    // TODO: Implementar lógica de obtener usuario
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError('Usuario no encontrado');
+    }
+    return user;
   }
 
+  /**
+   * Obtiene todos los usuarios
+   * @returns {Promise<Array>}
+   */
   async getAllUsers() {
-    // TODO: Implementar lógica de obtener todos los usuarios
+    return await this.userRepository.findAll();
   }
 
-  async updateUser(id, updateUserDTO) {
-    // TODO: Implementar lógica de actualizar usuario
+  /**
+   * Actualiza un usuario
+   * @param {string} id
+   * @param {Object} userData
+   * @returns {Promise<Object>}
+   */
+  async updateUser(id, userData) {
+    const existingUser = await this.userRepository.findById(id);
+    if (!existingUser) {
+      throw new NotFoundError('Usuario no encontrado');
+    }
+
+    if (userData.email && userData.email !== existingUser.email) {
+      const emailInUse = await this.userRepository.findByEmail(userData.email);
+      if (emailInUse) {
+        throw new ValidationError('El email ya esta en uso');
+      }
+    }
+
+    return await this.userRepository.update(id, userData);
   }
 
+  /**
+   * Elimina un usuario
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
   async deleteUser(id) {
-    // TODO: Implementar lógica de eliminar usuario
+    const existingUser = await this.userRepository.findById(id);
+    if (!existingUser) {
+      throw new NotFoundError('Usuario no encontrado');
+    }
+    return await this.userRepository.delete(id);
   }
 }
 

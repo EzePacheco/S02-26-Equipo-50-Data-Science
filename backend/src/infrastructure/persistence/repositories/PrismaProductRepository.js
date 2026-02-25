@@ -1,42 +1,65 @@
-// PrismaProductRepository.js
-// Capa de infraestructura: Implementación Prisma de IProductRepository
-
 import IProductRepository from '../../../domain/repositories/IProductRepository.js';
-import prisma from '../client.js';
+import prisma from '../prisma/client.js';
 
 class PrismaProductRepository extends IProductRepository {
   async findById(id) {
-    // TODO: Implementar usando prisma.product.findUnique
-    // Incluir relación de inventario
+    return await prisma.product.findUnique({
+      where: { id },
+      include: {
+        inventory: true,
+      },
+    });
   }
 
   async findBySku(sku) {
-    // TODO: Implementar usando prisma.product.findUnique
+    return await prisma.product.findUnique({
+      where: { sku },
+    });
   }
 
   async create(productData) {
-    // TODO: Implementar usando prisma.product.create
+    return await prisma.product.create({
+      data: productData,
+    });
   }
 
   async update(id, productData) {
-    // TODO: Implementar usando prisma.product.update
+    return await prisma.product.update({
+      where: { id },
+      data: productData,
+    });
   }
 
   async delete(id) {
-    // TODO: Implementar usando prisma.product.delete
+    return await prisma.product.delete({
+      where: { id },
+    });
   }
 
   async findAll() {
-    // TODO: Implementar usando prisma.product.findMany
-    // Incluir relación de inventario
+    return await prisma.product.findMany({
+      include: {
+        inventory: true,
+      },
+    });
   }
 
   async findByCategory(category) {
-    // TODO: Implementar usando prisma.product.findMany con filtro
+    return await prisma.product.findMany({
+      where: { category },
+      include: {
+        inventory: true,
+      },
+    });
   }
 
   async findActive() {
-    // TODO: Implementar usando prisma.product.findMany con active=true
+    return await prisma.product.findMany({
+      where: { active: true },
+      include: {
+        inventory: true,
+      },
+    });
   }
 }
 

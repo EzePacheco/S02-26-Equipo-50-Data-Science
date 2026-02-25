@@ -1,32 +1,56 @@
-// PrismaUserRepository.js
-// Capa de infraestructura: Implementación Prisma de IUserRepository
-
 import IUserRepository from '../../../domain/repositories/IUserRepository.js';
-import prisma from '../client.js';
+import prisma from '../prisma/client.js';
 
 class PrismaUserRepository extends IUserRepository {
   async findById(id) {
-    // TODO: Implementar usando prisma.user.findUnique
+    return await prisma.user.findUnique({
+      where: { id },
+      include: {
+        store: true,
+      },
+    });
   }
 
   async findByEmail(email) {
-    // TODO: Implementar usando prisma.user.findUnique
+    return await prisma.user.findUnique({
+      where: { email },
+    });
   }
 
   async create(userData) {
-    // TODO: Implementar usando prisma.user.create
+    return await prisma.user.create({
+      data: {
+        name: userData.name,
+        email: userData.email,
+      },
+    });
   }
 
   async update(id, userData) {
-    // TODO: Implementar usando prisma.user.update
+    return await prisma.user.update({
+      where: { id },
+      data: {
+        name: userData.name,
+        email: userData.email,
+      },
+    });
   }
 
   async delete(id) {
-    // TODO: Implementar usando prisma.user.delete
+    return await prisma.user.delete({
+      where: { id },
+    });
   }
 
   async findAll() {
-    // TODO: Implementar usando prisma.user.findMany
+    return await prisma.user.findMany({
+      include: {
+        store: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }
 

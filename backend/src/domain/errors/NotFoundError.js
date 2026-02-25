@@ -4,11 +4,9 @@
 import DomainError from './DomainError.js';
 
 class NotFoundError extends DomainError {
-  constructor(entity, id) {
-    super(`${entity} with id ${id} not found`, 'NOT_FOUND');
+  constructor(message) {
+    super(message, 'NOT_FOUND');
     this.name = 'NotFoundError';
-    this.entity = entity;
-    this.entityId = id;
   }
 }
 
