@@ -27,13 +27,16 @@ export function useProfile(userId) {
           categories: profileData.main_categories,
         });
 
+        // El backend devuelve { success, message, data }
+        const storeData = response.data;
+
         // Actualizar usuario en localStorage con los datos de la tienda
         const existingUser = JSON.parse(localStorage.getItem('user') || '{}');
         const updatedUser = {
           ...existingUser,
-          store_id: response.id,
-          store_name: response.name,
-          store_categories: response.categories,
+          store_id: storeData.id,
+          store_name: storeData.name,
+          store_categories: storeData.categories || profileData.main_categories,
           onboarding_completed: true,
           updatedAt: new Date().toISOString()
         };
@@ -41,7 +44,7 @@ export function useProfile(userId) {
         localStorage.setItem('user', JSON.stringify(updatedUser));
         localStorage.setItem('onboarding_completed', 'true');
 
-        return response;
+        return storeData;
       } catch (err) {
         setError(err.message);
         throw err;
@@ -64,19 +67,22 @@ export function useProfile(userId) {
       // Llamar al backend: GET /api/stores/my-store
       const response = await get(API_CONFIG.ENDPOINTS.STORES.GET_MY_STORE);
 
+      // El backend devuelve { success, data }
+      const storeData = response.data;
+
       // Actualizar localStorage con los datos actualizados
       const existingUser = JSON.parse(localStorage.getItem('user') || '{}');
       const updatedUser = {
         ...existingUser,
-        store_id: response.id,
-        store_name: response.name,
-        store_categories: response.categories,
+        store_id: storeData.id,
+        store_name: storeData.name,
+        store_categories: storeData.categories,
         onboarding_completed: true,
       };
       
       localStorage.setItem('user', JSON.stringify(updatedUser));
 
-      return { data: response, error: null };
+      return { data: storeData, error: null };
     } catch (err) {
       setError(err.message);
       return { data: null, error: err.message };
