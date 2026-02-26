@@ -1,14 +1,25 @@
-// inventory.controller.js
-// Capa de interfaz: Manejador de peticiones HTTP para Inventario
+/**
+ * InventoryController.js
+ * Capa de interfaz: Manejador de peticiones HTTP para Inventario
+ * Expone los endpoints para gestionar el stock de productos
+ */
 
 class InventoryController {
+  /**
+   * @param {Object} inventoryService - Servicio de inventario
+   */
   constructor(inventoryService) {
     this.inventoryService = inventoryService;
   }
 
+  /**
+   * GET /api/inventory
+   * Obtiene todos los registros de inventario con datos de productos
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async getAll(req, res, next) {
-    // TODO: Implementar manejador getAll
-    // Incluir detalles del producto
     try {
       const inventory = await this.inventoryService.getAllInventory();
       res.status(200).json({ success: true, data: inventory });
@@ -17,9 +28,14 @@ class InventoryController {
     }
   }
 
+  /**
+   * GET /api/inventory/product/:productId
+   * Obtiene el inventario de un producto específico
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async getByProductId(req, res, next) {
-    // TODO: Implementar manejador getByProductId
-    // Extraer productId de req.params
     try {
       const { productId } = req.params;
       const inventory = await this.inventoryService.getInventoryByProductId(productId);
@@ -29,8 +45,14 @@ class InventoryController {
     }
   }
 
+  /**
+   * GET /api/inventory/low-stock
+   * Obtiene productos con stock bajo el nivel mínimo
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async getLowStock(req, res, next) {
-    // TODO: Implementar manejador getLowStock
     try {
       const items = await this.inventoryService.getLowStockItems();
       res.status(200).json({ success: true, data: items });
@@ -39,9 +61,15 @@ class InventoryController {
     }
   }
 
+  /**
+   * PUT /api/inventory/:productId
+   * Actualiza el stock de un producto
+   * Body: { quantity?: number, adjustment?: number }
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async updateStock(req, res, next) {
-    // TODO: Implementar manejador updateStock
-    // Extraer productId de req.params y quantity de req.body
     try {
       const { productId } = req.params;
       const { adjustment, quantity } = req.body;
@@ -63,9 +91,15 @@ class InventoryController {
     }
   }
 
+  /**
+   * PUT /api/inventory/:productId/min-stock
+   * Establece el nivel mínimo de stock para un producto
+   * Body: { minStock: number }
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async setMinStock(req, res, next) {
-    // TODO: Implementar manejador setMinStock
-    // Extraer productId de req.params y minStock de req.body
     try {
       const { productId } = req.params;
       const { minStock } = req.body;

@@ -1,8 +1,25 @@
+/**
+ * AuthController.js
+ * Capa de interfaz: Manejador de peticiones HTTP para autenticación
+ * Gestiona registro, inicio de sesión y obtención de usuario actual
+ */
+
 class AuthController {
+  /**
+   * @param {Object} authService - Servicio de autenticación
+   */
   constructor(authService) {
     this.authService = authService;
   }
 
+  /**
+   * POST /api/auth/register
+   * Registra un nuevo usuario en el sistema
+   * Body: { name: string, email: string, password: string }
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async register(req, res, next) {
     try {
       const { name, email, password } = req.body;
@@ -17,6 +34,14 @@ class AuthController {
     }
   }
 
+  /**
+   * POST /api/auth/login
+   * Inicia sesión con credenciales existentes
+   * Body: { email: string, password: string }
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -31,6 +56,14 @@ class AuthController {
     }
   }
 
+  /**
+   * GET /api/auth/me
+   * Obtiene el usuario actualmente autenticado
+   * Requiere header Authorization: Bearer <token>
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async getCurrentUser(req, res, next) {
     try {
       const user = await this.authService.getCurrentUser(req.user.userId);

@@ -3,6 +3,7 @@
 // Define los endpoints relacionados con el onboarding y gestión de tiendas
 
 import { Router } from 'express';
+import authMiddleware from '../../infrastructure/web/middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -15,16 +16,17 @@ export function configureStoreRoutes(storeController) {
   /**
    * POST /api/stores
    * Crea una nueva tienda durante el onboarding
-   * Body: { name: string, category: 'ROPA' | 'CALZADO' }
+   * Body: { name: string, categories: string[] }
+   * Requiere autenticación
    */
-  router.post('/', (req, res, next) => storeController.create(req, res, next));
+  router.post('/', authMiddleware, (req, res, next) => storeController.create(req, res, next));
 
   /**
    * GET /api/stores/my-store
    * Obtiene la tienda del usuario autenticado
    * Requiere autenticación
    */
-  router.get('/my-store', (req, res, next) => storeController.getMyStore(req, res, next));
+  router.get('/my-store', authMiddleware, (req, res, next) => storeController.getMyStore(req, res, next));
 
   return router;
 }

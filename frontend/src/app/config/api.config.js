@@ -1,6 +1,7 @@
 /**
  * api.config.js
- * Axios API client configuration for backend communication
+ * Configuración del cliente Axios para comunicación con el backend
+ * Maneja autenticación automática y configuración de entornos
  */
 
 import axios from 'axios';
@@ -13,6 +14,11 @@ const API_CONFIG = {
   TIMEOUT: 10000,
 };
 
+/**
+ * Cliente Axios configurado con interceptores
+ * - Request: Agrega token de autenticación automáticamente
+ * - Response: Maneja errores 401 (redirecciona a login)
+ */
 export const apiClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
@@ -43,6 +49,9 @@ apiClient.interceptors.response.use(
   }
 );
 
+/**
+ * Endpoints de la API
+ */
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: '/auth/login',
