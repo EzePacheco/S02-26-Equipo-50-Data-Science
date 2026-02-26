@@ -5,7 +5,7 @@ import { Card, CardContent } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
 import { Skeleton } from '../../../shared/components/Skeleton';
 import { useAuth } from '../../../features/auth/hooks/useAuth';
-import { useProducts } from '../../../features/products/hooks/useProducts';
+import { useInventory } from '../../../features/inventory/hooks/useInventory';
 import { useSales } from '../../../features/sales/hooks/useSales';
 import { useCustomers } from '../../../features/customers/hooks/useCustomers';
 import ROUTES from '../../../app/routes/route.config';
@@ -72,7 +72,7 @@ function LoadingState() {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { products, isLoading: productsLoading } = useProducts(user?.id);
+  const { allProducts: products, isLoading: productsLoading } = useInventory();
   const { sales, isLoading: salesLoading } = useSales(user?.id);
   const { customers, isLoading: customersLoading } = useCustomers(user?.id);
 
@@ -92,10 +92,10 @@ export default function Dashboard() {
         new Date(s.created_at) < monthAgo
     );
 
-    const todayTotal = todaySales.reduce((sum, s) => sum + Number(s.total), 0);
-    const monthTotal = monthSales.reduce((sum, s) => sum + Number(s.total), 0);
+    const todayTotal = todaySales.reduce((sum, s) => sum + Number(s.total_price), 0);
+    const monthTotal = monthSales.reduce((sum, s) => sum + Number(s.total_price), 0);
     const prevMonthTotal = prevMonthSales.reduce(
-      (sum, s) => sum + Number(s.total),
+      (sum, s) => sum + Number(s.total_price),
       0
     );
 
@@ -105,18 +105,15 @@ export default function Dashboard() {
         : 0;
 
     // Ganancia estimada del mes
-    let monthProfit = 0;
-    monthSales.forEach((sale) => {
-      sale.sale_items?.forEach((item) => {
-        const cost = Number(item.products?.purchase_price ?? 0);
-        const price = Number(item.unit_price);
-        monthProfit += (price - cost) * item.quantity;
-      });
-    });
+    const monthProfit = monthSales.reduce((sum, sale) => {
+      const revenue = Number(sale.total_price);
+      const cost = Number(sale.purchase_price || 0) * Number(sale.quantity || 1);
+      return sum + (revenue - cost);
+    }, 0);
 
-    // Stock bajo
+    // Stock bajo (usamos el umbral estándar de 3 unidades definido en Inventory)
     const lowStockProducts = products.filter(
-      (p) => getStockStatus(p.stock, p.min_stock) !== 'good'
+      (p) => p.quantity < 3
     );
 
     // Ventas recientes
@@ -235,7 +232,7 @@ export default function Dashboard() {
                       >
                         <div>
                           <p className="font-semibold text-gray-900">
-                            {formatCurrency(sale.total)}
+                            {formatCurrency(sale.total_price)}
                           </p>
                           <p className="text-sm text-gray-500 mt-0.5">
                             {getPaymentMethodLabel(sale.payment_method)}

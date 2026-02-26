@@ -10,7 +10,7 @@ import { Skeleton } from '../../../shared/components/Skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../shared/components/Dialog';
 import { useSales, PAYMENT_METHODS } from '../hooks/useSales';
-import { useProducts } from '../../products/hooks/useProducts';
+import { useInventory } from '../../inventory/hooks/useInventory';
 import { useCustomers } from '../../customers/hooks/useCustomers';
 import { cn } from '../../../shared/utils/cn';
 import { formatCurrency } from '../../../shared/utils/formatters';
@@ -182,7 +182,7 @@ export default function Sales() {
 }
 
 function SaleForm({ onSubmit, isLoading }) {
-    const { products } = useProducts('todos');
+    const { allProducts: products } = useInventory();
     const { customers } = useCustomers();
 
     const [selectedProductId, setSelectedProductId] = useState('');
@@ -220,6 +220,7 @@ function SaleForm({ onSubmit, isLoading }) {
             customer_name: customers.find(c => c.id === selectedCustomerId)?.name || null,
             quantity,
             unit_price: unitPrice,
+            purchase_price: selectedProduct.purchase_price || 0,
             total_price: totalPrice,
             payment_method: paymentMethod,
         });
