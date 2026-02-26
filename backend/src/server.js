@@ -14,12 +14,14 @@ import InventoryService from './application/services/InventoryService.js';
 import ProductService from './application/services/ProductService.js';
 import CustomerService from './application/services/CustomerService.js';
 import UserService from './application/services/UserService.js';
+import AuthService from './application/services/AuthService.js';
 import StoreController from './interface/controllers/store.controller.js';
 import SaleController from './interface/controllers/sale.controller.js';
 import InventoryController from './interface/controllers/inventory.controller.js';
 import ProductController from './interface/controllers/product.controller.js';
 import CustomerController from './interface/controllers/customer.controller.js';
 import UserController from './interface/controllers/user.controller.js';
+import AuthController from './interface/controllers/auth.controller.js';
 import errorHandler from './infrastructure/web/middlewares/errorHandler.js';
 
 dotenv.config();
@@ -62,11 +64,12 @@ const userRepository = new PrismaUserRepository();
 const customerRepository = new PrismaCustomerRepository();
 
 const storeService = new StoreService(storeRepository);
-const saleService = new SaleService(saleRepository, productRepository, inventoryRepository, customerRepository);
+const customerService = new CustomerService(customerRepository);
+const saleService = new SaleService(saleRepository, productRepository, inventoryRepository, customerService);
 const inventoryService = new InventoryService(inventoryRepository, productRepository);
 const productService = new ProductService(productRepository, inventoryRepository);
-const customerService = new CustomerService(customerRepository);
 const userService = new UserService(userRepository);
+const authService = new AuthService(userRepository);
 
 const storeController = new StoreController(storeService);
 const saleController = new SaleController(saleService);
@@ -74,6 +77,7 @@ const inventoryController = new InventoryController(inventoryService);
 const productController = new ProductController(productService);
 const customerController = new CustomerController(customerService);
 const userController = new UserController(userService);
+const authController = new AuthController(authService);
 
 const controllers = {
   storeController,
@@ -82,6 +86,7 @@ const controllers = {
   productController,
   customerController,
   userController,
+  authController,
 };
 
 const routes = configureRoutes(controllers);

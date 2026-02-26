@@ -1,19 +1,51 @@
 // authApi.js
 // API calls for authentication
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { post, get, API_ENDPOINTS } from '../../../app/config/api.config.js';
 
 export const authApi = {
   login: async (credentials) => {
-    // TODO: Implementar llamada API de login
+    const response = await post(API_ENDPOINTS.AUTH.LOGIN, credentials);
+    if (response.data.success) {
+      const { token, user } = response.data.data;
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
+    }
+    throw new Error(response.data.error || 'Login failed');
+  },
+
+  register: async (userData) => {
+    const response = await post(API_ENDPOINTS.AUTH.REGISTER, userData);
+    if (response.data.success) {
+      const { token, user } = response.data.data;
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
+    }
+    throw new Error(response.data.error || 'Registration failed');
   },
 
   logout: async () => {
-    // TODO: Implementar llamada API de logout
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
   },
 
   getCurrentUser: async () => {
-    // TODO: Implementar llamada API de obtener usuario actual
+    const response = await get(API_ENDPOINTS.AUTH.REFRESH);
+    if (response.data.success) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error || 'Failed to get user');
+  },
+
+  getStoredUser: () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  isAuthenticated: () => {
+    return !!localStorage.getItem('authToken');
   }
 };
 

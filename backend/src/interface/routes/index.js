@@ -5,15 +5,15 @@ import { configureProductRoutes } from './product.routes.js';
 import { configureSaleRoutes } from './sale.routes.js';
 import configureInventoryRoutes from './inventory.routes.js';
 import { configureStoreRoutes } from './store.routes.js';
+import { configureAuthRoutes } from './auth.routes.js';
 
 const router = Router();
 
-/**
- * Configura todas las rutas de la API con sus respectivos controladores
- * @param {Object} controllers - Objeto con los controladores inyectados
- * @returns {Router} Router configurado con todas las rutas
- */
 export function configureRoutes(controllers) {
+  if (controllers?.authController) {
+    router.use('/auth', configureAuthRoutes(controllers.authController));
+  }
+
   if (controllers?.userController) {
     router.use('/users', configureUserRoutes(controllers.userController));
   }

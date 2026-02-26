@@ -22,17 +22,22 @@ class PrismaUserRepository extends IUserRepository {
       data: {
         name: userData.name,
         email: userData.email,
+        password: userData.password,
       },
     });
   }
 
   async update(id, userData) {
+    const data = {
+      name: userData.name,
+      email: userData.email,
+    };
+    if (userData.password) {
+      data.password = userData.password;
+    }
     return await prisma.user.update({
       where: { id },
-      data: {
-        name: userData.name,
-        email: userData.email,
-      },
+      data,
     });
   }
 
