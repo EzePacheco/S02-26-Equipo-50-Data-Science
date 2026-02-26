@@ -132,13 +132,17 @@ npm run dev
 
 **Backend**
 - `npm run dev` - Desarrollo
-- `npm start` - Producción
+- `npm start` - Produccion
 - `npm test` - Tests
 
 **Frontend**
 - `npm run dev` - Desarrollo
-- `npm run build` - Build producción
+- `npm run build` - Build produccion
 - `npm run lint` - Linting
+
+## Guia de Usuario
+
+Consulta la [guia completa](./USER_GUIDE.md) para instrucciones detalladas sobre el uso de la aplicacion.
 
 ## Equipo
 

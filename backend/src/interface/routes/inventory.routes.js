@@ -1,35 +1,51 @@
-// interface/routes/inventory.routes.js
-// Capa de interfaz: Rutas HTTP de Inventario
+/**
+ * inventory.routes.js
+ * Capa de interfaz: Rutas HTTP de Inventario
+ * Endpoints para gestionar el stock de productos
+ */
 
 import { Router } from 'express';
-// TODO: Importar controlador
-// import InventoryController from '../controllers/inventory.controller.js';
 
 /**
- * Configura las rutas de inventario inyectando el controlador
- * @param {InventoryController} inventoryController 
- * @returns {Router}
+ * Configura las rutas de inventario
+ * @param {Object} inventoryController - Controlador de inventario
+ * @returns {Router} Router configurado
  */
 export function configureInventoryRoutes(inventoryController) {
     const router = Router();
-// TODO: Definir rutas
-   // GET /inventory - Obtener todo el inventario
+
+  /**
+   * GET /api/inventory
+   * Obtiene todos los registros de inventario
+   */
   router.get('/', (req, res, next) => 
     inventoryController.getAll(req, res, next));
 
-  // GET /inventory/low-stock - Artículos bajo el mínimo
+  /**
+   * GET /api/inventory/low-stock
+   * Obtiene productos con stock bajo el nivel mínimo
+   */
   router.get('/low-stock', (req, res, next) => 
     inventoryController.getLowStock(req, res, next));
 
-  // GET /inventory/product/:productId - Stock de un producto específico
+  /**
+   * GET /api/inventory/product/:productId
+   * Obtiene el inventario de un producto específico
+   */
   router.get('/product/:productId', (req, res, next) => 
     inventoryController.getByProductId(req, res, next));
 
-  // PUT /inventory/product/:productId/stock - Ajustar stock (sumar/restar o setear)
+  /**
+   * PUT /api/inventory/product/:productId/stock
+   * Actualiza el stock de un producto
+   */
   router.put('/product/:productId/stock', (req, res, next) => 
     inventoryController.updateStock(req, res, next));
 
-  // PATCH /inventory/product/:productId/min-stock - Configurar alerta de stock bajo
+  /**
+   * PATCH /api/inventory/product/:productId/min-stock
+   * Establece el nivel mínimo de stock
+   */
   router.patch('/product/:productId/min-stock', (req, res, next) => 
     inventoryController.setMinStock(req, res, next));
   
