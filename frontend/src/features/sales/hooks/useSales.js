@@ -2,7 +2,7 @@
 // Custom hook for managing sales - connected to backend API
 
 import { useState, useEffect, useCallback } from 'react';
-import { salesApi } from '../sales/api/salesApi';
+import { salesApi } from '../../sales/api/salesApi';
 
 export const PAYMENT_METHODS = [
   { value: 'efectivo', label: 'Efectivo' },

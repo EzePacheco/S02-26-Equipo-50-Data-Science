@@ -2,8 +2,8 @@
 // Custom hook for managing inventory - connected to backend API
 
 import { useState, useEffect, useCallback } from 'react';
-import { productsApi } from '../products/api/productsApi';
-import { inventoryApi } from '../inventory/api/inventoryApi';
+import { productsApi } from '../../products/api/productsApi';
+import { inventoryApi } from '../../inventory/api/inventoryApi';
 
 export const CATEGORIES = ['ROPA', 'CALZADO'];
 
