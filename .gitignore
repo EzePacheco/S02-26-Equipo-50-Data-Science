@@ -14,13 +14,13 @@ node_modules/
 **/node_modules/.prisma/
 **/node_modules/@prisma/
 
-# Migraciones en desarrollo (descomenta si prefieres no versionarlas)
-apps/backend/prisma/migrations/*/migration.sql
-apps/backend/prisma/migrations/migration_lock.toml
+# Migraciones en desarrollo
+backend/prisma/migrations/*/migration.sql
+backend/prisma/migrations/migration_lock.toml
 
 # Archivos de desarrollo de Prisma
-apps/backend/prisma/*.db
-apps/backend/prisma/*.db-journal
+backend/prisma/*.db
+backend/prisma/*.db-journal
 
 # Logs
 npm-debug.log*
