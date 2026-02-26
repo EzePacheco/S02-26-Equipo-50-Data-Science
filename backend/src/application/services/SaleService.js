@@ -95,10 +95,11 @@ class SaleService {
    * Obtiene ventas por rango de fechas
    * @param {Date} startDate
    * @param {Date} endDate
+   * @param {string} userId - ID del usuario autenticado (opcional)
    * @returns {Promise<Array>}
    */
-  async getSalesByDateRange(startDate, endDate) {
-    return await this.saleRepository.findByDateRange(startDate, endDate);
+  async getSalesByDateRange(startDate, endDate, userId = null) {
+    return await this.saleRepository.findByDateRange(startDate, endDate, userId);
   }
 }
 

@@ -22,12 +22,12 @@ export function useProfile(userId) {
       try {
         // Llamar al backend: POST /api/stores
         const response = await post(API_ENDPOINTS.STORES.CREATE, {
-          name: profileData.store_name,
-          categories: profileData.main_categories,
+          name: profileData.name,
+          categories: profileData.categories,
         });
 
         // El backend devuelve { success, message, data }
-        const storeData = response.data;
+        const storeData = response.data.data;
 
         // Actualizar usuario en localStorage con los datos de la tienda
         const existingUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -66,8 +66,8 @@ export function useProfile(userId) {
       // Llamar al backend: GET /api/stores/my-store
       const response = await get(API_ENDPOINTS.STORES.GET_MY_STORE);
 
-      // El backend devuelve { success, data }
-      const storeData = response.data;
+        // El backend devuelve { success, data }
+        const storeData = response.data.data;
 
       // Actualizar localStorage con los datos actualizados
       const existingUser = JSON.parse(localStorage.getItem('user') || '{}');

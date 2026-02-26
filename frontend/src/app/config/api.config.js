@@ -81,10 +81,8 @@ export const API_ENDPOINTS = {
   },
   INVENTORY: {
     GET_ALL: '/inventory',
-    GET_BY_ID: (id) => `/inventory/${id}`,
     GET_BY_PRODUCT: (productId) => `/inventory/product/${productId}`,
-    CREATE: '/inventory',
-    UPDATE: (id) => `/inventory/${id}`,
+    LOW_STOCK: '/inventory/low-stock',
   },
   CUSTOMERS: {
     GET_ALL: '/customers',

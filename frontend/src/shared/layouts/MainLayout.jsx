@@ -26,16 +26,16 @@ const NAV_ITEMS = [
 export default function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleSignOut = () => {
-    localStorage.clear();
+  const handleSignOut = async () => {
+    await signOut();
     navigate(ROUTES.LOGIN);
   };
 
   const userData = user || JSON.parse(localStorage.getItem('user') || '{}');
-  const storeName = userData?.store_name || 'DATAMARK';
+  const storeName = userData?.store?.name || userData?.store_name || 'DATAMARK';
 
   return (
     <div className="min-h-screen bg-gray-50">

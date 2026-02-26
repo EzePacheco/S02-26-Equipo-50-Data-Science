@@ -66,9 +66,8 @@ export default function Onboarding() {
 
     try {
       await updateProfile.mutateAsync({
-        store_name: storeName.trim(),
-        main_categories: selectedCategories,
-        onboarding_completed: true,
+        name: storeName.trim(),
+        categories: selectedCategories,
       });
       toast.success('¡Tu tienda está lista!');
       navigate(ROUTES.DASHBOARD);
