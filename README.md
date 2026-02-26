@@ -22,6 +22,44 @@ DATAMARK es una solución integral para pequeños comercios del sector textil y 
 - Prisma ORM
 - JWT + bcryptjs
 
+## Decisiones Tecnicas
+
+### Neon (PostgreSQL Serverless)
+Permite branching de base de datos para desarrollo sin afectar produccion. Escalabilidad automatica sin provisioning de servidores.
+
+### Railway
+Simplifica el despliegue de APIs Node.js con gestion automatica de variables de entorno, SSL y escalabilidad.
+
+### Vercel
+Optimizado para frontend React con CI/CD automatico, edge functions y optimizacion de rendimiento out-of-the-box.
+
+### Prisma ORM
+Type-safety completo con TypeScript, migraciones simples y abstraccion de consultas que evita SQL injection. Superior al raw SQL para mantenimiento a largo plazo.
+
+### JWT vs Session-based Auth
+Stateless, ideal para arquitecturas SPA. Sin almacenamiento server-side y compatible con multiples clientes (web, mobile).
+
+### Clean Architecture
+Separacion estricta de dominio y framework. Facilita testing, cambios de tecnologia y escalabilidad futura.
+
+## Seguridad
+
+- Hashing de contrasenas con bcrypt (cost factor 10)
+- Autenticacion via JWT en todas las rutas protegidas
+- Validacion de input con Zod
+- CORS configurado via ALLOWED_ORIGINS
+- Secrets almacenados en variables de entorno
+
+## Roadmap
+
+- OAuth con Facebook Login
+- Interfaz completa para Gestion de Productos
+- Interfaz completa para Gestion de Clientes
+- Interfaz completa para Gestion de Ventas
+- Exportacion de datos a CSV
+- Sistema de recuperacion de contrasena
+- Soporte multi-tienda por usuario
+
 ## Estructura del Proyecto
 
 ```

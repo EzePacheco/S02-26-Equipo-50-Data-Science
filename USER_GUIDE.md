@@ -14,6 +14,16 @@
 
 DATAMARK es una plataforma integral para la gestion de pequenos comercios de ropa y calzado. Permite gestionar productos, ventas, clientes e inventario desde una interfaz intuitiva.
 
+### Arquitectura del Sistema
+
+DATAMARK esta compuesto por:
+
+- **Frontend SPA**: Aplicacion React desplegada en Vercel
+- **Backend REST API**: Servidor Node/Express desplegado en Railway
+- **Base de datos**: PostgreSQL alojada en Neon (serverless)
+
+Esta arquitectura permite escalabilidad independiente de cada componente y costos optimizados segun el uso.
+
 ### Caracteristicas Principales
 
 - Gestion de productos con codigo SKU
@@ -62,9 +72,11 @@ Despues del registro, se iniciara el proceso de configuracion:
 
 Permite gestionar el catalogo de productos.
 
-**Estado: Pendiente de implementación de interfaz**
+**Estado actual:**
+- Backend: Implementado
+- Frontend: En desarrollo
 
-La gestión de productos se realizará a través de la interfaz de usuario cuando esté disponible.
+La gestion de productos se realizara a traves de la interfaz de usuario cuando este disponible.
 
 #### Crear Producto (API)
 
@@ -101,7 +113,9 @@ Authorization: Bearer <token>
 
 Registro de transacciones comerciales.
 
-**Estado: Pendiente de implementación de interfaz**
+**Estado actual:**
+- Backend: Implementado
+- Frontend: En desarrollo
 
 #### Nueva Venta (API)
 
@@ -143,7 +157,9 @@ Authorization: Bearer <token>
 
 Gestion de la base de clientes.
 
-**Estado: Pendiente de implementación de interfaz**
+**Estado actual:**
+- Backend: Implementado
+- Frontend: En desarrollo
 
 #### Agregar Cliente (API)
 
@@ -184,7 +200,9 @@ Authorization: Bearer <token>
 
 Control de stock y alertas.
 
-**Estado: Pendiente de implementación de interfaz**
+**Estado actual:**
+- Backend: Implementado
+- Frontend: En desarrollo
 
 #### Obtener Stock (API)
 
@@ -333,7 +351,7 @@ Actualmente, la recuperacion de contrasena debe realizarse contactando al admini
 
 ### ¿Que pasa si el stock llega a cero?
 
-El sistema permitira registrar ventas incluso con stock cero. Sin embargo, se recomienda mantener productos con stock disponible.
+Actualmente el sistema permite registrar ventas con stock en cero. Esta validacion sera reforzada en futuras versiones para evitar inconsistencias de inventario. Se recomienda mantener productos con stock disponible.
 
 ### ¿Puedo tener varias tiendas?
 
