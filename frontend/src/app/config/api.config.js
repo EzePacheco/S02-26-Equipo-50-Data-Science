@@ -59,3 +59,16 @@ export const apiClient = async (endpoint, options = {}) => {
 };
 
 export default API_CONFIG;
+
+export const get = (endpoint) => {
+  return apiClient(endpoint, {
+    method: 'GET',
+  });
+};
+
+export const post = (endpoint, data) => {
+  return apiClient(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};

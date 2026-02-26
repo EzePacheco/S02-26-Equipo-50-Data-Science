@@ -3,7 +3,7 @@
 
 export const ROUTES = {
   // Rutas públicas
-  LANDING: '/',    //Asegurar bien las rutas
+  LANDING: '/',
   LOGIN: '/login',
   REGISTER: '/registro',
   ONBOARDING: '/onboarding',
@@ -20,7 +20,7 @@ export const ROUTE_LABELS = {
   [ROUTES.LANDING]: 'Inicio',
   [ROUTES.LOGIN]: 'Iniciar Sesión',
   [ROUTES.REGISTER]: 'Registro',
-  [ROUTES.HOME]: 'Dashboard',
+  [ROUTES.DASHBOARD]: 'Dashboard',
   [ROUTES.SALES]: 'Ventas',
   [ROUTES.PRODUCTS]: 'Productos',
   [ROUTES.CUSTOMERS]: 'Clientes',
