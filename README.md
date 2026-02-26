@@ -91,6 +91,8 @@ npm run dev
 
 ## API Endpoints
 
+**Nota:** Todas las rutas (excepto `/api/auth/register` y `/api/auth/login`) requieren el header `Authorization: Bearer <token>`.
+
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | POST | /api/auth/register | Registrar usuario |

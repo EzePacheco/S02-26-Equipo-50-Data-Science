@@ -62,88 +62,175 @@ Despues del registro, se iniciara el proceso de configuracion:
 
 Permite gestionar el catalogo de productos.
 
-#### Crear Producto
+**Estado: Pendiente de implementación de interfaz**
 
-1. Navega a la seccion "Productos"
-2. Haz clic en "Agregar producto" o boton "+"
-3. Completa los datos:
-   - Nombre del producto
-   - SKU (codigo unico de identificacion)
-   - Precio de venta
-   - Categoria (ROPA o CALZADO)
-   - Stock inicial
-   - Stock minimo (opcional, para alertas)
-4. Haz clic en "Guardar"
+La gestión de productos se realizará a través de la interfaz de usuario cuando esté disponible.
 
-#### Editar Producto
+#### Crear Producto (API)
 
-1. Busca el producto en la lista
-2. Haz clic en el producto o en el icono de editar
-3. Modifica los campos necesarios
-4. Guarda los cambios
+```bash
+POST /api/products
+Authorization: Bearer <token>
+Content-Type: application/json
 
-#### Eliminar Producto
+{
+  "name": "Camisa Manga Larga",
+  "sku": "CML-001",
+  "price": 49.99,
+  "category": "ROPA",
+  "initialStock": 100,
+  "minStock": 10
+}
+```
 
-1. Busca el producto
-2. Haz clic en eliminar
-3. Confirma la accion
+#### Editar Producto (API)
+
+```bash
+PUT /api/products/:id
+Authorization: Bearer <token>
+```
+
+#### Eliminar Producto (API)
+
+```bash
+DELETE /api/products/:id
+Authorization: Bearer <token>
+```
 
 ### Ventas
 
 Registro de transacciones comerciales.
 
-#### Nueva Venta
+**Estado: Pendiente de implementación de interfaz**
 
-1. Navega a "Ventas"
-2. Haz clic en "Nueva venta" o "Registrar venta"
-3. Selecciona los productos y cantidades
-4. Opcional: Agrega un cliente
-5. El sistema descontara automaticamente del inventario
-6. Confirma la venta
+#### Nueva Venta (API)
 
-#### Ver Historico
+```bash
+POST /api/sales
+Authorization: Bearer <token>
+Content-Type: application/json
 
-1. Accede a "Ventas" para ver el historial
-2. Filtra por fecha o cliente
-3. Haz clic en una venta para ver el detalle
+{
+  "customerId": "uuid-cliente (opcional)",
+  "items": [
+    {
+      "productId": "uuid-producto",
+      "productName": "Camisa",
+      "quantity": 2,
+      "unitPrice": 49.99
+    }
+  ]
+}
+```
+
+**Nota:** El `userId` se obtiene automáticamente del token JWT.
+
+#### Listar Ventas (API)
+
+```bash
+GET /api/sales
+Authorization: Bearer <token>
+```
+
+#### Ventas por Fecha (API)
+
+```bash
+GET /api/sales/date-range?startDate=2026-01-01&endDate=2026-01-31
+Authorization: Bearer <token>
+```
 
 ### Clientes
 
 Gestion de la base de clientes.
 
-#### Agregar Cliente
+**Estado: Pendiente de implementación de interfaz**
 
-1. Navega a "Clientes"
-2. Haz clic en "Agregar cliente"
-3. Ingresa:
-   - Nombre completo
-   - Correo electronico (opcional)
-   - Telefono (opcional)
+#### Agregar Cliente (API)
 
-#### Buscar Cliente
+```bash
+POST /api/customers
+Authorization: Bearer <token>
+Content-Type: application/json
 
-Utiliza la barra de busqueda para encontrar clientes por nombre o correo.
+{
+  "name": "Juan Perez",
+  "email": "juan@correo.com",
+  "phone": "+51 999 999 999"
+}
+```
+
+#### Buscar Cliente (API)
+
+```bash
+GET /api/customers/search?q=juan
+Authorization: Bearer <token>
+```
+
+#### Actualizar Cliente (API)
+
+```bash
+PUT /api/customers/:id
+Authorization: Bearer <token>
+```
+
+#### Eliminar Cliente (API)
+
+```bash
+DELETE /api/customers/:id
+Authorization: Bearer <token>
+```
 
 ### Inventario
 
 Control de stock y alertas.
 
-#### Ver Stock
+**Estado: Pendiente de implementación de interfaz**
 
-1. Navega a "Inventario"
-2. Observa la lista de productos con sus cantidades
-3. Los productos con stock bajo se marcan con alerta
+#### Obtener Stock (API)
 
-#### Ajustar Stock
+```bash
+GET /api/inventory
+Authorization: Bearer <token>
+```
 
-1. Busca el producto
-2. Modifica la cantidad directamente o usa "Ajustar"
-3. Ingresa la nueva cantidad o el ajuste (positivo/negativo)
+#### Obtener Stock Bajo (API)
 
-#### Configurar Alertas
+```bash
+GET /api/inventory/low-stock
+Authorization: Bearer <token>
+```
 
-1. En el producto, establece un "Stock minimo"
-2. Cuando el stock caiga por debajo, aparecera una alerta
+#### Actualizar Stock (API)
+
+```bash
+PUT /api/inventory/product/:productId/stock
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "quantity": 50
+}
+```
+
+O para ajustar (aumentar/disminuir):
+
+```json
+{
+  "adjustment": -5
+}
+```
+
+#### Configurar Stock Minimo (API)
+
+```bash
+PATCH /api/inventory/product/:productId/min-stock
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "minStock": 10
+}
+```
 
 ### Dashboard
 
@@ -157,6 +244,12 @@ Panel de metricas y analisis.
 ---
 
 ## Referencia de API
+
+**Nota Importante:** Todas las rutas (excepto `/api/auth/register` y `/api/auth/login`) requieren el header de autenticación:
+
+```bash
+Authorization: Bearer <token>
+```
 
 ### Autenticacion
 
@@ -227,172 +320,6 @@ Content-Type: application/json
 
 ```bash
 GET /api/stores/my-store
-Authorization: Bearer <token>
-```
-
-### Productos
-
-#### Listar Productos
-
-```bash
-GET /api/products
-```
-
-#### Obtener Producto por ID
-
-```bash
-GET /api/products/:id
-```
-
-#### Crear Producto
-
-```bash
-POST /api/products
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "Camisa Manga Larga",
-  "sku": "CML-001",
-  "price": 49.99,
-  "category": "ROPA",
-  "initialStock": 100,
-  "minStock": 10
-}
-```
-
-#### Actualizar Producto
-
-```bash
-PUT /api/products/:id
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "Camisa Manga Corta",
-  "price": 39.99
-}
-```
-
-#### Eliminar Producto
-
-```bash
-DELETE /api/products/:id
-Authorization: Bearer <token>
-```
-
-### Ventas
-
-#### Crear Venta
-
-```bash
-POST /api/sales
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "userId": "uuid-usuario",
-  "customerId": "uuid-cliente (opcional)",
-  "items": [
-    {
-      "productId": "uuid-producto",
-      "productName": "Camisa",
-      "quantity": 2,
-      "unitPrice": 49.99
-    }
-  ]
-}
-```
-
-#### Listar Ventas
-
-```bash
-GET /api/sales
-Authorization: Bearer <token>
-```
-
-#### Ventas por Fecha
-
-```bash
-GET /api/sales/date-range?startDate=2026-01-01&endDate=2026-01-31
-Authorization: Bearer <token>
-```
-
-### Inventario
-
-#### Obtener Todo el Inventario
-
-```bash
-GET /api/inventory
-Authorization: Bearer <token>
-```
-
-#### Obtener Stock Bajo
-
-```bash
-GET /api/inventory/low-stock
-Authorization: Bearer <token>
-```
-
-#### Actualizar Stock
-
-```bash
-PUT /api/inventory/product/:productId/stock
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "quantity": 50
-}
-```
-
-O para ajustar (aumentar/disminuir):
-
-```json
-{
-  "adjustment": -5
-}
-```
-
-### Clientes
-
-#### Listar Clientes
-
-```bash
-GET /api/customers
-Authorization: Bearer <token>
-```
-
-#### Crear Cliente
-
-```bash
-POST /api/customers
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "Juan Perez",
-  "email": "juan@correo.com",
-  "phone": "+51 999 999 999"
-}
-```
-
-#### Actualizar Cliente
-
-```bash
-PUT /api/customers/:id
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "phone": "+51 888 888 888"
-}
-```
-
-#### Eliminar Cliente
-
-```bash
-DELETE /api/customers/:id
 Authorization: Bearer <token>
 ```
 
