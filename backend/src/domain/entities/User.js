@@ -1,3 +1,8 @@
+/**
+ * User.js
+ * Entidad de dominio que representa un usuario/tendero en el sistema
+ * Cada usuario tiene una tienda asociada y realiza ventas
+ */
 export default class User {
   constructor({ id, email, name, createdAt, updatedAt }) {
     this.id = id;

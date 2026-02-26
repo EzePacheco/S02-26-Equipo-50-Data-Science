@@ -1,3 +1,8 @@
+/**
+ * Inventory.js
+ * Entidad de dominio que representa el inventario de un producto
+ * manage stock levels, minStock alerts, and stock operations
+ */
 export default class Inventory {
   constructor({ id, productId, quantity, minStock }) {
     this.id = id;

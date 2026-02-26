@@ -1,3 +1,8 @@
+/**
+ * Product.js
+ * Entidad de dominio que representa un producto en el sistema
+ * belongs to store, has inventory and sale items
+ */
 export default class Product {
   constructor({ id, name, sku, price, category, active = true }) {
     this.id = id;

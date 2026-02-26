@@ -5,10 +5,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ROUTES from './route.config';
 
 
-import Landing from '../../features/landing/components/landing';
+import Landing from '../../features/landing/components/Landing';
 import Login from '../../features/auth/components/Login';
 import Register from '../../features/auth/components/Register';
-import Onboarding from '../../features/onboarding/components/onboarding';
+import Onboarding from '../../features/onboarding/components/Onboarding';
 import Dashboard from '../../features/dashboard/components/Dashboard';
 import Inventory from '../../features/inventory/components/Inventory';
 import Sales from '../../features/sales/components/Sales';

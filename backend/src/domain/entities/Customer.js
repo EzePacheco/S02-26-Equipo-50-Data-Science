@@ -1,3 +1,8 @@
+/**
+ * Customer.js
+ * Entidad de dominio que representa un cliente del negocio
+ * optional linkage to sales for purchase history tracking
+ */
 export default class Customer {
   constructor({ id, name, email, phone, createdAt }) {
     this.id = id;

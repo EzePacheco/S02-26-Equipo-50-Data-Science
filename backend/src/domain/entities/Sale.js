@@ -1,3 +1,8 @@
+/**
+ * Sale.js
+ * Entidad de dominio que representa una venta realizada por un usuario
+ * Contains sale items, links to user and optional customer
+ */
 export default class Sale {
   constructor({ id, userId, customerId, items }) {
     this.id = id;
