@@ -1,7 +1,6 @@
 // src/features/auth/hooks/useProfile.js
 import { useState } from 'react';
-import { post, get } from '../../../app/config/api.config';
-import API_CONFIG from '../../../app/config/api.config';
+import { post, get, API_ENDPOINTS } from '../../../app/config/api.config';
 
 /**
  * Hook para manejar el perfil y la tienda del usuario
@@ -22,7 +21,7 @@ export function useProfile(userId) {
 
       try {
         // Llamar al backend: POST /api/stores
-        const response = await post(API_CONFIG.ENDPOINTS.STORES.CREATE, {
+        const response = await post(API_ENDPOINTS.STORES.CREATE, {
           name: profileData.store_name,
           categories: profileData.main_categories,
         });
@@ -65,7 +64,7 @@ export function useProfile(userId) {
 
     try {
       // Llamar al backend: GET /api/stores/my-store
-      const response = await get(API_CONFIG.ENDPOINTS.STORES.GET_MY_STORE);
+      const response = await get(API_ENDPOINTS.STORES.GET_MY_STORE);
 
       // El backend devuelve { success, data }
       const storeData = response.data;
