@@ -1,44 +1,81 @@
 // useCustomers.js
-// Custom hook for fetching customers (reads from customers localStorage)
+// Custom hook for fetching customers - connected to backend API
 
-import { useState, useEffect } from 'react';
-
-const CUSTOMERS_STORAGE_KEY = 'customers_data';
-
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(CUSTOMERS_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
+import { useState, useEffect, useCallback } from 'react';
+import { customersApi } from '../api/customersApi';
 
 export const useCustomers = (searchQuery = '') => {
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchCustomers = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = searchQuery 
+        ? await customersApi.search(searchQuery)
+        : await customersApi.getAll();
+      setCustomers(data || []);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching customers:', err);
+      setCustomers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchQuery]);
 
   useEffect(() => {
-    setIsLoading(true);
-    const stored = loadFromStorage();
-    setCustomers(stored);
-    setIsLoading(false);
+    fetchCustomers();
+  }, [fetchCustomers]);
+
+  const addCustomer = useCallback(async (customerData) => {
+    setError(null);
+    try {
+      const newCustomer = await customersApi.create(customerData);
+      setCustomers((prev) => [newCustomer, ...prev]);
+      return newCustomer;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
   }, []);
 
-  const filtered = searchQuery
-    ? customers.filter((c) =>
-      c.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : customers;
+  const updateCustomer = useCallback(async (id, customerData) => {
+    setError(null);
+    try {
+      const updated = await customersApi.update(id, customerData);
+      setCustomers((prev) =>
+        prev.map((c) => (c.id === id ? updated : c))
+      );
+      return updated;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, []);
+
+  const deleteCustomer = useCallback(async (id) => {
+    setError(null);
+    try {
+      await customersApi.delete(id);
+      setCustomers((prev) => prev.filter((c) => c.id !== id));
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, []);
 
   return {
-    customers: filtered,
+    customers,
     isLoading,
-    error: null,
-    refetch: async () => {
-      const stored = loadFromStorage();
-      setCustomers(stored);
-    }
+    error,
+    refetch: fetchCustomers,
+    addCustomer,
+    updateCustomer,
+    deleteCustomer,
   };
 };
 

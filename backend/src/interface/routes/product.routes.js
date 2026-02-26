@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import authMiddleware from '../../infrastructure/web/middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -8,12 +9,12 @@ const router = Router();
  * @returns {Router}
  */
 export function configureProductRoutes(productController) {
-  router.post('/', (req, res, next) => productController.create(req, res, next));
-  router.get('/', (req, res, next) => productController.getAll(req, res, next));
-  router.get('/category/:category', (req, res, next) => productController.getByCategory(req, res, next));
-  router.get('/:id', (req, res, next) => productController.getById(req, res, next));
-  router.put('/:id', (req, res, next) => productController.update(req, res, next));
-  router.delete('/:id', (req, res, next) => productController.delete(req, res, next));
+  router.post('/', authMiddleware, (req, res, next) => productController.create(req, res, next));
+  router.get('/', authMiddleware, (req, res, next) => productController.getAll(req, res, next));
+  router.get('/category/:category', authMiddleware, (req, res, next) => productController.getByCategory(req, res, next));
+  router.get('/:id', authMiddleware, (req, res, next) => productController.getById(req, res, next));
+  router.put('/:id', authMiddleware, (req, res, next) => productController.update(req, res, next));
+  router.delete('/:id', authMiddleware, (req, res, next) => productController.delete(req, res, next));
 
   return router;
 }

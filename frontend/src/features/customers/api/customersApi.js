@@ -1,31 +1,89 @@
 // customersApi.js
-// API calls for customers
+// API calls for customers - connected to backend
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { post, get, put, del, API_ENDPOINTS } from '../../../app/config/api.config.js';
 
 export const customersApi = {
   getAll: async () => {
-    // TODO: Implementar obtener todos los clientes
+    try {
+      const response = await get(API_ENDPOINTS.CUSTOMERS.GET_ALL);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.error || 'Failed to fetch customers');
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+      throw error;
+    }
   },
 
   getById: async (id) => {
-    // TODO: Implementar obtener cliente por id
+    try {
+      const response = await get(API_ENDPOINTS.CUSTOMERS.GET_BY_ID(id));
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.error || 'Customer not found');
+    } catch (error) {
+      console.error('Error fetching customer:', error);
+      throw error;
+    }
   },
 
   create: async (customerData) => {
-    // TODO: Implementar crear cliente
+    try {
+      const response = await post(API_ENDPOINTS.CUSTOMERS.CREATE, customerData);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.error || 'Failed to create customer');
+    } catch (error) {
+      console.error('Error creating customer:', error);
+      throw error;
+    }
   },
 
   update: async (id, customerData) => {
-    // TODO: Implementar actualizar cliente
+    try {
+      const response = await put(API_ENDPOINTS.CUSTOMERS.UPDATE(id), customerData);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.error || 'Failed to update customer');
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      throw error;
+    }
   },
 
   delete: async (id) => {
-    // TODO: Implementar eliminar cliente
+    try {
+      const response = await del(API_ENDPOINTS.CUSTOMERS.DELETE(id));
+      if (response.status === 204) {
+        return true;
+      }
+      if (response.data.success) {
+        return true;
+      }
+      throw new Error(response.data.error || 'Failed to delete customer');
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+      throw error;
+    }
   },
 
   search: async (query) => {
-    // TODO: Implementar búsqueda de clientes
+    try {
+      const params = new URLSearchParams({ q: query });
+      const response = await get(`${API_ENDPOINTS.CUSTOMERS.GET_ALL}/search?${params.toString()}`);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.error || 'Failed to search customers');
+    } catch (error) {
+      console.error('Error searching customers:', error);
+      throw error;
+    }
   }
 };
 

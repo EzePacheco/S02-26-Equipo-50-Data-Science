@@ -1,12 +1,11 @@
 // useInventory.js
-// Custom hook for managing inventory (products) with localStorage mock
+// Custom hook for managing inventory - connected to backend API
 
 import { useState, useEffect, useCallback } from 'react';
-import { PRODUCT_CATEGORIES } from '../../../shared/utils/constants';
+import { productsApi } from '../products/api/productsApi';
+import { inventoryApi } from '../inventory/api/inventoryApi';
 
-const STORAGE_KEY = 'inventory_products';
-
-export const CATEGORIES = Object.values(PRODUCT_CATEGORIES);
+export const CATEGORIES = ['ROPA', 'CALZADO'];
 
 export function getStockStatus(quantity) {
   if (quantity === 0) return 'critical';
@@ -15,86 +14,146 @@ export function getStockStatus(quantity) {
   return 'good';
 }
 
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveToStorage(products) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-}
-
 export function useInventory(categoryFilter = 'todos') {
-  const [allProducts, setAllProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load products from storage on mount
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const stored = loadFromStorage();
-    setAllProducts(stored);
-    setIsLoading(false);
+    setError(null);
+    try {
+      const [productsData, inventoryData] = await Promise.all([
+        productsApi.getAll(),
+        inventoryApi.getAll(),
+      ]);
+
+      const inventoryMap = {};
+      inventoryData.forEach(inv => {
+        inventoryMap[inv.productId] = inv;
+      });
+
+      const productsWithInventory = productsData.map(product => ({
+        ...product,
+        inventory: inventoryMap[product.id] || { quantity: 0, minStock: null },
+      }));
+
+      setProducts(productsWithInventory);
+      setInventory(inventoryData);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching inventory:', err);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // Filter by category
-  const products =
-    categoryFilter === 'todos'
-      ? allProducts
-      : allProducts.filter((p) => p.category === categoryFilter);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  const addProduct = useCallback((productData) => {
-    const newProduct = {
-      ...productData,
-      id: crypto.randomUUID(),
-      created_at: new Date().toISOString(),
-    };
-    setAllProducts((prev) => {
-      const updated = [...prev, newProduct];
-      saveToStorage(updated);
-      return updated;
-    });
-  }, []);
+  const filteredProducts = categoryFilter === 'todos'
+    ? products
+    : products.filter((p) => p.category === categoryFilter);
 
-  const updateProduct = useCallback(({ id, ...data }) => {
-    setAllProducts((prev) => {
-      const updated = prev.map((p) =>
-        p.id === id ? { ...p, ...data, updated_at: new Date().toISOString() } : p
-      );
-      saveToStorage(updated);
-      return updated;
-    });
-  }, []);
+  const addProduct = useCallback(async (productData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { initialStock, minStock, ...rest } = productData;
+      const newProduct = await productsApi.create({
+        ...rest,
+        initialStock: initialStock || 0,
+        minStock: minStock || null,
+      });
+      
+      await fetchData();
+      return newProduct;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchData]);
 
-  const deleteProduct = useCallback((id) => {
-    setAllProducts((prev) => {
-      const updated = prev.filter((p) => p.id !== id);
-      saveToStorage(updated);
+  const updateProduct = useCallback(async (id, productData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const updated = await productsApi.update(id, productData);
+      await fetchData();
       return updated;
-    });
-  }, []);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchData]);
 
-  const updateQuantity = useCallback(({ id, quantity }) => {
-    setAllProducts((prev) => {
-      const updated = prev.map((p) =>
-        p.id === id ? { ...p, quantity, updated_at: new Date().toISOString() } : p
-      );
-      saveToStorage(updated);
-      return updated;
-    });
+  const deleteProduct = useCallback(async (id) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await productsApi.delete(id);
+      await fetchData();
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchData]);
+
+  const updateQuantity = useCallback(async (productId, quantity) => {
+    setError(null);
+    try {
+      await inventoryApi.updateStock(productId, quantity);
+      await fetchData();
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, [fetchData]);
+
+  const adjustQuantity = useCallback(async (productId, adjustment) => {
+    setError(null);
+    try {
+      await inventoryApi.adjustStock(productId, adjustment);
+      await fetchData();
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, [fetchData]);
+
+  const getLowStockItems = useCallback(async () => {
+    try {
+      return await inventoryApi.getLowStock();
+    } catch (err) {
+      console.error('Error fetching low stock:', err);
+      return [];
+    }
   }, []);
 
   return {
-    products,
-    allProducts,
+    products: filteredProducts,
+    allProducts: products,
+    inventory,
     isLoading,
+    error,
     addProduct,
     updateProduct,
     deleteProduct,
     updateQuantity,
+    adjustQuantity,
+    getLowStockItems,
+    refresh: fetchData,
   };
 }
 

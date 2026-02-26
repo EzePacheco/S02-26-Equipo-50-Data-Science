@@ -19,6 +19,7 @@ import { Loader2, Mail, Phone, Facebook } from 'lucide-react';
 import logoDatamark from '../../../assets/datamark.png';
 
 export default function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -51,7 +52,7 @@ export default function Register() {
 
     setIsLoading(true);
 
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(name, email, password);
 
     if (error) {
       setError('Error al crear la cuenta. Intenta de nuevo.');
@@ -140,6 +141,18 @@ export default function Register() {
             {/* Registro con Email */}
             <TabsContent value="email">
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nombre completo</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Tu nombre"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="h-12"
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Correo electrónico</Label>
                   <Input

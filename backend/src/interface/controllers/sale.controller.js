@@ -23,12 +23,14 @@ class SaleController {
    */
   async create(req, res, next) {
     try {
-      const { userId, customerId, items } = req.body;
+      const { customerId, items } = req.body;
+
+      const userId = req.user?.userId;
 
       if (!userId) {
-        return res.status(400).json({
+        return res.status(401).json({
           success: false,
-          error: 'El userId es requerido',
+          error: 'No autorizado',
         });
       }
 
@@ -53,14 +55,15 @@ class SaleController {
 
   /**
    * GET /api/sales
-   * Obtiene todas las ventas
+   * Obtiene todas las ventas del usuario autenticado
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    */
   async getAll(req, res, next) {
     try {
-      const sales = await this.saleService.getAllSales();
+      const userId = req.user?.userId;
+      const sales = await this.saleService.getSalesByUser(userId);
       return res.status(200).json({
         success: true,
         data: sales,
@@ -100,15 +103,15 @@ class SaleController {
 
   /**
    * GET /api/sales/user/:userId
-   * Obtiene ventas por usuario
+   * Obtiene ventas por usuario (del usuario autenticado)
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    */
   async getByUser(req, res, next) {
     try {
-      const { userId } = req.params;
-      const sales = await this.saleService.getSalesByUser(userId);
+      const authenticatedUserId = req.user?.userId;
+      const sales = await this.saleService.getSalesByUser(authenticatedUserId);
       return res.status(200).json({
         success: true,
         data: sales,
@@ -140,7 +143,7 @@ class SaleController {
 
   /**
    * GET /api/sales/date-range?startDate=...&endDate=...
-   * Obtiene ventas por rango de fechas
+   * Obtiene ventas por rango de fechas del usuario autenticado
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
@@ -148,6 +151,7 @@ class SaleController {
   async getByDateRange(req, res, next) {
     try {
       const { startDate, endDate } = req.query;
+      const userId = req.user?.userId;
 
       if (!startDate || !endDate) {
         return res.status(400).json({
@@ -158,7 +162,8 @@ class SaleController {
 
       const sales = await this.saleService.getSalesByDateRange(
         new Date(startDate),
-        new Date(endDate)
+        new Date(endDate),
+        userId
       );
 
       return res.status(200).json({

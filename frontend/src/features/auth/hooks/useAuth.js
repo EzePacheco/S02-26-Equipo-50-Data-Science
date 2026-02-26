@@ -1,130 +1,118 @@
 // useAuth.js
-// Custom hook for authentication logic
-import { useState, useEffect } from 'react';
+// Custom hook for authentication logic - connected to backend
+import { useState, useEffect, useCallback } from 'react';
+import { authApi } from '../api/authApi';
 
 export const useAuth = () => {
-  // Estado del usuario
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Cargar usuario desde localStorage al iniciar
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const checkAuth = useCallback(async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const userData = await authApi.getCurrentUser();
+      setUser(userData);
+      setIsAuthenticated(true);
+    } catch (error) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  // Login
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('authToken');
+    
+    if (storedUser && token) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+      authApi.getCurrentUser().then((userData) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }).catch(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        setUser(null);
+        setIsAuthenticated(false);
+      });
+    }
+    setIsLoading(false);
+  }, []);
+
   const signIn = async (email, password) => {
     try {
-      // Simula delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (email && password) {
-        const userData = {
-          id: '1',
-          email,
-          name: 'Usuario Demo'
-        };
-
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-
-        return { user: userData, error: null };
-      } else {
-        return { user: null, error: 'Credenciales inválidas' };
-      }
-
+      const userData = await authApi.login({ email, password });
+      setUser(userData);
+      setIsAuthenticated(true);
+      return { user: userData, error: null };
     } catch (error) {
-      return { user: null, error: error.message };
+      return { user: null, error: error.message || 'Credenciales inválidas' };
     }
   };
 
-  // Registro
-  const signUp = async (email, password, name = 'Usuario Demo') => {
+  const signUp = async (name, email, password) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (email && password) {
-        const userData = {
-          id: '1',
-          email,
-          name
-        };
-
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-
-        return { user: userData, error: null };
-      } else {
-        return { user: null, error: 'Datos incompletos' };
-      }
-
+      const userData = await authApi.register({ name, email, password });
+      setUser(userData);
+      setIsAuthenticated(true);
+      return { user: userData, error: null };
     } catch (error) {
-      return { user: null, error: error.message };
+      return { user: null, error: error.message || 'Error al crear cuenta' };
     }
   };
 
-  // Registro con teléfono
   const signUpWithPhone = async (phone, password) => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (phone && password) {
-        const userData = {
-          id: '1',
-          phone,
-          name: 'Usuario Demo'
-        };
-
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-
-        return { data: { user: userData, session: true }, error: null };
-      } else {
-        return { data: null, error: { message: 'Datos incompletos' } };
-      }
-
-    } catch (error) {
-      return { data: null, error: { message: error.message } };
-    }
+    return { data: null, error: { message: 'Registro con teléfono no implementado' } };
   };
 
-  // Login con Facebook (solo visual)
   const signInWithFacebook = async () => {
+    return { data: null, error: { message: 'Login con Facebook no implementado' } };
+  };
+
+  const signOut = async () => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await authApi.logout();
+    } catch (error) {
+      // Ignore logout errors
+    }
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('onboarding_completed');
+  };
 
-      const userData = {
-        id: '1',
-        email: 'facebook@demo.com',
-        name: 'Usuario Facebook'
-      };
-
+  const refreshUser = async () => {
+    try {
+      const userData = await authApi.getCurrentUser();
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
-
-      return { data: { user: userData }, error: null };
-
+      return userData;
     } catch (error) {
-      return { data: null, error: { message: error.message } };
+      return null;
     }
-  };
-
-  // Logout
-  const signOut = async () => {
-    setUser(null);
-    localStorage.removeItem('user');
   };
 
   return {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated,
+    isLoading,
     signIn,
     signUp,
     signUpWithPhone,
     signInWithFacebook,
-    signOut
+    signOut,
+    refreshUser,
   };
 };
 

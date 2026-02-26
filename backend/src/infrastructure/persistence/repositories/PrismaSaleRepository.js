@@ -137,16 +137,23 @@ class PrismaSaleRepository extends ISaleRepository {
    * Busca ventas por rango de fechas
    * @param {Date} startDate
    * @param {Date} endDate
+   * @param {string} userId - ID del usuario autenticado (opcional)
    * @returns {Promise<Array>}
    */
-  async findByDateRange(startDate, endDate) {
-    return await prisma.sale.findMany({
-      where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
+  async findByDateRange(startDate, endDate, userId = null) {
+    const where = {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
       },
+    };
+    
+    if (userId) {
+      where.userId = userId;
+    }
+    
+    return await prisma.sale.findMany({
+      where,
       include: {
         items: true,
         customer: true,
