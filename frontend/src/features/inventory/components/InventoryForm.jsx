@@ -16,15 +16,26 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
     size: initialData?.size || '',
     color: initialData?.color || '',
     quantity: initialData?.quantity ?? 0,
-    purchase_price: initialData?.purchase_price ?? 0,
-    sale_price: initialData?.sale_price ?? 0,
+    price: initialData?.price ?? initialData?.sale_price ?? 0,
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Genera SKU automatico: [CAT]-[3 Letters Name]-[Short Color]-[Size]
+    const catPart = (formData.category || 'GEN').substring(0, 3).toUpperCase();
+    const namePart = formData.name.trim().substring(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const colorPart = (formData.color || 'NA').trim().substring(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const sizePart = (formData.size || 'NA').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // subfijo random para evitar duplicados
+    const suffix = Math.random().toString(36).substring(2, 5).toUpperCase();
+
+    const sku = `${catPart}-${namePart}-${colorPart}-${sizePart}-${suffix}`;
+
     const { quantity, ...rest } = formData;
     onSubmit({
       ...rest,
+      sku,
       initialStock: quantity
     });
   };
@@ -109,33 +120,19 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
         />
       </div>
 
-      {/* Precios */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="inv-purchase-price">Precio compra (S/)</Label>
-          <Input
-            id="inv-purchase-price"
-            type="number"
-            min="0"
-            step="0.01"
-            value={formData.purchase_price}
-            onChange={setNum('purchase_price', parseFloat)}
-            className="h-12"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="inv-sale-price">Precio venta (S/) *</Label>
-          <Input
-            id="inv-sale-price"
-            type="number"
-            min="0"
-            step="0.01"
-            value={formData.sale_price}
-            onChange={setNum('sale_price', parseFloat)}
-            required
-            className="h-12"
-          />
-        </div>
+      {/* Precio */}
+      <div className="space-y-2">
+        <Label htmlFor="inv-sale-price">Precio de venta (S/) *</Label>
+        <Input
+          id="inv-sale-price"
+          type="number"
+          min="0"
+          step="0.01"
+          value={formData.price}
+          onChange={setNum('price', parseFloat)}
+          required
+          className="h-12"
+        />
       </div>
 
       {/* Acciones */}
