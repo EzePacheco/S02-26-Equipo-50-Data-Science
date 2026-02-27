@@ -51,7 +51,7 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
                     {formatCurrency(product.sale_price)}
                   </p>
                 </div>
-                <StockBadge quantity={product.quantity} />
+                <StockBadge quantity={product.inventory?.quantity ?? 0} />
               </div>
 
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
@@ -61,20 +61,20 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
                     variant="outline"
                     size="icon"
                     className="h-10 w-10"
-                    onClick={() => onQuantityChange(product.id, product.quantity, -1)}
-                    disabled={product.quantity === 0}
+                    onClick={() => onQuantityChange(product.id, product.inventory?.quantity ?? 0, -1)}
+                    disabled={(product.inventory?.quantity ?? 0) === 0}
                     aria-label="Disminuir cantidad"
                   >
                     <Minus className="w-4 h-4" />
                   </Button>
                   <span className="w-12 text-center font-mono text-lg text-gray-900">
-                    {product.quantity}
+                    {product.inventory?.quantity ?? 0}
                   </span>
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-10 w-10"
-                    onClick={() => onQuantityChange(product.id, product.quantity, 1)}
+                    onClick={() => onQuantityChange(product.id, product.inventory?.quantity ?? 0, 1)}
                     aria-label="Aumentar cantidad"
                   >
                     <Plus className="w-4 h-4" />
@@ -144,18 +144,18 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => onQuantityChange(product.id, product.quantity, -1)}
-                    disabled={product.quantity === 0}
+                    onClick={() => onQuantityChange(product.id, product.inventory?.quantity ?? 0, -1)}
+                    disabled={(product.inventory?.quantity ?? 0) === 0}
                     aria-label="Disminuir cantidad"
                   >
                     <Minus className="w-3 h-3" />
                   </Button>
-                  <StockBadge quantity={product.quantity} />
+                  <StockBadge quantity={product.inventory?.quantity ?? 0} />
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => onQuantityChange(product.id, product.quantity, 1)}
+                    onClick={() => onQuantityChange(product.id, product.inventory?.quantity ?? 0, 1)}
                     aria-label="Aumentar cantidad"
                   >
                     <Plus className="w-3 h-3" />

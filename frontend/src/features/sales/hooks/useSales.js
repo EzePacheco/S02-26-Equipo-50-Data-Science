@@ -12,8 +12,9 @@ export const PAYMENT_METHODS = [
 ];
 
 function isSameDay(dateStr, compareDate) {
-  if (!dateStr) return false;
-  const d = new Date(dateStr);
+  const dateToUse = dateStr || '';
+  if (!dateToUse) return false;
+  const d = new Date(dateToUse);
   return (
     d.getFullYear() === compareDate.getFullYear() &&
     d.getMonth() === compareDate.getMonth() &&

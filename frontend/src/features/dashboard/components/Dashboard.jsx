@@ -73,7 +73,7 @@ function LoadingState() {
 export default function Dashboard() {
   const { user } = useAuth();
   const { allProducts: products, isLoading: productsLoading } = useInventory();
-  const { sales, isLoading: salesLoading } = useSales(user?.id);
+  const { sales, isLoading: salesLoading } = useSales('all');
   const { customers, isLoading: customersLoading } = useCustomers(user?.id);
 
   const isLoading = productsLoading || salesLoading || customersLoading;
@@ -84,18 +84,18 @@ export default function Dashboard() {
     const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const twoMonthsAgo = new Date(today.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-    const todaySales = sales.filter((s) => new Date(s.created_at) >= today);
-    const monthSales = sales.filter((s) => new Date(s.created_at) >= monthAgo);
+    const todaySales = sales.filter((s) => new Date(s.created_at || s.createdAt) >= today);
+    const monthSales = sales.filter((s) => new Date(s.created_at || s.createdAt) >= monthAgo);
     const prevMonthSales = sales.filter(
       (s) =>
-        new Date(s.created_at) >= twoMonthsAgo &&
-        new Date(s.created_at) < monthAgo
+        new Date(s.created_at || s.createdAt) >= twoMonthsAgo &&
+        new Date(s.created_at || s.createdAt) < monthAgo
     );
 
-    const todayTotal = todaySales.reduce((sum, s) => sum + Number(s.total_price), 0);
-    const monthTotal = monthSales.reduce((sum, s) => sum + Number(s.total_price), 0);
+    const todayTotal = todaySales.reduce((sum, s) => sum + Number(s.total_price || s.totalAmount || 0), 0);
+    const monthTotal = monthSales.reduce((sum, s) => sum + Number(s.total_price || s.totalAmount || 0), 0);
     const prevMonthTotal = prevMonthSales.reduce(
-      (sum, s) => sum + Number(s.total_price),
+      (sum, s) => sum + Number(s.total_price || s.totalAmount || 0),
       0
     );
 
@@ -106,19 +106,19 @@ export default function Dashboard() {
 
     // Ganancia estimada del mes
     const monthProfit = monthSales.reduce((sum, sale) => {
-      const revenue = Number(sale.total_price);
-      const cost = Number(sale.purchase_price || 0) * Number(sale.quantity || 1);
+      const revenue = Number(sale.total_price || sale.totalAmount || 0);
+      const cost = Number(sale.purchase_price || sale.purchasePrice || 0) * Number(sale.quantity || 1);
       return sum + (revenue - cost);
     }, 0);
 
     // Stock bajo (usamos el umbral estándar de 3 unidades definido en Inventory)
     const lowStockProducts = products.filter(
-      (p) => p.quantity < 3
+      (p) => (p.inventory?.quantity ?? 0) < 3
     );
 
     // Ventas recientes
     const recentSales = [...sales]
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .sort((a, b) => new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt))
       .slice(0, 5);
 
     return {
@@ -235,17 +235,17 @@ export default function Dashboard() {
                             {formatCurrency(sale.total_price)}
                           </p>
                           <p className="text-sm text-gray-500 mt-0.5">
-                            {getPaymentMethodLabel(sale.payment_method)}
-                            {sale.customers?.name
-                              ? ` · ${sale.customers.name}`
+                            {getPaymentMethodLabel(sale.payment_method || sale.paymentMethod)}
+                            {sale.customer_name || sale.customerName || sale.customers?.name
+                              ? ` · ${sale.customer_name || sale.customerName || sale.customers?.name}`
                               : ''}
                           </p>
                         </div>
                         <span
                           className="text-sm text-gray-400 shrink-0 ml-4"
-                          aria-label={`Hace ${formatRelativeDate(sale.created_at)}`}
+                          aria-label={`Hace ${formatRelativeDate(sale.created_at || sale.createdAt)}`}
                         >
-                          {formatRelativeDate(sale.created_at)}
+                          {formatRelativeDate(sale.created_at || sale.createdAt)}
                         </span>
                       </li>
                     );
