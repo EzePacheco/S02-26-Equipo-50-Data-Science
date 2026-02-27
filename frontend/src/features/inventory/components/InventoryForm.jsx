@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Button } from '../../../shared/components/Button';
-import  Input  from '../../../shared/components/Input';
+import Input from '../../../shared/components/Input';
 import { Label } from '../../../shared/components/Label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
 import { CATEGORIES } from '../hooks/useInventory';
@@ -22,7 +22,11 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const { quantity, ...rest } = formData;
+    onSubmit({
+      ...rest,
+      initialStock: quantity
+    });
   };
 
   const set = (field) => (e) =>

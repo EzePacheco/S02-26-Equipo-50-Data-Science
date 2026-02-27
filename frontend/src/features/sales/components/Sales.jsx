@@ -169,7 +169,17 @@ export default function Sales() {
                         </DialogHeader>
                         <SaleForm
                             onSubmit={(data) => {
-                                addSale.mutate(data);
+                                addSale.mutate({
+                                    customerId: data.customerId,
+                                    items: [{
+                                        productId: data.productId,
+                                        productName: data.productName,
+                                        quantity: data.quantity,
+                                        unitPrice: data.unitPrice
+                                    }],
+                                    paymentMethod: data.paymentMethod,
+                                    totalPrice: data.totalPrice // Aunque el backend suele recalcularlo, lo enviamos para consistencia
+                                });
                                 setIsAddDialogOpen(false);
                             }}
                             isLoading={addSale.isPending}
@@ -208,21 +218,22 @@ function SaleForm({ onSubmit, isLoading }) {
         if (!selectedProduct) return;
 
         // Validar stock
-        if (quantity > selectedProduct.quantity) {
-            alert(`Solo hay ${selectedProduct.quantity} unidades disponibles`);
+        const stock = selectedProduct.inventory?.quantity ?? 0;
+        if (quantity > stock) {
+            alert(`Solo hay ${stock} unidades disponibles`);
             return;
         }
 
         onSubmit({
-            product_id: selectedProductId,
-            customer_id: selectedCustomerId || null,
-            product_name: selectedProduct.name,
-            customer_name: customers.find(c => c.id === selectedCustomerId)?.name || null,
+            productId: selectedProductId,
+            customerId: selectedCustomerId || null,
+            productName: selectedProduct.name,
+            customerName: customers.find(c => c.id === selectedCustomerId)?.name || null,
             quantity,
-            unit_price: unitPrice,
-            purchase_price: selectedProduct.purchase_price || 0,
-            total_price: totalPrice,
-            payment_method: paymentMethod,
+            unitPrice: unitPrice,
+            purchasePrice: selectedProduct.purchase_price || 0,
+            totalPrice: totalPrice,
+            paymentMethod: paymentMethod,
         });
     };
 
@@ -238,12 +249,12 @@ function SaleForm({ onSubmit, isLoading }) {
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                            {products.filter(p => p.quantity > 0).map(product => (
+                            {products.filter(p => (p.inventory?.quantity ?? 0) > 0).map(product => (
                                 <SelectItem key={product.id} value={product.id}>
                                     <div className="flex items-center justify-between gap-4 w-full">
                                         <span>{product.name}</span>
                                         <span className="text-gray-400 text-sm">
-                                            ({product.quantity} en stock)
+                                            ({product.inventory?.quantity ?? 0} en stock)
                                         </span>
                                     </div>
                                 </SelectItem>
@@ -268,7 +279,7 @@ function SaleForm({ onSubmit, isLoading }) {
                     />
                     {selectedProduct && (
                         <p className="text-xs text-gray-500">
-                            Disponible: {selectedProduct.quantity}
+                            Disponible: {selectedProduct.inventory?.quantity ?? 0}
                         </p>
                     )}
                 </div>
