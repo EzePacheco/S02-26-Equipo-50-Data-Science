@@ -15,7 +15,7 @@ class ProductController {
    */
   async create(req, res, next) {
     try {
-      const { name, sku, price, category, initialStock, minStock } = req.body;
+      const { name, sku, price, category, initialStock, minStock, color, size } = req.body;
 
       if (!name || !sku) {
         return res.status(400).json({
@@ -24,8 +24,15 @@ class ProductController {
         });
       }
 
+      // Concatenar color y talla al nombre para persistencia sin cambios en DB
+      let finalName = name;
+      if (color || size) {
+        const details = [color, size].filter(Boolean).join(', ');
+        finalName = `${name} (${details})`;
+      }
+
       const product = await this.productService.createProduct({
-        name,
+        name: finalName,
         sku,
         price: parseFloat(price),
         category,
@@ -53,7 +60,7 @@ class ProductController {
   async getAll(req, res, next) {
     try {
       const { category } = req.query;
-      
+
       let products;
       if (category) {
         products = await this.productService.getProductsByCategory(category);
@@ -121,7 +128,7 @@ class ProductController {
     try {
       const { id } = req.params;
       const { name, sku, price, category, active } = req.body;
-      
+
       const updateData = {};
       if (name) updateData.name = name;
       if (sku) updateData.sku = sku;

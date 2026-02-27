@@ -48,7 +48,7 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
                     {product.color && ` • ${product.color}`}
                   </p>
                   <p className="text-lg font-bold text-blue-600 mt-1">
-                    {formatCurrency(product.sale_price)}
+                    {formatCurrency(product.price || product.sale_price)}
                   </p>
                 </div>
                 <StockBadge quantity={product.inventory?.quantity ?? 0} />
@@ -119,8 +119,7 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
             <TableHead>Categoría</TableHead>
             <TableHead>Talla</TableHead>
             <TableHead>Color</TableHead>
-            <TableHead className="text-right">Precio compra</TableHead>
-            <TableHead className="text-right">Precio venta</TableHead>
+            <TableHead className="text-right">Precio</TableHead>
             <TableHead className="text-center">Stock</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
@@ -132,11 +131,8 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
               <TableCell className="text-gray-600">{product.category}</TableCell>
               <TableCell className="text-gray-600">{product.size || '–'}</TableCell>
               <TableCell className="text-gray-600">{product.color || '–'}</TableCell>
-              <TableCell className="text-right font-mono text-gray-900">
-                {formatCurrency(product.purchase_price)}
-              </TableCell>
               <TableCell className="text-right font-mono font-semibold text-gray-900">
-                {formatCurrency(product.sale_price)}
+                {formatCurrency(product.price || product.sale_price)}
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-center gap-2">

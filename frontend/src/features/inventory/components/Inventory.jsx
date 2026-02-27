@@ -5,7 +5,7 @@ import { useState } from 'react';
 import MainLayout from '../../../shared/layouts/MainLayout';
 import { Card, CardContent } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
-import  Input  from '../../../shared/components/Input';
+import Input from '../../../shared/components/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../shared/components/Dialog';
 import { Skeleton } from '../../../shared/components/Skeleton';
@@ -75,7 +75,7 @@ export default function Inventory() {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Inventario</h1>
+                        <h1 className="text-2xl font-bold text-gray-900">Productos</h1>
                         <p className="text-gray-500 text-sm">
                             {allProducts.length} {allProducts.length === 1 ? 'producto' : 'productos'}
                             {lowStockCount > 0 && (

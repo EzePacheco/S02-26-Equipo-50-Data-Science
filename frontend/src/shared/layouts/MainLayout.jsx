@@ -18,7 +18,7 @@ const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 const NAV_ITEMS = [
   { path: ROUTES.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
-  { path: ROUTES.INVENTORY, label: 'Inventario', icon: Package },
+  { path: ROUTES.INVENTORY, label: 'Productos', icon: Package },
   { path: ROUTES.SALES, label: 'Ventas', icon: ShoppingCart },
   { path: ROUTES.CUSTOMERS, label: 'Clientes', icon: Users },
 ];
