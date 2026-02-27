@@ -22,12 +22,12 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Generate SKU automatically: [CAT]-[3 Letters Name]-[Short Color]-[Size]
+    // Genera SKU automatico: [CAT]-[3 Letters Name]-[Short Color]-[Size]
     const catPart = (formData.category || 'GEN').substring(0, 3).toUpperCase();
     const namePart = formData.name.trim().substring(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, '');
     const colorPart = (formData.color || 'NA').trim().substring(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, '');
     const sizePart = (formData.size || 'NA').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-    // Added a short random suffix to ensure uniqueness in the database
+    // subfijo random para evitar duplicados
     const suffix = Math.random().toString(36).substring(2, 5).toUpperCase();
 
     const sku = `${catPart}-${namePart}-${colorPart}-${sizePart}-${suffix}`;

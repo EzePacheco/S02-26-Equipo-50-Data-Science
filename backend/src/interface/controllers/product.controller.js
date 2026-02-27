@@ -24,7 +24,7 @@ class ProductController {
         });
       }
 
-      // Concatenar color y talla al nombre para persistencia sin cambios en DB
+      // Concatenar color y talla al nombre para no generar cambios en DB
       let finalName = name;
       if (color || size) {
         const details = [color, size].filter(Boolean).join(', ');
