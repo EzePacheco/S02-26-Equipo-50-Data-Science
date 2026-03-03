@@ -58,16 +58,16 @@ export default function Landing() {
     <div className="min-h-screen bg-white">
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-10 py-3 md:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-3 md:px-8 lg:px-10 py-3 md:py-4">
 
 
           <div className="flex items-center gap-2.5">
-            <div className="w-12 h-12 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
               <img src={logoDatamark} alt="DATAMARK" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-bold tracking-tight text-gray-900">DATAMARK</span>
+            <span className="text-lg font-bold tracking-tight text-gray-900 hidden sm:block">DATAMARK</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button variant="ghost" size="sm" to={ROUTES.LOGIN}>
               Iniciar sesión
             </Button>

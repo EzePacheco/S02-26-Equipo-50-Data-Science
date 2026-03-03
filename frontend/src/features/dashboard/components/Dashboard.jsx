@@ -7,12 +7,10 @@ import { Skeleton } from '../../../shared/components/Skeleton';
 import { useAuth } from '../../../features/auth/hooks/useAuth';
 import { useInventory } from '../../../features/inventory/hooks/useInventory';
 import { useSales } from '../../../features/sales/hooks/useSales';
-import { useCustomers } from '../../../features/customers/hooks/useCustomers';
 import ROUTES from '../../../app/routes/route.config';
 import {
   formatCurrency,
   getPaymentMethodLabel,
-  getStockStatus,
   formatRelativeDate,
 } from '../../../shared/utils/formatters';
 
@@ -77,9 +75,8 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { allProducts: products, isLoading: productsLoading } = useInventory();
   const { sales, isLoading: salesLoading } = useSales('all');
-  const { customers, isLoading: customersLoading } = useCustomers(user?.id);
 
-  const isLoading = productsLoading || salesLoading || customersLoading;
+  const isLoading = productsLoading || salesLoading;
 
   const metrics = useMemo(() => {
     const now = new Date();
