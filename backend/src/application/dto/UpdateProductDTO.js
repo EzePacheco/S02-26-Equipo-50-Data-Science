@@ -1,8 +1,8 @@
 // UpdateProductDTO.js
 // Data Transfer Object for updating a product
 
-import ProductSchema from '../schemas/product.schema.js';
-import ValidationError from '../errors/ValidationError.js';
+import ProductSchema from '../../domain/schemas/product.schema.js';
+import ValidationError from '../../domain/errors/ValidationError.js';
 
 class UpdateProductDTO {
   constructor(data) {
@@ -12,11 +12,10 @@ class UpdateProductDTO {
   validate(data) {
     try {
       const updateSchema = ProductSchema.partial();
-      
       return updateSchema.parse(data);
     } catch (error) {
       throw new ValidationError(
-        error.errors.map(e => `${e.path}: ${e.message}`).join(', ')
+        error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
       );
     }
   }

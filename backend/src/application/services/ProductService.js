@@ -1,5 +1,7 @@
 import ValidationError from '../../domain/errors/ValidationError.js';
 import NotFoundError from '../../domain/errors/NotFoundError.js';
+import CreateProductDTO from '../dto/CreateProductDTO.js';
+import UpdateProductDTO from '../dto/UpdateProductDTO.js';
 
 class ProductService {
   /**
@@ -32,7 +34,7 @@ class ProductService {
     if (this.inventoryRepository) {
       for (const variant of product.variants) {
         await this.inventoryRepository.create({
-          variantId: variant.id,
+          productId: variant.id,
           quantity: variant.stock || 0
         });
       }
@@ -89,8 +91,8 @@ class ProductService {
       for (const variant of productData.variants) {
         if (variant.sku) {
           const skuOwner = await this.productRepository.findBySku(variant.sku);
-          
-          if (skuOwner && skuOwner.productId !== id) {
+           // findBySku now returns a variant with product relation
+           if (skuOwner && skuOwner.productId !== id) {
             throw new ValidationError(`El SKU ${variant.sku} pertenece a otro producto`);
           }
         }

@@ -57,39 +57,47 @@ model Customer {
 model SaleItem {
   id           String   @id @default(uuid())
   saleId       String
-  productId    String
+  variantId    String
 
   productName  String
   quantity     Int
   unitPrice    Decimal  @db.Decimal(10, 2)
   subtotal     Decimal  @db.Decimal(10, 2)
 
-  sale         Sale     @relation(fields: [saleId], references: [id])
-  product      Product  @relation(fields: [productId], references: [id])
+  sale         Sale              @relation(fields: [saleId], references: [id])
+  variant      ProductVariant    @relation(fields: [variantId], references: [id])
 }
 
 model Product {
   id        String           @id @default(uuid())
   name      String
-  sku       String           @unique
-  price     Decimal          @db.Decimal(10, 2)
+  // sku & price are stored at variant level (ProductVariant)
   category  ProductCategory
   active    Boolean          @default(true)
+  description String?
+  gender      String?
+  style       String?
 
-  inventory Inventory?
+  // Relation to variants (each product can have multiple variants)
+  variants    ProductVariant[]
   saleItems SaleItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Inventory {
-  id        String   @id @default(uuid())
-  productId String   @unique
-  quantity  Int
-  minStock  Int?
+model ProductVariant {
+  id         String   @id @default(uuid())
+  productId  String
+  sku        String   @unique
+  size       String?
+  color      String?
+  price      Decimal  @db.Decimal(10, 2)
+  stock      Int      @default(0)
+  minStock   Int?
 
-  product   Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
 
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

@@ -12,6 +12,8 @@ class CreateSaleDTO {
     this.userId = userId;
     this.customerId = customerId;
     this.items = items;
+    
+    this.validate();
     this.totalAmount = this.calculateTotal();
   }
 
@@ -36,11 +38,7 @@ class CreateSaleDTO {
   validate() {
     const validationSchema = SaleSchema.omit({ id: true, totalAmount: true });
 
-    const result = validationSchema.safeParse({
-      userId: this.userId,
-      customerId: this.customerId,
-      items: this.items,
-    });
+    const result = validationSchema.safeParse({ userId: this.userId, customerId: this.customerId, items: this.items });
 
     if (!result.success) {
       const errorIssues = result.error.issues;
@@ -50,6 +48,8 @@ class CreateSaleDTO {
       }));
       throw new ValidationError('Validación de venta fallida', errors);
     }
+
+    this.items = result.data.items;
   }
 }
 

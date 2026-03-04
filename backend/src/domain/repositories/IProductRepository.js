@@ -15,11 +15,20 @@ class IProductRepository {
   }
 
   /**
-   * Busca un producto por su SKU
+   * Busca una variante por su SKU (las variantes están en `ProductVariant`)
    * @param {string} sku - Código SKU
-   * @returns {Promise<Object|null>}
+   * @returns {Promise<Object|null>} Variante encontrada (incluye relación `product`) o null
    */
   async findBySku(sku) {
+    throw new Error('Method not implemented');
+  }
+
+  /**
+   * Busca una variante por su ID
+   * @param {string} id
+   * @returns {Promise<Object|null>}
+   */
+  async findVariantById(id) {
     throw new Error('Method not implemented');
   }
 

@@ -4,10 +4,10 @@
  * each item references a product with quantity and price
  */
 export default class SaleItem {
-  constructor({ productId, productName, quantity, unitPrice }) {
-    this.productId = productId;
+  constructor({ variantId, productName, quantity, unitPrice }) {
+    this.variantId = variantId;
     this.productName = productName;
-    this.quantity = quantity;
+    this.quantity = Number(quantity);
     this.unitPrice = Number(unitPrice);
     this.subtotal = this.quantity * this.unitPrice;
   }

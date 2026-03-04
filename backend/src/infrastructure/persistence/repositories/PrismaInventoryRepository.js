@@ -18,9 +18,8 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Object|null>} Registro encontrado o null
    */
   async findById(id) {
-    return await prisma.inventory.findUnique({
-      where: { id },
-    });
+    
+    return await prisma.productVariant.findUnique({ where: { id } });
   }
 
   /**
@@ -29,9 +28,8 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Object|null>} Inventario del producto o null
    */
   async findByProductId(productId) {
-    return await prisma.inventory.findUnique({
-      where: { productId },
-    });
+    
+    return await prisma.productVariant.findMany({ where: { productId } });
   }
 
   /**
@@ -40,9 +38,8 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Object>} Inventario creado
    */
   async create(inventoryData) {
-    return await prisma.inventory.create({
-      data: inventoryData,
-    });
+    
+    return await prisma.productVariant.create({ data: inventoryData });
   }
 
   /**
@@ -51,10 +48,10 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Object>} Inventario actualizado
    */
   async update(inventoryEntity) {
-    return await prisma.inventory.update({
+    return await prisma.productVariant.update({
       where: { id: inventoryEntity.id },
       data: {
-        quantity: inventoryEntity.quantity,
+        stock: inventoryEntity.quantity,
         minStock: inventoryEntity.minStock,
       },
     });
@@ -67,10 +64,11 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Object>} Inventario actualizado
    */
   async updateStock(productId, quantity) {
-    return await prisma.inventory.update({
-      where: { productId },
-      data: { quantity },
-    });
+    
+    const variants = await prisma.productVariant.findMany({ where: { productId } });
+    if (!variants || variants.length === 0) throw new Error('Producto sin variantes');
+    if (variants.length > 1) throw new Error('Producto tiene múltiples variantes; actualice la variante específica');
+    return await prisma.productVariant.update({ where: { id: variants[0].id }, data: { stock: quantity } });
   }
 
   /**
@@ -79,9 +77,7 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<void>}
    */
   async delete(id) {
-    return await prisma.inventory.delete({
-      where: { id },
-    });
+    return await prisma.productVariant.delete({ where: { id } });
   }
 
   /**
@@ -89,11 +85,7 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Array>} Lista de inventarios
    */
   async findAll() {
-    return await prisma.inventory.findMany({
-      include: {
-        product: true,
-      },
-    });
+    return await prisma.productVariant.findMany({ include: { product: true } });
   }
 
   /**
@@ -101,13 +93,8 @@ class PrismaInventoryRepository extends IInventoryRepository {
    * @returns {Promise<Array>} Lista de productos con stock bajo
    */
   async findLowStock() {
-    const items = await prisma.inventory.findMany({
-      include: {
-        product: true,
-      },
-    });
-
-    return items.filter((item) => item.minStock !== null && item.quantity <= item.minStock);
+    const items = await prisma.productVariant.findMany({ include: { product: true } });
+    return items.filter((item) => item.minStock !== null && item.stock <= item.minStock);
   }
 }
 
