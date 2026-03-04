@@ -1,65 +1,46 @@
 // CustomerList.jsx
 // Component for displaying list of customers
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MainLayout from '../../../shared/layouts/MainLayout';
 import { Card, CardContent } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
 import Input from '../../../shared/components/Input';
-import { Dialog, DialogContent, DialogHeader } from '../../../shared/components/Dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../shared/components/Dialog';
 import { Skeleton } from '../../../shared/components/Skeleton';
-import { customersApi } from '../api/customersApi';
+import { useCustomers } from '../hooks/useCustomers';
 import { useIsMobile } from '../../../shared/hooks/useIsMobile';
+import { toast } from '../../../shared/hooks/useToast';
 import CustomerForm from './CustomerForm';
 import { Plus, Search, Users, Pencil, Trash2, Mail, Phone } from 'lucide-react';
 
 export default function CustomerList() {
-    const [customers, setCustomers] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
 
+    const { customers, isLoading, error, addCustomer, updateCustomer, deleteCustomer, refetch } = useCustomers();
     const isMobile = useIsMobile();
-
-    useEffect(() => {
-        loadCustomers();
-    }, []);
-
-    const loadCustomers = async () => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const data = await customersApi.getAll();
-            setCustomers(data);
-        } catch (err) {
-            console.error('Error loading customers:', err);
-            setError(err.message || 'Error al cargar clientes');
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleAddSubmit = async (data) => {
         try {
-            await customersApi.create(data);
-            await loadCustomers();
+            await addCustomer(data);
             setIsAddDialogOpen(false);
+            toast.success('Cliente creado', 'El cliente se agregó correctamente');
         } catch (err) {
             console.error('Error creating customer:', err);
-            alert(err.message || 'Error al crear cliente');
+            toast.error('Error', err.message || 'Error al crear cliente');
         }
     };
 
     const handleEditSubmit = async (data) => {
         try {
-            await customersApi.update(editingCustomer.id, data);
-            await loadCustomers();
+            await updateCustomer(editingCustomer.id, data);
             setEditingCustomer(null);
+            toast.success('Cliente actualizado', 'Los cambios se guardaron correctamente');
         } catch (err) {
             console.error('Error updating customer:', err);
-            alert(err.message || 'Error al actualizar cliente');
+            toast.error('Error', err.message || 'Error al actualizar cliente');
         }
     };
 
@@ -68,11 +49,11 @@ export default function CustomerList() {
             return;
         }
         try {
-            await customersApi.delete(customer.id);
-            await loadCustomers();
+            await deleteCustomer(customer.id);
+            toast.success('Cliente eliminado', 'El cliente se eliminó correctamente');
         } catch (err) {
             console.error('Error deleting customer:', err);
-            alert(err.message || 'Error al eliminar cliente');
+            toast.error('Error', err.message || 'Error al eliminar cliente');
         }
     };
 
@@ -109,7 +90,7 @@ export default function CustomerList() {
                     <Card>
                         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
                             <p className="text-red-600 mb-4">{error}</p>
-                            <Button onClick={loadCustomers}>Reintentar</Button>
+                            <Button onClick={refetch}>Reintentar</Button>
                         </CardContent>
                     </Card>
                 </div>
@@ -164,7 +145,7 @@ export default function CustomerList() {
                 {/* Customer list */}
                 {filteredCustomers.length === 0 ? (
                     <Card>
-                        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <CardContent className="flex flex-col items-center justify-center py-12 pt-5 text-center">
                             <Users className="w-12 h-12 text-gray-400 mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900">No hay clientes</h3>
                             <p className="text-gray-500 mb-4">

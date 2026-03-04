@@ -11,12 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from '../../../shared/components/Skeleton';
 import { useInventory, CATEGORIES, getStockStatus } from '../hooks/useInventory';
 import { useIsMobile } from '../../../shared/hooks/useIsMobile';
+import { toast } from '../../../shared/hooks/useToast';
 import InventoryForm from './InventoryForm';
 import InventoryList from './InventoryList';
 import { Plus, Search, Package, AlertTriangle } from 'lucide-react';
 
 export default function Inventory() {
-    const [categoryFilter, setCategoryFilter] = useState('todos');
+    const [categoryFilter, setCategoryFilter] = useState('Todos lo productos');
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null); // full product object or null
@@ -42,11 +43,13 @@ export default function Inventory() {
     const handleAddSubmit = (data) => {
         addProduct(data);
         setIsAddDialogOpen(false);
+        toast.success('Producto creado', 'El producto se agregó correctamente');
     };
 
     const handleEditSubmit = (data) => {
         updateProduct({ id: editingProduct.id, ...data });
         setEditingProduct(null);
+        toast.success('Producto actualizado', 'Los cambios se guardaron correctamente');
     };
 
     if (isLoading) {
@@ -121,7 +124,7 @@ export default function Inventory() {
                             <SelectValue placeholder="Categoría" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="todos">Todas las categorías</SelectItem>
+                            <SelectItem value="Todos lo productos">Todas las categorías</SelectItem>
                             {CATEGORIES.map((cat) => (
                                 <SelectItem key={cat} value={cat}>
                                     {cat}
@@ -134,7 +137,7 @@ export default function Inventory() {
                 {/* Low stock alert */}
                 {lowStockCount > 0 && (
                     <Card className="border-red-200 bg-red-50">
-                        <CardContent className="flex items-center gap-3 py-4">
+                        <CardContent className="flex items-center gap-3 p-4">
                             <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
                             <p className="text-sm text-gray-900">
                                 <span className="font-semibold">{lowStockCount} {lowStockCount === 1 ? 'producto' : 'productos'}</span>{' '}
@@ -147,15 +150,15 @@ export default function Inventory() {
                 {/* Product list */}
                 {filteredProducts.length === 0 ? (
                     <Card>
-                        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <CardContent className="flex flex-col items-center justify-center py-12 text-center pt-12">
                             <Package className="w-12 h-12 text-gray-400 mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900">No hay productos</h3>
                             <p className="text-gray-500 mb-4">
-                                {searchQuery || categoryFilter !== 'todos'
+                                {searchQuery || categoryFilter !== 'Todos lo productos'
                                     ? 'No se encontraron productos con esos filtros'
                                     : 'Comienza agregando tu primer producto'}
                             </p>
-                            {!searchQuery && categoryFilter === 'todos' && (
+                            {!searchQuery && categoryFilter === 'Todos lo productos' && (
                                 <Button onClick={() => setIsAddDialogOpen(true)}>
                                     <Plus className="w-4 h-4 mr-2" />
                                     Agregar producto

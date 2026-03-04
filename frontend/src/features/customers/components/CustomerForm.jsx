@@ -74,7 +74,7 @@ export default function CustomerForm({ initialData, onSubmit, onCancel }) {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
-            <div className="space-y-2">
+            <div className="space-y-2  text-left">
                 <Label htmlFor="name">Nombre del cliente *</Label>
                 <Input
                     id="name"
@@ -86,7 +86,7 @@ export default function CustomerForm({ initialData, onSubmit, onCancel }) {
             </div>
 
             {/* Email */}
-            <div className="space-y-2">
+            <div className="space-y-2  text-left">
                 <Label htmlFor="email">Email</Label>
                 <Input
                     id="email"
@@ -99,7 +99,7 @@ export default function CustomerForm({ initialData, onSubmit, onCancel }) {
             </div>
 
             {/* Phone */}
-            <div className="space-y-2">
+            <div className="space-y-2  text-left">
                 <Label htmlFor="phone">Teléfono</Label>
                 <Input
                     id="phone"

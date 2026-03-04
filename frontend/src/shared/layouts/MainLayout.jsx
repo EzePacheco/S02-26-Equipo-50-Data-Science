@@ -13,6 +13,7 @@ import {
   X,
   Store
 } from 'lucide-react';
+import { toast } from '../../shared/hooks/useToast';
 import logoDatamark from '../../assets/datamark.png';
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
@@ -31,6 +32,7 @@ export default function MainLayout({ children }) {
 
   const handleSignOut = async () => {
     await signOut();
+    toast.success('Sesión cerrada', 'Has cerrado sesión correctamente');
     navigate(ROUTES.LOGIN);
   };
 
@@ -40,7 +42,7 @@ export default function MainLayout({ children }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 md:hidden">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 md:hidden">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -74,8 +76,8 @@ export default function MainLayout({ children }) {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:flex flex-col w-64 min-h-screen bg-white border-r fixed left-0 top-0">
-          <div className="p-6 border-b">
+        <aside className="hidden md:flex flex-col w-64 min-h-screen bg-white shadow-sm  fixed left-0 top-0">
+          <div className="p-6 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <Store className="w-6 h-6 text-blue-600" />
@@ -105,7 +107,7 @@ export default function MainLayout({ children }) {
             ))}
           </nav>
 
-          <div className="p-4 border-t">
+          <div className="p-4 shadow-sm ">
             <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100">
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Cerrar sesión</span>
@@ -121,7 +123,7 @@ export default function MainLayout({ children }) {
       </div>
 
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden z-40">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 md:hidden z-30">
         <div className="flex">
           {NAV_ITEMS.slice(0, 4).map(({ path, label, icon: Icon }) => (
             <Link

@@ -14,6 +14,7 @@ import {
 } from "../../../shared/components/Card";
 import { Separator } from "../../../shared/components/Separator";
 import ROUTES from '../../../app/routes/route.config';
+import { toast } from '../../../shared/hooks/useToast';
 import { Loader2, Facebook } from 'lucide-react';
 import logoDatamark from '../../../assets/datamark.png';
 
@@ -37,6 +38,7 @@ export default function Login() {
       setError('Correo o contraseña incorrectos');
       setIsLoading(false);
     } else {
+      toast.success('¡Bienvenido de nuevo!', 'Inicio de sesión exitoso');
       navigate(ROUTES.DASHBOARD);
     }
   };
@@ -47,9 +49,11 @@ export default function Login() {
     const { error } = await signInWithFacebook();
 
     if (error) {
+      toast.error('Error', error.message || 'No se pudo iniciar sesión con Facebook');
       setError(error.message);
       setIsLoading(false);
     } else {
+      toast.success('¡Bienvenido!', 'Inicio de sesión con Facebook exitoso');
       navigate(ROUTES.DASHBOARD);
     }
   };
@@ -70,7 +74,7 @@ export default function Login() {
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 text-left">
             {error && (
               <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm text-center border border-red-200">
                 {error}
@@ -104,7 +108,7 @@ export default function Login() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-4 pt-2">
             <Button
               type="submit"
               className="w-full h-12 text-base"
@@ -150,7 +154,7 @@ export default function Login() {
             </p>
 
             <p className="text-center text-sm text-gray-500">
-              <Link to={ROUTES.LANDING} className="hover:underline">
+              <Link to={ROUTES.LANDING} className="text-gray-400 hover:text-gray-600 hover:underline transition-colors">
                 Volver al inicio
               </Link>
             </p>

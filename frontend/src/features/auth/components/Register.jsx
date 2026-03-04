@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../shared/components/Tabs";
 import { Separator } from "../../../shared/components/Separator";
 import ROUTES from '../../../app/routes/route.config';
+import { toast } from '../../../shared/hooks/useToast';
 import { Loader2, Mail, Phone, Facebook } from 'lucide-react';
 import logoDatamark from '../../../assets/datamark.png';
 
@@ -58,6 +59,7 @@ export default function Register() {
       setError('Error al crear la cuenta. Intenta de nuevo.');
       setIsLoading(false);
     } else {
+      toast.success('¡Cuenta creada!', 'Ahora configura tu tienda');
       navigate(ROUTES.ONBOARDING);
     }
   };
@@ -85,6 +87,7 @@ export default function Register() {
       setError('Error al crear la cuenta. Intenta de nuevo.');
       setIsLoading(false);
     } else {
+      toast.success('¡Cuenta creada!', 'Ahora configura tu tienda');
       navigate(ROUTES.ONBOARDING);
     }
   };
@@ -96,9 +99,11 @@ export default function Register() {
     const { error } = await signInWithFacebook();
 
     if (error) {
+      toast.error('Error', error.message || 'No se pudo registrar con Facebook');
       setError(error.message);
       setIsLoading(false);
     } else {
+      toast.success('¡Cuenta creada!', 'Registro con Facebook exitoso');
       navigate(ROUTES.ONBOARDING);
     }
   };
@@ -119,7 +124,7 @@ export default function Register() {
         </CardHeader>
 
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 text-left">
           {error && (
             <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm text-center border border-red-200">
               {error}

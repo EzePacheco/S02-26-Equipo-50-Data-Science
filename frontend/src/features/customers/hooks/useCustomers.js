@@ -11,14 +11,13 @@ export const useCustomers = (searchQuery = '') => {
 
   const fetchCustomers = useCallback(async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      const data = searchQuery 
+      const data = searchQuery
         ? await customersApi.search(searchQuery)
         : await customersApi.getAll();
       setCustomers(data || []);
+      setError(null);
     } catch (err) {
-      setError(err.message);
       console.error('Error fetching customers:', err);
       setCustomers([]);
     } finally {

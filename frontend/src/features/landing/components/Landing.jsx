@@ -58,16 +58,16 @@ export default function Landing() {
     <div className="min-h-screen bg-white">
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between pl-4 pr-6 md:pl-6 md:pr-8 lg:pl-8 lg:pr-10 py-3 md:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-3 md:px-8 lg:px-10 py-3 md:py-4">
 
 
           <div className="flex items-center gap-2.5">
-            <div className="w-12 h-12 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
               <img src={logoDatamark} alt="DATAMARK" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-bold tracking-tight text-gray-900">DATAMARK</span>
+            <span className="text-lg font-bold tracking-tight text-gray-900 hidden sm:block">DATAMARK</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button variant="ghost" size="sm" to={ROUTES.LOGIN}>
               Iniciar sesión
             </Button>
@@ -80,13 +80,13 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
               Tu tienda organizada,{' '}
               <span className="text-blue-600">tus ventas en orden</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600">
               Controla tu mercaderia, registra tus ventas y guarda tus clientes desde tu celular. Simple, rápido y hecho para ti.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -112,8 +112,8 @@ export default function Landing() {
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
               Todo lo que necesitas para tu negocio
             </h2>
-            <p className="mt-3 text-gray-600 max-w-md mx-auto">
-              Pensado para tí
+            <p className="mt-4 text-base text-gray-500 max-w-md mx-auto">
+              Pensado para ti
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -121,7 +121,7 @@ export default function Landing() {
               const Icon = feature.icon;
               return (
                 <Card key={feature.title} className="border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
-                  <CardContent className="p-6 pt-6 space-y-3">
+                  <CardContent className="p-6 pt-5 space-y-3 flex flex-col items-center text-center">
                     <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                       <Icon className="w-5 h-5 text-blue-600" />
                     </div>
@@ -140,13 +140,14 @@ export default function Landing() {
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4">
           <Card className="border-0 bg-blue-600 text-white overflow-hidden relative">
-            <CardContent className="p-8 md:p-12 text-center space-y-6 relative z-10">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-600 to-blue-700" />
+            <CardContent className="p-8 pt-12 pb-10 md:p-12 md:pt-16 md:pb-12 text-center space-y-6 relative z-10">
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
                 Empieza a organizar tu negocio hoy
               </h2>
-              <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-blue-50">
+              <ul className="flex flex-col sm:flex-row flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-sm text-blue-50 max-w-xs mx-auto sm:max-w-none">
                 {BENEFITS.map((b) => (
-                  <li key={b} className="flex items-center gap-1.5">
+                  <li key={b} className="flex items-start gap-2">
                     <Check className="w-4 h-4 shrink-0" />
                     {b}
                   </li>
@@ -162,14 +163,13 @@ export default function Landing() {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </CardContent>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-600 to-blue-700" />
           </Card>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-gray-200 py-8">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 flex items-center justify-center">
               <img src={logoDatamark} alt="DATAMARK" className="w-full h-full object-contain" />

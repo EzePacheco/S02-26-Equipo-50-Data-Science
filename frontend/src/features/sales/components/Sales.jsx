@@ -14,6 +14,7 @@ import { useInventory } from '../../inventory/hooks/useInventory';
 import { useCustomers } from '../../customers/hooks/useCustomers';
 import { cn } from '../../../shared/utils/cn';
 import { formatCurrency } from '../../../shared/utils/formatters';
+import { toast } from '../../../shared/hooks/useToast';
 import { Plus, ShoppingCart, Loader2, X } from 'lucide-react';
 import imgYape from '../../../assets/yape-logo-fondo-transparente.png';
 import imgPlin from '../../../assets/plin-logo.png';
@@ -46,12 +47,13 @@ export default function Sales() {
     const handleSaleCreated = () => {
         setIsAddDialogOpen(false);
         refresh();
+        toast.success('¡Venta registrada!', 'La venta se registró correctamente');
     };
 
     if (isLoading) {
         return (
             <MainLayout>
-                <div className="space-y-6 pb-24 md:pb-0">
+                <div className="max-w-7xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pb-24 md:pb-6">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-24 w-full" />
                     <div className="space-y-3">
@@ -70,7 +72,7 @@ export default function Sales() {
 
     return (
         <MainLayout>
-            <div className="space-y-6 pb-24 md:pb-0">
+            <div className="max-w-7xl mx-auto space-y-8 px-4 md:px-6 lg:px-8 pb-24 md:pb-6">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -81,7 +83,7 @@ export default function Sales() {
                     <Card className="bg-blue-600 text-white border-0">
                         <CardContent className="py-4 px-6">
                             <p className="text-sm opacity-90">Total vendido hoy</p>
-                            <p className="text-3xl font-bold">{formatCurrency(totalSales)}</p>
+                            <p className="text-3xl font-bold text-black">{formatCurrency(totalSales)}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -89,7 +91,7 @@ export default function Sales() {
                 {/* Sales List */}
                 {sales.length === 0 ? (
                     <Card>
-                        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <CardContent className="flex flex-col items-center justify-center py-12 text-center pt-12">
                             <ShoppingCart className="w-12 h-12 text-gray-400 mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900">No hay ventas hoy</h3>
                             <p className="text-gray-500 mb-4">
@@ -149,7 +151,7 @@ export default function Sales() {
 
                 {/* Floating Action Button */}
                 <Button
-                    className="fixed bottom-20 right-4 md:bottom-8 md:right-8 h-14 w-14 rounded-full shadow-lg z-50"
+                    className="fixed bottom-20 right-4 md:bottom-8 md:right-8 h-14 w-14 rounded-full shadow-lg hover:scale-105 transition"
                     onClick={() => setIsAddDialogOpen(true)}
                 >
                     <Plus className="w-6 h-6" />
@@ -157,7 +159,7 @@ export default function Sales() {
 
                 {/* Add Sale Dialog */}
                 <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                    <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+                    <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-2xl p-0">
                         <DialogHeader>
                             <DialogTitle>Registrar venta</DialogTitle>
                         </DialogHeader>
@@ -194,7 +196,7 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
     const [selectedCustomerId, setSelectedCustomerId] = useState('');
 
     const selectedProduct = products.find(p => p.id === selectedProductId);
-    const totalPrice = quantity * unitPrice;
+    const totalPrice = (quantity || 0) * (unitPrice || 0);
 
     useEffect(() => {
         if (selectedProduct) {
@@ -240,11 +242,11 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
                 <Label>Producto *</Label>
                 <div className="relative">
                     <Select value={selectedProductId} onValueChange={handleProductChange} required>
-                        <SelectTrigger className="h-12">
+                        <SelectTrigger className="h-12 rounded-xl">
                             <SelectValue placeholder="Selecciona un producto">
                                 {selectedProduct?.name}
                             </SelectValue>
@@ -266,7 +268,7 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-2  text-left">
                     <Label htmlFor="quantity">Cantidad *</Label>
                     <Input
                         id="quantity"
@@ -274,9 +276,12 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
                         min="1"
                         max={selectedProduct?.inventory?.quantity || 999}
                         value={quantity}
-                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setQuantity(val === '' ? '' : parseInt(val));
+                        }}
                         required
-                        className="h-12"
+                        className="h-12 rounded-xl"
                     />
                     {selectedProduct && (
                         <p className="text-xs text-gray-500">
@@ -284,7 +289,7 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
                         </p>
                     )}
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                     <Label htmlFor="unitPrice">Precio unit. (S/) *</Label>
                     <Input
                         id="unitPrice"
@@ -292,21 +297,24 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
                         min="0"
                         step="0.01"
                         value={unitPrice}
-                        onChange={(e) => setUnitPrice(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setUnitPrice(val === '' ? '' : parseFloat(val));
+                        }}
                         required
-                        className="h-12"
+                        className="h-12 rounded-xl"
                     />
                 </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
                 <Label>Cliente (opcional)</Label>
                 <div className="relative">
                     <Select
                         value={selectedCustomerId}
                         onValueChange={(val) => setSelectedCustomerId(val === 'none' ? '' : val)}
                     >
-                        <SelectTrigger className="h-12">
+                        <SelectTrigger className="h-12 rounded-xl">
                             <SelectValue placeholder="Selecciona o deja vacío">
                                 {selectedCustomerId === 'none' || !selectedCustomerId
                                     ? undefined
@@ -325,9 +333,46 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
                 </div>
             </div>
 
+            {/* Payment method */}
+            <div className="space-y-2 text-left">
+                <Label>Método de pago</Label>
+                <div className="grid grid-cols-4 gap-2">
+                    {PAYMENT_METHODS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            type="button"
+                            onClick={() => setPaymentMethod(value)}
+                            className={cn(
+                                'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all',
+                                paymentMethod === value
+                                    ? 'border-blue-500 bg-blue-50 shadow-sm'
+                                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                            )}
+                        >
+                            <img
+                                src={
+                                    value === 'efectivo' ? imgEfectivo
+                                        : value === 'tarjeta' ? imgTarjeta
+                                            : value === 'yape' ? imgYape
+                                                : imgPlin
+                                }
+                                alt={label}
+                                className="w-8 h-8 object-contain"
+                            />
+                            <span className={cn(
+                                'text-xs font-medium',
+                                paymentMethod === value ? 'text-blue-600' : 'text-gray-600'
+                            )}>
+                                {label}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Total */}
-            <Card className="bg-gray-50 border-gray-200">
-                <CardContent className="py-4 flex items-center justify-between">
+            <Card className="bg-gray-50 border-gray-200 rounded-xl">
+                <CardContent className="py-3 pt-3 flex items-center justify-between">
                     <span className="text-lg font-medium text-gray-900">Total</span>
                     <span className="text-2xl font-bold text-blue-600">
                         S/ {totalPrice.toFixed(2)}
@@ -337,7 +382,7 @@ function SaleForm({ onSubmit, isLoading, onSuccess }) {
 
             <Button
                 type="submit"
-                className="w-full h-14 text-lg"
+                className="w-full h-14 text-lg rounded-xl"
                 disabled={isLoading || !selectedProductId}
             >
                 {isLoading ? (
