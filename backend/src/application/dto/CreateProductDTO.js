@@ -1,20 +1,23 @@
 // CreateProductDTO.js
 // Data Transfer Object for creating a product
 
+import ProductSchema from '../../domain/schemas/product.schema.js';
+import ValidationError from '../../domain/errors/ValidationError.js';
+
 class CreateProductDTO {
-  constructor({ name, sku, price, category }) {
-    this.name = name;
-    this.sku = sku;
-    this.price = price;
-    this.category = category;
+  constructor(data) {
+    try {
+      
+      this.validatedData = ProductSchema.parse(data);
+    } catch (error) {
+      throw new ValidationError(
+        error.errors.map(e => `${e.path}: ${e.message}`).join(', ')
+      );
+    }
   }
 
-  validate() {
-    // TODO: Implement validation logic
-    // - name is required
-    // - sku is required and unique
-    // - price must be positive
-    // - category must be 'ROPA' or 'CALZADO'
+  getData() {
+    return this.validatedData;
   }
 }
 

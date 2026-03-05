@@ -39,14 +39,12 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (err.name === 'ZodError') {
+    const issues = err.issues || err.errors || [];
     return res.status(400).json({
       success: false,
       error: 'VALIDATION_ERROR',
       message: 'Error de validación',
-      details: err.errors.map((e) => ({
-        field: e.path.join('.'),
-        message: e.message,
-      })),
+      details: issues.map((e) => ({ field: (e.path || []).join('.'), message: e.message })),
     });
   }
 

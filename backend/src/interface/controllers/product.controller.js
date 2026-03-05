@@ -15,23 +15,8 @@ class ProductController {
    */
   async create(req, res, next) {
     try {
-      const { name, sku, price, category, initialStock, minStock } = req.body;
-
-      if (!name || !sku) {
-        return res.status(400).json({
-          success: false,
-          error: 'Nombre y SKU son requeridos',
-        });
-      }
-
-      const product = await this.productService.createProduct({
-        name,
-        sku,
-        price: parseFloat(price),
-        category,
-        initialStock: initialStock ? parseInt(initialStock) : 0,
-        minStock: minStock ? parseInt(minStock) : null,
-      });
+    
+      const product = await this.productService.createProduct(req.body);
 
       return res.status(201).json({
         success: true,
@@ -39,6 +24,7 @@ class ProductController {
         data: product,
       });
     } catch (error) {
+
       next(error);
     }
   }
@@ -53,21 +39,12 @@ class ProductController {
   async getAll(req, res, next) {
     try {
       const { category } = req.query;
-      
-      let products;
-      if (category) {
-        products = await this.productService.getProductsByCategory(category);
-      } else {
-        products = await this.productService.getAllProducts();
-      }
+      const products = category 
+        ? await this.productService.getProductsByCategory(category)
+        : await this.productService.getAllProducts();
 
-      return res.status(200).json({
-        success: true,
-        data: products,
-      });
-    } catch (error) {
-      next(error);
-    }
+      return res.status(200).json({ success: true, data: products });
+    } catch (error) { next(error); }
   }
 
   /**
@@ -79,15 +56,9 @@ class ProductController {
    */
   async getById(req, res, next) {
     try {
-      const { id } = req.params;
-      const product = await this.productService.getProductById(id);
-      return res.status(200).json({
-        success: true,
-        data: product,
-      });
-    } catch (error) {
-      next(error);
-    }
+      const product = await this.productService.getProductById(req.params.id);
+      return res.status(200).json({ success: true, data: product });
+    } catch (error) { next(error); }
   }
 
   /**
@@ -99,15 +70,9 @@ class ProductController {
    */
   async getByCategory(req, res, next) {
     try {
-      const { category } = req.params;
-      const products = await this.productService.getProductsByCategory(category);
-      return res.status(200).json({
-        success: true,
-        data: products,
-      });
-    } catch (error) {
-      next(error);
-    }
+      const products = await this.productService.getProductsByCategory(req.params.category);
+      return res.status(200).json({ success: true, data: products });
+    } catch (error) { next(error); }
   }
 
   /**
@@ -120,16 +85,9 @@ class ProductController {
   async update(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, sku, price, category, active } = req.body;
-      
-      const updateData = {};
-      if (name) updateData.name = name;
-      if (sku) updateData.sku = sku;
-      if (price) updateData.price = parseFloat(price);
-      if (category) updateData.category = category;
-      if (active !== undefined) updateData.active = active;
 
-      const product = await this.productService.updateProduct(id, updateData);
+      const product = await this.productService.updateProduct(id, req.body);
+
       return res.status(200).json({
         success: true,
         message: 'Producto actualizado exitosamente',
@@ -149,12 +107,9 @@ class ProductController {
    */
   async delete(req, res, next) {
     try {
-      const { id } = req.params;
-      await this.productService.deleteProduct(id);
+      await this.productService.deleteProduct(req.params.id);
       return res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+    } catch (error) { next(error); }
   }
 }
 

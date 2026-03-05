@@ -16,7 +16,7 @@ class CreateStoreDTO {
    * @param {string} params.userId - ID del usuario propietario
    */
   constructor({ name, category, userId }) {
-    this.name = name;
+    this.name = typeof name === 'string' ? name.trim() : name;
     this.category = category;
     this.userId = userId;
   }
@@ -44,6 +44,10 @@ class CreateStoreDTO {
       
       throw new ValidationError('Validación de tienda fallida', errors);
     }
+
+    this.name = result.data.name;
+    this.category = result.data.category;
+    this.userId = result.data.userId;
   }
 }
 

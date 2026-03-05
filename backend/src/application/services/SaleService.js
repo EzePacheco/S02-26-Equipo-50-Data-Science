@@ -33,25 +33,21 @@ class SaleService {
     createSaleDTO.validate();
 
     for (const item of items) {
-      const product = await this.productRepository.findById(item.productId);
-      if (!product) {
-        throw new NotFoundError(`Producto con ID ${item.productId} no encontrado`);
+      
+      const variant = await this.productRepository.findVariantById(item.variantId || item.productId);
+      if (!variant) {
+        throw new NotFoundError(`Variante con ID ${item.variantId || item.productId} no encontrada`);
       }
 
-      const inventory = await this.inventoryRepository.findByProductId(item.productId);
-      if (!inventory || inventory.quantity < item.quantity) {
-        throw new Error(
-          `Stock insuficiente para el producto ${item.productName}. Disponible: ${inventory?.quantity || 0}`
-        );
+      const inv = await this.inventoryRepository.findById(variant.id);
+      const available = inv ? (Array.isArray(inv) ? inv.reduce((s, v) => s + (v.stock || 0), 0) : (inv.stock || inv.quantity || 0)) : 0;
+
+      if (available < item.quantity) {
+        throw new Error(`Stock insuficiente para la variante ${item.productName}. Disponible: ${available}`);
       }
     }
 
-    const saleData = {
-      userId: createSaleDTO.userId,
-      customerId: createSaleDTO.customerId,
-      items: createSaleDTO.items,
-      totalAmount: createSaleDTO.totalAmount,
-    };
+    const saleData = { userId: createSaleDTO.userId, customerId: createSaleDTO.customerId, items: createSaleDTO.items, totalAmount: createSaleDTO.totalAmount };
 
     return await this.saleRepository.create(saleData);
   }
