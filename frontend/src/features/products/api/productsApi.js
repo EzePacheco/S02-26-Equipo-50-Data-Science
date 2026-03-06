@@ -1,8 +1,28 @@
-// productsApi.js
-// API calls for products - connected to backend
+/**
+ * productsApi.js
+ * Funciones API para productos
+ * Maneja las operaciones CRUD de productos conectadas al backend
+ */
 
 import { post, get, put, del, API_ENDPOINTS } from '../../../app/config/api.config.js';
 
+/**
+ * Funciones API para gestión de productos
+ * @typedef {Object} ProductsApi
+ * @property {Function} getAll - Obtiene todos los productos
+ * @property {Function} getById - Obtiene un producto por ID
+ * @property {Function} getByCategory - Obtiene productos por categoría
+ * @property {Function} create - Crea un nuevo producto
+ * @property {Function} update - Actualiza un producto
+ * @property {Function} delete - Elimina un producto
+ */
+
+/**
+ * Obtiene todos los productos con filtros opcionales
+ * @param {Object} [filters] - Filtros de búsqueda
+ * @param {string} [filters.category] - Filtrar por categoría
+ * @returns {Promise<Array>} Lista de productos
+ */
 export const productsApi = {
   getAll: async (filters = {}) => {
     try {
@@ -19,9 +39,9 @@ export const productsApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to fetch products');
+      throw new Error(response.data.error || 'Error al obtener productos');
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error al obtener productos:', error);
       throw error;
     }
   },
@@ -32,9 +52,9 @@ export const productsApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Product not found');
+      throw new Error(response.data.error || 'Producto no encontrado');
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.error('Error al obtener producto:', error);
       throw error;
     }
   },
@@ -45,9 +65,9 @@ export const productsApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to fetch products by category');
+      throw new Error(response.data.error || 'Error al obtener productos por categoría');
     } catch (error) {
-      console.error('Error fetching products by category:', error);
+      console.error('Error al obtener productos por categoría:', error);
       throw error;
     }
   },
@@ -58,9 +78,9 @@ export const productsApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to create product');
+      throw new Error(response.data.error || 'Error al crear producto');
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error('Error al crear producto:', error);
       throw error;
     }
   },
@@ -71,9 +91,9 @@ export const productsApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to update product');
+      throw new Error(response.data.error || 'Error al actualizar producto');
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error al actualizar producto:', error);
       throw error;
     }
   },
@@ -87,9 +107,9 @@ export const productsApi = {
       if (response.data.success) {
         return true;
       }
-      throw new Error(response.data.error || 'Failed to delete product');
+      throw new Error(response.data.error || 'Error al eliminar producto');
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error('Error al eliminar producto:', error);
       throw error;
     }
   }

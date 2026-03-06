@@ -1,6 +1,8 @@
-// PrismaStoreRepository.js
-// Capa de infraestructura: Implementación Prisma de IStoreRepository
-// Maneja la persistencia de tiendas usando Prisma ORM
+/**
+ * PrismaStoreRepository.js
+ * Capa de infraestructura: Implementación Prisma de IStoreRepository
+ * Maneja la persistencia de tiendas usando Prisma ORM
+ */
 
 import IStoreRepository from '../../../domain/repositories/IStoreRepository.js';
 import prisma from '../prisma/client.js';

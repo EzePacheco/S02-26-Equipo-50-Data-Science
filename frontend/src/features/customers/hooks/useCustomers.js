@@ -1,9 +1,17 @@
-// useCustomers.js
-// Custom hook for fetching customers - connected to backend API
+/**
+ * useCustomers.js
+ * Hook personalizado para gestionar clientes
+ * Conectado a la API del backend
+ */
 
 import { useState, useEffect, useCallback } from 'react';
 import { customersApi } from '../api/customersApi';
 
+/**
+ * Hook para gestionar clientes
+ * @param {string} [searchQuery=''] - Query de búsqueda
+ * @returns {Object} Estados y funciones para gestionar clientes
+ */
 export const useCustomers = (searchQuery = '') => {
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +26,7 @@ export const useCustomers = (searchQuery = '') => {
       setCustomers(data || []);
       setError(null);
     } catch (err) {
-      console.error('Error fetching customers:', err);
+      console.error('Error al obtener clientes:', err);
       setCustomers([]);
     } finally {
       setIsLoading(false);

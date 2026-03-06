@@ -7,15 +7,35 @@ import Input from '../../../shared/components/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
 import { Label } from '../../../shared/components/Label';
 import { X } from 'lucide-react';
+import { useAuth } from '../../auth/hooks/useAuth';
 
-const CATEGORIES = ['ROPA', 'CALZADO'];
+const DEFAULT_CATEGORIES = ['ROPA', 'CALZADO'];
+
+// Helper to get categories with fallback chain
+function getStoreCategories(user) {
+    // 1. Try from AuthContext (populated after onboarding)
+    if (user?.store?.categories?.length > 0) return user.store.categories;
+    // 2. Try from localStorage (persisted during onboarding)
+    try {
+        const saved = localStorage.getItem('store_categories');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (e) { /* ignore */ }
+    // 3. Fall back to defaults
+    return DEFAULT_CATEGORIES;
+}
 
 export default function ProductForm({ initialData, onSubmit, onCancel }) {
+    const { user } = useAuth();
+    const storeCategories = getStoreCategories(user);
+
     const [formData, setFormData] = useState({
         name: '',
         sku: '',
         price: '',
-        category: 'ROPA',
+        category: storeCategories[0] || '',
         active: true
     });
     const [errors, setErrors] = useState({});
@@ -27,29 +47,29 @@ export default function ProductForm({ initialData, onSubmit, onCancel }) {
                 name: initialData.name || '',
                 sku: initialData.sku || '',
                 price: initialData.price ? String(initialData.price) : '',
-                category: initialData.category || 'ROPA',
+                category: initialData.category || storeCategories[0] || '',
                 active: initialData.active !== false
             });
         }
-    }, [initialData]);
+    }, [initialData, storeCategories]);
 
     const validate = () => {
         const newErrors = {};
-        
+
         if (!formData.name.trim()) {
             newErrors.name = 'El nombre es requerido';
         }
-        
+
         if (!formData.sku.trim()) {
             newErrors.sku = 'El SKU es requerido';
         }
-        
+
         if (!formData.price.trim()) {
             newErrors.price = 'El precio es requerido';
         } else if (isNaN(parseFloat(formData.price)) || parseFloat(formData.price) <= 0) {
             newErrors.price = 'El precio debe ser un número positivo';
         }
-        
+
         if (!formData.category) {
             newErrors.category = 'La categoría es requerida';
         }
@@ -60,13 +80,13 @@ export default function ProductForm({ initialData, onSubmit, onCancel }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validate()) {
             return;
         }
 
         setIsSubmitting(true);
-        
+
         try {
             const data = {
                 name: formData.name.trim(),
@@ -75,7 +95,7 @@ export default function ProductForm({ initialData, onSubmit, onCancel }) {
                 category: formData.category,
                 active: formData.active
             };
-            
+
             await onSubmit(data);
         } catch (err) {
             console.error('Error submitting form:', err);
@@ -135,15 +155,15 @@ export default function ProductForm({ initialData, onSubmit, onCancel }) {
             {/* Category */}
             <div className="space-y-2">
                 <Label htmlFor="category">Categoría *</Label>
-                <Select 
-                    value={formData.category} 
+                <Select
+                    value={formData.category}
                     onValueChange={(value) => handleChange('category', value)}
                 >
                     <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
                         <SelectValue placeholder="Selecciona una categoría" />
                     </SelectTrigger>
                     <SelectContent>
-                        {CATEGORIES.map((cat) => (
+                        {storeCategories.map((cat) => (
                             <SelectItem key={cat} value={cat}>
                                 {cat}
                             </SelectItem>

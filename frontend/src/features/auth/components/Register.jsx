@@ -109,10 +109,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-24 h-24 flex items-center justify-center">
+        <CardHeader className="text-center space-y-2 pb-2">
+          <div className="mx-auto w-16 h-16 flex items-center justify-center">
             <img src={logoDatamark} alt="datamark" className="w-full h-full object-contain" />
           </div>
           <div>
@@ -124,7 +124,7 @@ export default function Register() {
         </CardHeader>
 
 
-        <CardContent className="space-y-4 text-left">
+        <CardContent className="space-y-3 text-left py-2">
           {error && (
             <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm text-center border border-red-200">
               {error}
@@ -155,10 +155,10 @@ export default function Register() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="email">Correo electrónico</Label>
                   <Input
                     id="email"
@@ -167,10 +167,10 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="password">Contraseña</Label>
                   <Input
                     id="password"
@@ -179,10 +179,10 @@ export default function Register() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
                   <Input
                     id="confirmPassword"
@@ -191,10 +191,10 @@ export default function Register() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
+                <Button type="submit" className="w-full h-10 text-base" disabled={isLoading}>
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Crear Cuenta
                 </Button>
@@ -213,10 +213,10 @@ export default function Register() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="phonePassword">Contraseña</Label>
                   <Input
                     id="phonePassword"
@@ -225,10 +225,10 @@ export default function Register() {
                     value={phonePassword}
                     onChange={(e) => setPhonePassword(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="phoneConfirmPassword">Confirmar contraseña</Label>
                   <Input
                     id="phoneConfirmPassword"
@@ -237,10 +237,10 @@ export default function Register() {
                     value={phoneConfirmPassword}
                     onChange={(e) => setPhoneConfirmPassword(e.target.value)}
                     required
-                    className="h-12"
+                    className="h-10"
                   />
                 </div>
-                <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
+                <Button type="submit" className="w-full h-10 text-base" disabled={isLoading}>
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Crear Cuenta
                 </Button>
@@ -261,7 +261,7 @@ export default function Register() {
           {/* Botón de Facebook */}
           <Button
             variant="outline"
-            className="w-full h-12"
+            className="w-full h-10"
             onClick={handleFacebookRegister}
             disabled={isLoading}
           >

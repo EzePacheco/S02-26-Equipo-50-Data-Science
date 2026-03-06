@@ -1,4 +1,5 @@
 import SaleService from '../../application/services/SaleService.js';
+import ValidationError from '../../domain/errors/ValidationError.js';
 
 describe('SaleService', () => {
   let saleService;
@@ -18,10 +19,11 @@ describe('SaleService', () => {
 
     mockProductRepository = {
       findById: jest.fn(),
+      findVariantById: jest.fn(),
     };
 
     mockInventoryRepository = {
-      findByProductId: jest.fn(),
+      findById: jest.fn(),
     };
 
     saleService = new SaleService(
@@ -33,12 +35,15 @@ describe('SaleService', () => {
   });
 
   describe('createSale', () => {
+    const validUserId = '123e4567-e89b-12d3-a456-426614174000';
+    const validVariantId = '223e4567-e89b-12d3-a456-426614174001';
+
     const validSaleData = {
-      userId: '123e4567-e89b-12d3-a456-426614174000',
+      userId: validUserId,
       customerId: null,
       items: [
         {
-          productId: '223e4567-e89b-12d3-a456-426614174001',
+          variantId: validVariantId,
           productName: 'Camisa',
           quantity: 2,
           unitPrice: 50,
@@ -47,58 +52,58 @@ describe('SaleService', () => {
     };
 
     test('debe crear venta exitosamente con stock disponible', async () => {
-      const mockProduct = { id: '223e4567-e89b-12d3-a456-426614174001', name: 'Camisa' };
-      const mockInventory = { productId: '223e4567-e89b-12d3-a456-426614174001', quantity: 10 };
+      const mockVariant = { id: validVariantId, name: 'Camisa' };
+      const mockInventory = { variantId: validVariantId, stock: 10 };
       const mockSale = {
-        id: 'sale-uuid',
+        id: '323e4567-e89b-12d3-a456-426614174002',
         userId: validSaleData.userId,
         customerId: null,
         totalAmount: 100,
         items: validSaleData.items,
       };
 
-      mockProductRepository.findById.mockResolvedValue(mockProduct);
-      mockInventoryRepository.findByProductId.mockResolvedValue(mockInventory);
+      mockProductRepository.findVariantById.mockResolvedValue(mockVariant);
+      mockInventoryRepository.findById.mockResolvedValue(mockInventory);
       mockSaleRepository.create.mockResolvedValue(mockSale);
 
       const result = await saleService.createSale(validSaleData);
 
       expect(result).toEqual(mockSale);
-      expect(mockProductRepository.findById).toHaveBeenCalledWith('223e4567-e89b-12d3-a456-426614174001');
-      expect(mockInventoryRepository.findByProductId).toHaveBeenCalledWith('223e4567-e89b-12d3-a456-426614174001');
+      expect(mockProductRepository.findVariantById).toHaveBeenCalledWith(validVariantId);
+      expect(mockInventoryRepository.findById).toHaveBeenCalledWith(validVariantId);
       expect(mockSaleRepository.create).toHaveBeenCalled();
     });
 
     test('debe lanzar error si el producto no existe', async () => {
-      mockProductRepository.findById.mockResolvedValue(null);
+      mockProductRepository.findVariantById.mockResolvedValue(null);
 
       await expect(saleService.createSale(validSaleData)).rejects.toThrow(
-        'Producto con ID 223e4567-e89b-12d3-a456-426614174001 no encontrado'
+        `Variante con ID ${validVariantId} no encontrada`
       );
       expect(mockSaleRepository.create).not.toHaveBeenCalled();
     });
 
     test('debe lanzar error si no hay stock suficiente', async () => {
-      const mockProduct = { id: '223e4567-e89b-12d3-a456-426614174001', name: 'Camisa' };
-      const mockInventory = { productId: '223e4567-e89b-12d3-a456-426614174001', quantity: 1 };
+      const mockVariant = { id: validVariantId, name: 'Camisa' };
+      const mockInventory = { variantId: validVariantId, stock: 1 };
 
-      mockProductRepository.findById.mockResolvedValue(mockProduct);
-      mockInventoryRepository.findByProductId.mockResolvedValue(mockInventory);
+      mockProductRepository.findVariantById.mockResolvedValue(mockVariant);
+      mockInventoryRepository.findById.mockResolvedValue(mockInventory);
 
       await expect(saleService.createSale(validSaleData)).rejects.toThrow(
-        'Stock insuficiente para el producto Camisa. Disponible: 1'
+        'Stock insuficiente para la variante Camisa. Disponible: 1'
       );
       expect(mockSaleRepository.create).not.toHaveBeenCalled();
     });
 
     test('debe lanzar error si el inventario no existe', async () => {
-      const mockProduct = { id: '223e4567-e89b-12d3-a456-426614174001', name: 'Camisa' };
+      const mockVariant = { id: validVariantId, name: 'Camisa' };
 
-      mockProductRepository.findById.mockResolvedValue(mockProduct);
-      mockInventoryRepository.findByProductId.mockResolvedValue(null);
+      mockProductRepository.findVariantById.mockResolvedValue(mockVariant);
+      mockInventoryRepository.findById.mockResolvedValue(null);
 
       await expect(saleService.createSale(validSaleData)).rejects.toThrow(
-        'Stock insuficiente para el producto Camisa. Disponible: 0'
+        'Stock insuficiente para la variante Camisa. Disponible: 0'
       );
     });
 
@@ -109,7 +114,7 @@ describe('SaleService', () => {
         items: [],
       };
 
-      await expect(saleService.createSale(invalidData)).rejects.toThrow();
+      await expect(saleService.createSale(invalidData)).rejects.toThrow(ValidationError);
     });
   });
 

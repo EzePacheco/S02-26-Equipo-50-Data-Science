@@ -23,12 +23,13 @@ class SaleService {
    * @param {string} params.userId
    * @param {string|null} params.customerId
    * @param {Array<{productId: string, productName: string, quantity: number, unitPrice: number}>} params.items
+   * @param {string} params.paymentMethod
    * @returns {Promise<Object>} La venta creada con sus items
    * @throws {ValidationError} Si los datos son inválidos
    * @throws {NotFoundError} Si un producto no existe
    * @throws {Error} Si no hay stock suficiente
    */
-  async createSale({ userId, customerId, items }) {
+  async createSale({ userId, customerId, items, paymentMethod }) {
     const createSaleDTO = new CreateSaleDTO({ userId, customerId, items });
     createSaleDTO.validate();
 
@@ -47,7 +48,22 @@ class SaleService {
       }
     }
 
-    const saleData = { userId: createSaleDTO.userId, customerId: createSaleDTO.customerId, items: createSaleDTO.items, totalAmount: createSaleDTO.totalAmount };
+    let customerName = null;
+    if (createSaleDTO.customerId) {
+      const customer = await this.customerRepository.findById(createSaleDTO.customerId);
+      if (customer) {
+        customerName = customer.name;
+      }
+    }
+
+    const saleData = {
+      userId: createSaleDTO.userId,
+      customerId: createSaleDTO.customerId,
+      customerName,
+      items: createSaleDTO.items,
+      totalAmount: createSaleDTO.totalAmount,
+      paymentMethod: paymentMethod || null,
+    };
 
     return await this.saleRepository.create(saleData);
   }

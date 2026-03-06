@@ -1,6 +1,8 @@
-// store.routes.js
-// Capa de interfaz: Rutas HTTP para operaciones de Store
-// Define los endpoints relacionados con el onboarding y gestión de tiendas
+/**
+ * store.routes.js
+ * Capa de interfaz: Rutas HTTP para operaciones de Store
+ * Define los endpoints relacionados con el onboarding y gestión de tiendas
+ */
 
 import { Router } from 'express';
 import authMiddleware from '../../infrastructure/web/middlewares/authMiddleware.js';

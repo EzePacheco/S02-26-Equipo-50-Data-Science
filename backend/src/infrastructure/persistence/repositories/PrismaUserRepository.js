@@ -14,6 +14,9 @@ class PrismaUserRepository extends IUserRepository {
   async findByEmail(email) {
     return await prisma.user.findUnique({
       where: { email },
+      include: {
+        store: true,
+      },
     });
   }
 

@@ -23,7 +23,7 @@ class SaleController {
    */
   async create(req, res, next) {
     try {
-      const { customerId, items } = req.body;
+      const { customerId, items, paymentMethod } = req.body;
 
       const userId = req.user?.userId;
 
@@ -41,7 +41,7 @@ class SaleController {
         });
       }
 
-      const sale = await this.saleService.createSale({ userId, customerId, items });
+      const sale = await this.saleService.createSale({ userId, customerId, items, paymentMethod });
 
       return res.status(201).json({
         success: true,

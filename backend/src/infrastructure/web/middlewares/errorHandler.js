@@ -2,13 +2,6 @@ import DomainError from '../../../domain/errors/DomainError.js';
 import ValidationError from '../../../domain/errors/ValidationError.js';
 import NotFoundError from '../../../domain/errors/NotFoundError.js';
 
-/**
- * Middleware global de manejo de errores
- * @param {Error} err
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
 const errorHandler = (err, req, res, next) => {
   console.error('Error:', err.message);
   console.error('Stack:', err.stack);

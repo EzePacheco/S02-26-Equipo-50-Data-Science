@@ -6,7 +6,10 @@ const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new ValidationError('Token no proporcionado');
+      return res.status(401).json({
+        success: false,
+        error: 'Token no proporcionado',
+      });
     }
 
     const token = authHeader.substring(7);
@@ -29,7 +32,10 @@ const authMiddleware = (req, res, next) => {
         error: 'Token expirado',
       });
     }
-    next(error);
+    return res.status(401).json({
+      success: false,
+      error: 'Error de autenticación',
+    });
   }
 };
 

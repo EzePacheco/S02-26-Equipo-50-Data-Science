@@ -1,34 +1,13 @@
-/**
- * AuthService.js
- * Capa de aplicación: Lógica de negocio para autenticación
- * Maneja registro, inicio de sesión y gestión de tokens JWT
- */
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import ValidationError from '../../domain/errors/ValidationError.js';
 import NotFoundError from '../../domain/errors/NotFoundError.js';
 
-/**
- * Servicio de autenticación para gestionar usuarios y sesiones
- * @param {Object} userRepository - Repositorio de usuarios
- */
 class AuthService {
-  /**
-   * @param {Object} userRepository - Repositorio de usuarios
-   */
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
 
-  /**
-   * Registra un nuevo usuario en el sistema
-   * @param {Object} userData - Datos del usuario
-   * @param {string} userData.name - Nombre completo
-   * @param {string} userData.email - Correo electrónico
-   * @param {string} userData.password - Contraseña
-   * @returns {Promise<Object>} Usuario creado con token JWT
-   * @throws {ValidationError} Si faltan datos o el email ya existe
-   */
   async register(userData) {
     if (!userData.name || !userData.email || !userData.password) {
       throw new ValidationError('Nombre, email y password son requeridos');
@@ -40,7 +19,7 @@ class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    
+
     const user = await this.userRepository.create({
       name: userData.name,
       email: userData.email,
@@ -54,19 +33,16 @@ class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        store: user.store ? {
+          id: user.store.id,
+          name: user.store.name,
+          category: user.store.category
+        } : null,
       },
       token,
     };
   }
 
-  /**
-   * Inicia sesión con credenciales existentes
-   * @param {Object} credentials - Credenciales del usuario
-   * @param {string} credentials.email - Correo electrónico
-   * @param {string} credentials.password - Contraseña
-   * @returns {Promise<Object>} Usuario autenticado con token JWT
-   * @throws {ValidationError} Si las credenciales son inválidas
-   */
   async login(credentials) {
     if (!credentials.email || !credentials.password) {
       throw new ValidationError('Email y password son requeridos');
@@ -89,16 +65,16 @@ class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        store: user.store ? {
+          id: user.store.id,
+          name: user.store.name,
+          category: user.store.category
+        } : null,
       },
       token,
     };
   }
 
-  /**
-   * Genera un token JWT para el usuario
-   * @param {Object} user - Datos del usuario
-   * @returns {string} Token JWT
-   */
   generateToken(user) {
     const secret = process.env.JWT_SECRET || 'defaultsecret';
     return jwt.sign(
@@ -108,12 +84,6 @@ class AuthService {
     );
   }
 
-  /**
-   * Verifica la validez de un token JWT
-   * @param {string} token - Token a verificar
-   * @returns {Object} Datos decodificados del token
-   * @throws {ValidationError} Si el token es inválido
-   */
   verifyToken(token) {
     const secret = process.env.JWT_SECRET || 'defaultsecret';
     try {
@@ -123,12 +93,6 @@ class AuthService {
     }
   }
 
-  /**
-   * Obtiene el usuario actual basado en el ID del token
-   * @param {string} userId - ID del usuario
-   * @returns {Promise<Object>} Datos del usuario
-   * @throws {NotFoundError} Si el usuario no existe
-   */
   async getCurrentUser(userId) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -138,7 +102,11 @@ class AuthService {
       id: user.id,
       name: user.name,
       email: user.email,
-      store: user.store,
+      store: user.store ? {
+        id: user.store.id,
+        name: user.store.name,
+        category: user.store.category
+      } : null,
     };
   }
 }

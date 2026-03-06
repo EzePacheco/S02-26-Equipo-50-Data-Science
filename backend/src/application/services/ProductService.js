@@ -29,16 +29,14 @@ class ProductService {
       }
     }
 
-    const product = await this.productRepository.create(productData);
+    const { initialStock, minStock, ...data } = productData;
+    const product = await this.productRepository.create(data);
 
-    if (this.inventoryRepository) {
-      for (const variant of product.variants) {
-        await this.inventoryRepository.create({
-          productId: variant.id,
-          quantity: variant.stock || 0
-        });
-      }
-    }
+    await this.inventoryRepository.create({
+      productId: product.id,
+      quantity: initialStock || 0,
+      minStock: minStock || null,
+    });
 
     return product;
   }
@@ -60,8 +58,8 @@ class ProductService {
    * Obtiene todos los productos
    * @returns {Promise<Array>}
    */
-  async getAllProducts() {
-    return await this.productRepository.findAll();
+  async getAllProducts(userId) {
+    return await this.productRepository.findAll(userId);
   }
 
   /**
@@ -69,8 +67,8 @@ class ProductService {
    * @param {string} category
    * @returns {Promise<Array>}
    */
-  async getProductsByCategory(category) {
-    return await this.productRepository.findByCategory(category);
+  async getProductsByCategory(category, userId) {
+    return await this.productRepository.findByCategory(category, userId);
   }
 
   /**
@@ -81,25 +79,21 @@ class ProductService {
    */
   async updateProduct(id, rawData) {
 
-    const dto = new UpdateProductDTO(rawData);
-    const productData = dto.getValues();
+    const { initialStock, minStock, ...data } = productData;
+    const updatedProduct = await this.productRepository.update(id, data);
 
-    const existingProduct = await this.productRepository.findById(id);
-    if (!existingProduct) throw new NotFoundError('Producto no encontrado');
-
-    if (productData.variants) {
-      for (const variant of productData.variants) {
-        if (variant.sku) {
-          const skuOwner = await this.productRepository.findBySku(variant.sku);
-           // findBySku now returns a variant with product relation
-           if (skuOwner && skuOwner.productId !== id) {
-            throw new ValidationError(`El SKU ${variant.sku} pertenece a otro producto`);
-          }
-        }
+    if (initialStock !== undefined || minStock !== undefined) {
+      const inventory = await this.inventoryRepository.findByProductId(id);
+      if (inventory) {
+        await this.inventoryRepository.update({
+          id: inventory.id,
+          quantity: initialStock !== undefined ? initialStock : inventory.quantity,
+          minStock: minStock !== undefined ? minStock : inventory.minStock,
+        });
       }
     }
 
-    return await this.productRepository.update(id, productData);
+    return updatedProduct;
   }
 
   /**
@@ -112,6 +106,9 @@ class ProductService {
     if (!existingProduct) {
       throw new NotFoundError('Producto no encontrado');
     }
+
+    // Inventory deletion is handled by PrismaProductRepository manually to bypass SQLite constraint issues.
+
     return await this.productRepository.delete(id);
   }
 }

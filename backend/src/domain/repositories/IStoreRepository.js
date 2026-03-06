@@ -1,7 +1,9 @@
-// IStoreRepository.js
-// Capa de dominio: Contrato de repositorio (interfaz) para la entidad Store
-// Define las operaciones que cualquier implementación de repositorio debe proporcionar
-// siguiendo el patrón Repository para desacoplar la lógica de persistencia
+/**
+ * IStoreRepository.js
+ * Capa de dominio: Contrato de repositorio (interfaz) para la entidad Store
+ * Define las operaciones que cualquier implementación de repositorio debe proporcionar
+ * siguiendo el patrón Repository para desacoplar la lógica de persistencia
+ */
 
 class IStoreRepository {
   /**

@@ -26,11 +26,21 @@ import errorHandler from './infrastructure/web/middlewares/errorHandler.js';
 
 dotenv.config();
 
+// Validación de JWT_SECRET
+if (!process.env.JWT_SECRET) {
+  console.error('❌ CRÍTICO: JWT_SECRET no está definida en variables de entorno');
+  console.error('   Por favor define JWT_SECRET en tu archivo .env');
+  console.error('   Ejemplo: JWT_SECRET=tu-secreto-muy-seguro-aqui');
+  process.exit(1);
+}
+
+console.log('✅ JWT_SECRET encontrada');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
   : ['http://localhost:5173', 'http://localhost:3000'];
 
 const corsOptions = {
@@ -65,7 +75,7 @@ const customerRepository = new PrismaCustomerRepository();
 
 const storeService = new StoreService(storeRepository);
 const customerService = new CustomerService(customerRepository);
-const saleService = new SaleService(saleRepository, productRepository, inventoryRepository, customerService);
+const saleService = new SaleService(saleRepository, productRepository, inventoryRepository, customerRepository);
 const inventoryService = new InventoryService(inventoryRepository, productRepository);
 const productService = new ProductService(productRepository, inventoryRepository);
 const userService = new UserService(userRepository);

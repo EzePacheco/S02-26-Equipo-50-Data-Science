@@ -6,16 +6,32 @@ import { Button } from '../../../shared/components/Button';
 import Input from '../../../shared/components/Input';
 import { Label } from '../../../shared/components/Label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
-import { CATEGORIES } from '../hooks/useInventory';
+import { CATEGORIES as DEFAULT_CATEGORIES } from '../hooks/useInventory';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '../../auth/hooks/useAuth';
+
+function getStoreCategories(user) {
+  if (user?.store?.categories?.length > 0) return user.store.categories;
+  try {
+    const saved = localStorage.getItem('store_categories');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) { /* ignore */ }
+  return DEFAULT_CATEGORIES;
+}
 
 function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
+  const { user } = useAuth();
+  const storeCategories = getStoreCategories(user);
+
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
-    category: initialData?.category || '',
+    category: initialData?.category || storeCategories[0] || '',
     size: initialData?.size || '',
     color: initialData?.color || '',
-    quantity: initialData?.quantity ?? 0,
+    quantity: initialData?.inventory?.quantity ?? initialData?.quantity ?? 0,
     price: initialData?.price ?? initialData?.sale_price ?? 0,
   });
 
@@ -73,7 +89,7 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
             <SelectValue placeholder="Selecciona una categoría" />
           </SelectTrigger>
           <SelectContent>
-            {CATEGORIES.map((cat) => (
+            {storeCategories.map((cat) => (
               <SelectItem key={cat} value={cat}>
                 {cat}
               </SelectItem>
@@ -108,7 +124,7 @@ function InventoryForm({ initialData, onSubmit, onCancel, isLoading }) {
 
       {/* Cantidad */}
       <div className="space-y-2 text-left">
-        <Label htmlFor="inv-quantity">Cantidad en stock *</Label>
+        <Label htmlFor="inv-quantity">Cantidad*</Label>
         <Input
           id="inv-quantity"
           type="number"

@@ -1,15 +1,31 @@
-// UpdateUserDTO.js
-// Data Transfer Object for updating a user
+/**
+ * UpdateUserDTO.js
+ * Data Transfer Object para actualizar un usuario
+ * Maneja la validación de datos para actualización de usuarios
+ */
 
 import UserSchema from '../../domain/schemas/user.schema.js';
 import ValidationError from '../../domain/errors/ValidationError.js';
 
+/**
+ * DTO para actualización de usuarios
+ */
 class UpdateUserDTO {
+  /**
+   * Crea una instancia de UpdateUserDTO
+   * @param {Object} params - Datos a actualizar
+   * @param {string} [params.email] - Nuevo correo electrónico
+   * @param {string} [params.name] - Nuevo nombre
+   */
   constructor({ email, name }) {
     this.email = typeof email === 'string' && email !== '' ? email.trim().toLowerCase() : null;
     this.name = typeof name === 'string' ? name.trim() : name;
   }
 
+  /**
+   * Valida los datos del usuario
+   * @throws {ValidationError} Si la validación falla
+   */
   validate() {
     try {
       const partial = UserSchema.partial();

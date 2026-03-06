@@ -8,7 +8,7 @@ const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 // Variantes de estilos para el botón
 const getButtonClasses = ({ variant = 'default', size = 'default', className = '' }) => {
-  const baseClasses = 
+  const baseClasses =
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ' +
     'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ' +
     'disabled:pointer-events-none disabled:opacity-50';
@@ -37,13 +37,14 @@ const getButtonClasses = ({ variant = 'default', size = 'default', className = '
   );
 };
 
-export const Button = React.forwardRef(({ 
-  className, 
-  variant, 
-  size, 
+export const Button = React.forwardRef(({
+  className,
+  variant,
+  size,
   to,
+  isLoading,
   children,
-  ...props 
+  ...props
 }, ref) => {
   const classes = getButtonClasses({ variant, size, className });
 

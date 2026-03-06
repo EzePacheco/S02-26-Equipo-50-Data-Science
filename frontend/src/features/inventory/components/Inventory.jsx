@@ -1,29 +1,54 @@
 // Inventory.jsx
 // Main inventory page
 
-import { useState } from 'react';
-import MainLayout from '../../../shared/layouts/MainLayout';
+import { useState, useEffect } from 'react';
+
 import { Card, CardContent } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
 import Input from '../../../shared/components/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/components/Select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../shared/components/Dialog';
 import { Skeleton } from '../../../shared/components/Skeleton';
-import { useInventory, CATEGORIES, getStockStatus } from '../hooks/useInventory';
+import { useInventory, CATEGORIES as DEFAULT_CATEGORIES, getStockStatus } from '../hooks/useInventory';
 import { useIsMobile } from '../../../shared/hooks/useIsMobile';
 import { toast } from '../../../shared/hooks/useToast';
 import InventoryForm from './InventoryForm';
 import InventoryList from './InventoryList';
+import ConfirmDialog from '../../../shared/components/ConfirmDialog';
+import { useAuth } from '../../auth/hooks/useAuth';
 import { Plus, Search, Package, AlertTriangle } from 'lucide-react';
 
+function getStoreCategories(user) {
+    if (user?.store?.categories?.length > 0) return user.store.categories;
+    try {
+        const saved = localStorage.getItem('store_categories');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (e) { /* ignore */ }
+    return DEFAULT_CATEGORIES;
+}
+
 export default function Inventory() {
-    const [categoryFilter, setCategoryFilter] = useState('Todos lo productos');
+    const { user } = useAuth();
+    const storeCategories = getStoreCategories(user);
+
+    const [categoryFilter, setCategoryFilter] = useState('Todas las categorías');
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null); // full product object or null
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
-    const { products, allProducts, isLoading, addProduct, updateProduct, deleteProduct, updateQuantity } =
+    const { products, allProducts, isLoading, addProduct, updateProduct, deleteProduct, updateQuantity, refresh } =
         useInventory(categoryFilter);
+
+    useEffect(() => {
+        const handleGlobalSale = () => refresh();
+        window.addEventListener('sale-created', handleGlobalSale);
+        return () => window.removeEventListener('sale-created', handleGlobalSale);
+    }, [refresh]);
 
     const isMobile = useIsMobile();
 
@@ -37,7 +62,7 @@ export default function Inventory() {
 
     const handleQuickQuantityChange = (id, currentQty, delta) => {
         const newQty = Math.max(0, currentQty + delta);
-        updateQuantity({ id, quantity: newQty });
+        updateQuantity(id, newQty);
     };
 
     const handleAddSubmit = (data) => {
@@ -47,14 +72,14 @@ export default function Inventory() {
     };
 
     const handleEditSubmit = (data) => {
-        updateProduct({ id: editingProduct.id, ...data });
+        updateProduct(editingProduct.id, data);
         setEditingProduct(null);
         toast.success('Producto actualizado', 'Los cambios se guardaron correctamente');
     };
 
     if (isLoading) {
         return (
-            <MainLayout>
+            <>
                 <div className="space-y-6 pb-20 md:pb-0">
                     <Skeleton className="h-8 w-48" />
                     <div className="grid gap-3">
@@ -67,12 +92,12 @@ export default function Inventory() {
                         ))}
                     </div>
                 </div>
-            </MainLayout>
+            </>
         );
     }
 
     return (
-        <MainLayout>
+        <>
             <div className="space-y-6 pb-20 md:pb-0">
 
                 {/* Header */}
@@ -83,7 +108,7 @@ export default function Inventory() {
                             {allProducts.length} {allProducts.length === 1 ? 'producto' : 'productos'}
                             {lowStockCount > 0 && (
                                 <span className="text-red-600 font-medium ml-1">
-                                    • {lowStockCount} con stock crítico
+                                    • {lowStockCount} por agotarse
                                 </span>
                             )}
                         </p>
@@ -93,7 +118,7 @@ export default function Inventory() {
                         <DialogTrigger asChild>
                             <Button className="h-12">
                                 <Plus className="w-5 h-5 mr-2" />
-                                Agregar producto
+                                Nuevo producto
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
@@ -124,8 +149,8 @@ export default function Inventory() {
                             <SelectValue placeholder="Categoría" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Todos lo productos">Todas las categorías</SelectItem>
-                            {CATEGORIES.map((cat) => (
+                            <SelectItem value="Todas las categorías">Todas las categorías</SelectItem>
+                            {storeCategories.map((cat) => (
                                 <SelectItem key={cat} value={cat}>
                                     {cat}
                                 </SelectItem>
@@ -141,7 +166,7 @@ export default function Inventory() {
                             <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
                             <p className="text-sm text-gray-900">
                                 <span className="font-semibold">{lowStockCount} {lowStockCount === 1 ? 'producto' : 'productos'}</span>{' '}
-                                {lowStockCount === 1 ? 'tiene' : 'tienen'} stock crítico (menos de 3 unidades)
+                                {lowStockCount === 1 ? 'se está terminando' : 'se están terminando'} (menos de 3 unidades)
                             </p>
                         </CardContent>
                     </Card>
@@ -154,11 +179,11 @@ export default function Inventory() {
                             <Package className="w-12 h-12 text-gray-400 mb-4" />
                             <h3 className="text-lg font-semibold text-gray-900">No hay productos</h3>
                             <p className="text-gray-500 mb-4">
-                                {searchQuery || categoryFilter !== 'Todos lo productos'
+                                {searchQuery || categoryFilter !== 'Todas las categorías'
                                     ? 'No se encontraron productos con esos filtros'
                                     : 'Comienza agregando tu primer producto'}
                             </p>
-                            {!searchQuery && categoryFilter === 'Todos lo productos' && (
+                            {!searchQuery && categoryFilter === 'Todas las categorías' && (
                                 <Button onClick={() => setIsAddDialogOpen(true)}>
                                     <Plus className="w-4 h-4 mr-2" />
                                     Agregar producto
@@ -171,10 +196,32 @@ export default function Inventory() {
                         products={filteredProducts}
                         isMobile={isMobile}
                         onEdit={setEditingProduct}
-                        onDelete={deleteProduct}
+                        onDelete={(product) => setProductToDelete(product)}
                         onQuantityChange={handleQuickQuantityChange}
                     />
                 )}
+
+                {/* Confirm Delete Dialog */}
+                <ConfirmDialog
+                    open={!!productToDelete}
+                    onOpenChange={(open) => !open && setProductToDelete(null)}
+                    onConfirm={async () => {
+                        if (!productToDelete) return;
+                        try {
+                            setIsDeleting(true);
+                            await deleteProduct(productToDelete.id);
+                            toast.success('Producto eliminado', 'El producto se eliminó correctamente');
+                            setProductToDelete(null);
+                        } catch (error) {
+                            toast.error('Error', 'No se pudo eliminar el producto');
+                        } finally {
+                            setIsDeleting(false);
+                        }
+                    }}
+                    title="¿Eliminar producto?"
+                    description={`¿Estás seguro de que deseas eliminar "${productToDelete?.name}"? Esta acción no se puede deshacer.`}
+                    isLoading={isDeleting}
+                />
 
                 {/* Edit Dialog */}
                 {editingProduct && (
@@ -193,6 +240,6 @@ export default function Inventory() {
                 )}
 
             </div>
-        </MainLayout>
+        </>
     );
 }

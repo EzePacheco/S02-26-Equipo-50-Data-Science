@@ -22,39 +22,39 @@ DATAMARK es una solución integral para pequeños comercios del sector textil y 
 - Prisma ORM
 - JWT + bcryptjs
 
-## Decisiones Tecnicas
+## Decisiones Técnicas
 
 ### Neon (PostgreSQL Serverless)
-Permite branching de base de datos para desarrollo sin afectar produccion. Escalabilidad automatica sin provisioning de servidores.
+Permite branching de base de datos para desarrollo sin afectar producción. Escalabilidad automática sin provisioning de servidores.
 
 ### Railway
-Simplifica el despliegue de APIs Node.js con gestion automatica de variables de entorno, SSL y escalabilidad.
+Simplifica el despliegue de APIs Node.js con gestión automática de variables de entorno, SSL y escalabilidad.
 
 ### Vercel
-Optimizado para frontend React con CI/CD automatico, edge functions y optimizacion de rendimiento out-of-the-box.
+Optimizado para frontend React con CI/CD automático, edge functions y optimización de rendimiento.
 
 ### Prisma ORM
-Type-safety completo con TypeScript, migraciones simples y abstraccion de consultas que evita SQL injection. Superior al raw SQL para mantenimiento a largo plazo.
+Type-safety completo, migraciones simples y abstracción de consultas que evita SQL injection.
 
 ### JWT vs Session-based Auth
-Stateless, ideal para arquitecturas SPA. Sin almacenamiento server-side y compatible con multiples clientes (web, mobile).
+Stateless, ideal para arquitecturas SPA. Sin almacenamiento server-side y compatible con múltiples clientes.
 
 ### Clean Architecture
-Separacion estricta de dominio y framework. Facilita testing, cambios de tecnologia y escalabilidad futura.
+Separación estricta de dominio y framework. Facilita testing, cambios de tecnología y escalabilidad futura.
 
 ## Seguridad
 
-- Hashing de contrasenas con bcrypt (cost factor 10)
-- Autenticacion via JWT en todas las rutas protegidas
-- Validacion de input con Zod
-- CORS configurado via ALLOWED_ORIGINS
+- Hashing de contraseñas con bcrypt
+- Autenticación vía JWT en todas las rutas protegidas
+- Validación de input con Zod
+- CORS configurado vía ALLOWED_ORIGINS
 - Secrets almacenados en variables de entorno
 
 ## Roadmap
 
 - OAuth con Facebook Login
-- Exportacion de datos a CSV
-- Sistema de recuperacion de contrasena
+- Exportación de datos a CSV
+- Sistema de recuperación de contraseña
 - Soporte multi-tienda por usuario
 
 ## Estructura del Proyecto
@@ -79,81 +79,85 @@ Separacion estricta de dominio y framework. Facilita testing, cambios de tecnolo
 ## Requisitos Previos
 
 - Node.js 18+
-- npm
+- npm 9+
+- PostgreSQL 14+ (Neon serverless recomendado)
 
-## Instalación
+## Inicio Rápido
 
-### Backend
+### 1. Backend
 
 ```bash
 cd backend
 npm install
-```
-
-Crear `.env` basado en `.env.example`:
-
-```env
-PORT=3000
-DATABASE_URL="postgresql://..."
-NODE_ENV=development
-ALLOWED_ORIGINS=http://localhost:5173
-JWT_SECRET=your-secret-key
-```
-
-```bash
+cp .env.example .env
+# Edita .env con tus valores
 npm run prisma:generate
 npm run prisma:db push
 npm run dev
 ```
 
-### Frontend
+### 2. Frontend
 
 ```bash
 cd frontend
 npm install
-```
-
-Crear `.env`:
-
-```env
-VITE_API_URL_DEV=http://localhost:3000/api
-VITE_API_URL_PROD=https://your-railway-app.up.railway.app/api
-```
-
-```bash
 npm run dev
 ```
 
-## API Endpoints
+### 3. Acceder
 
-**Nota:** Todas las rutas (excepto `/api/auth/register` y `/api/auth/login`) requieren el header `Authorization: Bearer <token>`.
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3000/api
+- **Health Check:** http://localhost:3000/api/health
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | /api/auth/register | Registrar usuario |
-| POST | /api/auth/login | Iniciar sesión |
-| GET | /api/auth/me | Obtener usuario actual |
-| GET | /api/health | Health check |
-| CRUD | /api/products | Gestión de productos |
-| CRUD | /api/sales | Gestión de ventas |
-| CRUD | /api/customers | Gestión de clientes |
-| CRUD | /api/inventory | Gestión de inventario |
-| CRUD | /api/stores | Gestión de tiendas |
+## Documentación Completa
+
+- [Guía de Configuración Detallada](./SETUP.md)
+- [Guía de Usuario](./USER_GUIDE.md)
+- [Referencia de Backend](./backend/README.md)
+- [Referencia de Frontend](./frontend/README.md)
+
+## Configuración del Proyecto
+
+### Backend - Archivo .env
+
+```env
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=tu-secreto-muy-seguro-cambiar-en-produccion
+DATABASE_URL=postgresql://usuario:password@localhost:5432/datamarkdb
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+```
+
+### Frontend - Archivo .env
+
+```env
+VITE_API_URL_DEV=http://localhost:3000/api
+VITE_API_URL_PROD=https://resplendent-reverence-production.up.railway.app/api
+```
+
+## Seguridad
+
+Implementado:
+- Hashing de contraseñas con bcrypt (cost factor 10)
+- Autenticación via JWT en todas las rutas protegidas
+- Validación de input con Zod
+- CORS configurado via ALLOWED_ORIGINS
+- Secrets almacenados en variables de entorno
+- Rutas protegidas con middleware de autenticación
+- Token incluido automáticamente en peticiones desde frontend
+
+Mejoras Futuras:
+- OAuth con Facebook Login
+- sistema de recuperación de contraseña
+- Two-factor authentication (2FA)
+- Rate limiting por IP
+- HTTPS en desarrollo (mkcert)
 
 ## Deployment
 
-```
-┌──────────────┐      ┌──────────────┐
-│ Vercel       │─────▶│ Railway      │
-│ (Frontend)   │      │ (Backend)    │
-└──────────────┘      └──────┬───────┘
-                             │
-                             ▼
-                    ┌──────────────┐
-                    │ Neon         │
-                    │ (PostgreSQL) │
-                    └──────────────┘
-```
+- Vercel (Frontend) conecta a Railway (Backend)
+- Railway (Backend) conecta a Neon (PostgreSQL)
 
 ### Railway
 - Conectar repositorio GitHub

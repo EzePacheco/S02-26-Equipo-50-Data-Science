@@ -2,22 +2,29 @@
 // Component for displaying list of customers
 
 import { useState } from 'react';
-import MainLayout from '../../../shared/layouts/MainLayout';
+
 import { Card, CardContent } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
 import Input from '../../../shared/components/Input';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../shared/components/Dialog';
 import { Skeleton } from '../../../shared/components/Skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/components/Table';
 import { useCustomers } from '../hooks/useCustomers';
 import { useIsMobile } from '../../../shared/hooks/useIsMobile';
 import { toast } from '../../../shared/hooks/useToast';
 import CustomerForm from './CustomerForm';
+import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import { Plus, Search, Users, Pencil, Trash2, Mail, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const MotionCard = motion(Card);
 
 export default function CustomerList() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
+    const [customerToDelete, setCustomerToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const { customers, isLoading, error, addCustomer, updateCustomer, deleteCustomer, refetch } = useCustomers();
     const isMobile = useIsMobile();
@@ -44,16 +51,22 @@ export default function CustomerList() {
         }
     };
 
-    const handleDelete = async (customer) => {
-        if (!confirm(`¿Estás seguro de eliminar el cliente "${customer.name}"?`)) {
-            return;
-        }
+    const handleDeleteClick = (customer) => {
+        setCustomerToDelete(customer);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!customerToDelete) return;
         try {
-            await deleteCustomer(customer.id);
+            setIsDeleting(true);
+            await deleteCustomer(customerToDelete.id);
             toast.success('Cliente eliminado', 'El cliente se eliminó correctamente');
+            setCustomerToDelete(null);
         } catch (err) {
             console.error('Error deleting customer:', err);
             toast.error('Error', err.message || 'Error al eliminar cliente');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -65,7 +78,7 @@ export default function CustomerList() {
 
     if (isLoading) {
         return (
-            <MainLayout>
+            <>
                 <div className="space-y-6 pb-20 md:pb-0">
                     <Skeleton className="h-8 w-48" />
                     <div className="grid gap-3">
@@ -78,13 +91,13 @@ export default function CustomerList() {
                         ))}
                     </div>
                 </div>
-            </MainLayout>
+            </>
         );
     }
 
     if (error) {
         return (
-            <MainLayout>
+            <>
                 <div className="space-y-6 pb-20 md:pb-0">
                     <h1 className="text-2xl font-bold text-gray-900">Clientes</h1>
                     <Card>
@@ -94,12 +107,12 @@ export default function CustomerList() {
                         </CardContent>
                     </Card>
                 </div>
-            </MainLayout>
+            </>
         );
     }
 
     return (
-        <MainLayout>
+        <>
             <div className="space-y-6 pb-20 md:pb-0">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -162,100 +175,119 @@ export default function CustomerList() {
                         </CardContent>
                     </Card>
                 ) : isMobile ? (
+                    /* Mobile cards */
                     <div className="space-y-3">
-                        {filteredCustomers.map((customer) => (
-                            <Card key={customer.id}>
-                                <CardContent className="p-4">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900">{customer.name}</h3>
-                                            {customer.email && (
-                                                <p className="text-sm text-gray-500 flex items-center gap-1">
-                                                    <Mail className="w-3 h-3" />
-                                                    {customer.email}
-                                                </p>
-                                            )}
-                                            {customer.phone && (
-                                                <p className="text-sm text-gray-500 flex items-center gap-1">
-                                                    <Phone className="w-3 h-3" />
-                                                    {customer.phone}
-                                                </p>
-                                            )}
+                        <AnimatePresence>
+                            {filteredCustomers.map((customer) => (
+                                <MotionCard
+                                    key={customer.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <CardContent className="p-4 pt-5">
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex-1 min-w-0 text-left">
+                                                <h3 className="font-semibold text-gray-900">{customer.name}</h3>
+                                                {customer.email && (
+                                                    <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                                                        <Mail className="w-3 h-3" />
+                                                        {customer.email}
+                                                    </p>
+                                                )}
+                                                {customer.phone && (
+                                                    <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
+                                                        <Phone className="w-3 h-3" />
+                                                        {customer.phone}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="flex gap-1 pt-4">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => setEditingCustomer(customer)}
+                                                    aria-label="Editar cliente"
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    onClick={() => handleDeleteClick(customer)}
+                                                    aria-label="Eliminar cliente"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => setEditingCustomer(customer)}
-                                            >
-                                                <Pencil className="w-4 h-4" />
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleDelete(customer)}
-                                                className="text-red-600 hover:text-red-700"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                    </CardContent>
+                                </MotionCard>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 ) : (
+                    /* Desktop table — mismo estilo que InventoryList */
                     <Card>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-gray-50 border-b">
-                                    <tr>
-                                        <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Nombre</th>
-                                        <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Email</th>
-                                        <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Teléfono</th>
-                                        <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Registrado</th>
-                                        <th className="text-right px-4 py-3 text-sm font-medium text-gray-600">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Cliente</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Teléfono</TableHead>
+                                    <TableHead>Registrado</TableHead>
+                                    <TableHead className="text-left pl-6">Acciones</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <AnimatePresence>
                                     {filteredCustomers.map((customer) => (
-                                        <tr key={customer.id} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3">
-                                                <span className="font-medium text-gray-900">{customer.name}</span>
-                                            </td>
-                                            <td className="px-4 py-3 text-gray-500">
-                                                {customer.email || '-'}
-                                            </td>
-                                            <td className="px-4 py-3 text-gray-500">
-                                                {customer.phone || '-'}
-                                            </td>
-                                            <td className="px-4 py-3 text-gray-500">
-                                                {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('es-PE') : '-'}
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                                <div className="flex justify-end gap-2">
+                                        <motion.tr
+                                            key={customer.id}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="border-b border-gray-200 transition-colors hover:bg-gray-50"
+                                        >
+                                            <TableCell className="font-semibold text-gray-900">{customer.name}</TableCell>
+                                            <TableCell className="text-sm text-gray-500">{customer.email || '–'}</TableCell>
+                                            <TableCell className="text-sm text-gray-500">{customer.phone || '–'}</TableCell>
+                                            <TableCell className="text-sm text-gray-500">
+                                                {customer.createdAt
+                                                    ? new Date(customer.createdAt).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })
+                                                    : '–'}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <div className="flex justify-start gap-1">
                                                     <Button
-                                                        variant="outline"
-                                                        size="sm"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8"
                                                         onClick={() => setEditingCustomer(customer)}
+                                                        aria-label="Editar cliente"
                                                     >
                                                         <Pencil className="w-4 h-4" />
                                                     </Button>
                                                     <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleDelete(customer)}
-                                                        className="text-red-600 hover:text-red-700"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => handleDeleteClick(customer)}
+                                                        aria-label="Eliminar cliente"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </Button>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </motion.tr>
                                     ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                </AnimatePresence>
+                            </TableBody>
+                        </Table>
                     </Card>
                 )}
 
@@ -274,7 +306,17 @@ export default function CustomerList() {
                         </DialogContent>
                     </Dialog>
                 )}
+
+                {/* Confirm Delete Dialog */}
+                <ConfirmDialog
+                    open={!!customerToDelete}
+                    onOpenChange={(open) => !open && setCustomerToDelete(null)}
+                    onConfirm={handleConfirmDelete}
+                    title="¿Eliminar cliente?"
+                    description={`¿Estás seguro de que deseas eliminar a "${customerToDelete?.name}"? Esta acción eliminará permanentemente todos sus datos.`}
+                    isLoading={isDeleting}
+                />
             </div>
-        </MainLayout>
+        </>
     );
 }

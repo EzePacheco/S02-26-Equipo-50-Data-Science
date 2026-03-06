@@ -37,7 +37,7 @@ export function Toaster() {
     if (toasts.length === 0) return null;
 
     return (
-        <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+        <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
             {toasts.map((t) => {
                 const style = VARIANT_STYLES[t.variant] || VARIANT_STYLES.default;
                 const IconComponent = style.icon;
@@ -52,7 +52,7 @@ export function Toaster() {
               transition-all duration-300 ease-out
               ${t.open
                                 ? 'toast-slide-in opacity-100 translate-y-0'
-                                : 'toast-slide-out opacity-0 translate-y-2'
+                                : 'toast-slide-out opacity-0 -translate-y-2'
                             }
             `}
                         role="alert"

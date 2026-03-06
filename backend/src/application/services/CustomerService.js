@@ -20,14 +20,14 @@ class CustomerService {
     }
 
     if (customerData.email) {
-      const existingEmail = await this.customerRepository.findByEmail(customerData.email);
+      const existingEmail = await this.customerRepository.findByEmail(customerData.email, customerData.userId);
       if (existingEmail) {
         throw new ValidationError('El email ya esta en uso');
       }
     }
 
     if (customerData.phone) {
-      const existingPhone = await this.customerRepository.findByPhone(customerData.phone);
+      const existingPhone = await this.customerRepository.findByPhone(customerData.phone, customerData.userId);
       if (existingPhone) {
         throw new ValidationError('El telefono ya esta en uso');
       }
@@ -53,8 +53,8 @@ class CustomerService {
    * Obtiene todos los clientes
    * @returns {Promise<Array>}
    */
-  async getAllCustomers() {
-    return await this.customerRepository.findAll();
+  async getAllCustomers(userId) {
+    return await this.customerRepository.findAll(userId);
   }
 
   /**
@@ -70,9 +70,16 @@ class CustomerService {
     }
 
     if (customerData.email && customerData.email !== existingCustomer.email) {
-      const emailInUse = await this.customerRepository.findByEmail(customerData.email);
+      const emailInUse = await this.customerRepository.findByEmail(customerData.email, existingCustomer.userId);
       if (emailInUse) {
         throw new ValidationError('El email ya esta en uso');
+      }
+    }
+
+    if (customerData.phone && customerData.phone !== existingCustomer.phone) {
+      const phoneInUse = await this.customerRepository.findByPhone(customerData.phone, existingCustomer.userId);
+      if (phoneInUse) {
+        throw new ValidationError('El telefono ya esta en uso');
       }
     }
 
@@ -97,11 +104,11 @@ class CustomerService {
    * @param {string} query
    * @returns {Promise<Array>}
    */
-  async searchCustomers(query) {
-    const allCustomers = await this.customerRepository.findAll();
+  async searchCustomers(query, userId) {
+    const allCustomers = await this.customerRepository.findAll(userId);
     const lowerQuery = query.toLowerCase();
-    
-    return allCustomers.filter(customer => 
+
+    return allCustomers.filter(customer =>
       customer.name.toLowerCase().includes(lowerQuery) ||
       (customer.email && customer.email.toLowerCase().includes(lowerQuery))
     );

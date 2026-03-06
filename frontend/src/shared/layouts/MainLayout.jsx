@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useOutlet } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { Button } from '../../shared/components/Button';
 import ROUTES from '../../app/routes/route.config';
+import { AnimatePresence } from 'framer-motion';
+import AnimatedPage from '../../shared/components/AnimatedPage';
 import {
   LayoutDashboard,
   Package,
@@ -11,14 +13,15 @@ import {
   LogOut,
   Menu,
   X,
-  Store
+
 } from 'lucide-react';
 import { toast } from '../../shared/hooks/useToast';
-import logoDatamark from '../../assets/datamark.png';
+import GlobalSaleButton from '../../features/sales/components/GlobalSaleButton';
+import logoDatamark from '../../assets/datamark-logo.png';
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 const NAV_ITEMS = [
-  { path: ROUTES.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
+  { path: ROUTES.DASHBOARD, label: 'Inicio', icon: LayoutDashboard },
   { path: ROUTES.INVENTORY, label: 'Productos', icon: Package },
   { path: ROUTES.SALES, label: 'Ventas', icon: ShoppingCart },
   { path: ROUTES.CUSTOMERS, label: 'Clientes', icon: Users },
@@ -26,6 +29,7 @@ const NAV_ITEMS = [
 
 export default function MainLayout({ children }) {
   const location = useLocation();
+  const outlet = useOutlet();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,16 +41,18 @@ export default function MainLayout({ children }) {
   };
 
   const userData = user || JSON.parse(localStorage.getItem('user') || '{}');
-  const storeName = userData?.store?.name || userData?.store_name || 'DATAMARK';
+  const storeName = userData?.store?.name ||
+    userData?.storeName ||
+    userData?.store_name ||
+    'Mi Tienda';
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile Header */}
       <header className="sticky top-0 z-40 bg-white border-b border-gray-200 md:hidden">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Store className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
+              <img src={logoDatamark} alt="DataMark" className="w-10 h-10 object-cover" />
             </div>
             <p className="font-semibold text-sm">{storeName}</p>
           </div>
@@ -58,7 +64,6 @@ export default function MainLayout({ children }) {
           </button>
         </div>
 
-        {/* Solo mostrar el botón de cerrar sesión en mobile (la nav inferior gestiona la navegación) */}
         {mobileMenuOpen && (
           <nav className="absolute top-full left-0 right-0 bg-white border-b shadow-lg">
             <div className="p-2">
@@ -79,8 +84,8 @@ export default function MainLayout({ children }) {
         <aside className="hidden md:flex flex-col w-64 min-h-screen bg-white shadow-sm  fixed left-0 top-0">
           <div className="p-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Store className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
+                <img src={logoDatamark} alt="DataMark" className="w-12 h-12 object-cover" />
               </div>
               <div>
                 <p className="font-semibold">{storeName}</p>
@@ -115,12 +120,19 @@ export default function MainLayout({ children }) {
           </div>
         </aside>
 
-        <main className="flex-1 md:ml-64">
+        <main className="flex-1 md:ml-64 relative overflow-hidden">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
-            {children}
+            <AnimatePresence mode="wait">
+              <AnimatedPage key={location.pathname}>
+                {outlet}
+              </AnimatedPage>
+            </AnimatePresence>
           </div>
         </main>
       </div>
+
+      {/* Global FAB */}
+      <GlobalSaleButton />
 
       {/* Mobile Bottom Nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 md:hidden z-30">

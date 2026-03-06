@@ -24,20 +24,17 @@ class ProductController {
         });
       }
 
-      // Concatenar color y talla al nombre para no generar cambios en DB
-      let finalName = name;
-      if (color || size) {
-        const details = [color, size].filter(Boolean).join(', ');
-        finalName = `${name} (${details})`;
-      }
-
+      const userId = req.user?.userId;
       const product = await this.productService.createProduct({
-        name: finalName,
+        name,
         sku,
         price: parseFloat(price),
         category,
+        color: color || null,
+        size: size || null,
         initialStock: initialStock ? parseInt(initialStock) : 0,
         minStock: minStock ? parseInt(minStock) : null,
+        userId
       });
 
       return res.status(201).json({
@@ -61,12 +58,13 @@ class ProductController {
   async getAll(req, res, next) {
     try {
       const { category } = req.query;
+      const userId = req.user?.userId;
 
       let products;
       if (category) {
-        products = await this.productService.getProductsByCategory(category);
+        products = await this.productService.getProductsByCategory(category, userId);
       } else {
-        products = await this.productService.getAllProducts();
+        products = await this.productService.getAllProducts(userId);
       }
 
       return res.status(200).json({ success: true, data: products });
@@ -96,9 +94,16 @@ class ProductController {
    */
   async getByCategory(req, res, next) {
     try {
-      const products = await this.productService.getProductsByCategory(req.params.category);
-      return res.status(200).json({ success: true, data: products });
-    } catch (error) { next(error); }
+      const { category } = req.params;
+      const userId = req.user?.userId;
+      const products = await this.productService.getProductsByCategory(category, userId);
+      return res.status(200).json({
+        success: true,
+        data: products,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   /**
@@ -111,17 +116,21 @@ class ProductController {
   async update(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, sku, price, category, active } = req.body;
+      const { name, sku, price, category, active, initialStock, minStock } = req.body;
 
       const updateData = {};
       if (name) updateData.name = name;
       if (sku) updateData.sku = sku;
       if (price) updateData.price = parseFloat(price);
       if (category) updateData.category = category;
+      if (req.body.color !== undefined) updateData.color = req.body.color || null;
+      if (req.body.size !== undefined) updateData.size = req.body.size || null;
       if (active !== undefined) updateData.active = active;
 
-      const product = await this.productService.updateProduct(id, req.body);
+      if (initialStock !== undefined) updateData.initialStock = parseInt(initialStock);
+      if (minStock !== undefined) updateData.minStock = minStock !== null ? parseInt(minStock) : null;
 
+      const product = await this.productService.updateProduct(id, updateData);
       return res.status(200).json({
         success: true,
         message: 'Producto actualizado exitosamente',

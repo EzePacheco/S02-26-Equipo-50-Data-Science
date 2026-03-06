@@ -4,39 +4,39 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-}
-
-enum ProductCategory {
-  ROPA
-  CALZADO
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String     @id @default(uuid())
+  email     String     @unique
   password  String
   name      String
-  store     Store?   // Relación 1:1 opcional - un usuario puede tener una tienda
+  store     Store?
   sales     Sale[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  products  Product[]
+  customers Customer[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Store {
-  id          String          @id @default(uuid())
-  name        String          // Nombre de la tienda
-  category    ProductCategory // Categoría: ROPA o CALZADO
-  userId      String          @unique // 1:1 con User - cada usuario tiene una sola tienda
-  user        User            @relation(fields: [userId], references: [id])
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  category    Category
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Sale {
-  id           String      @id @default(uuid())
-  userId       String
-  customerId   String?
-  totalAmount  Decimal     @db.Decimal(10, 2)
+  id            String      @id @default(uuid())
+  userId        String
+  customerId    String?
+  customerName  String?
+  totalAmount   Float
+  paymentMethod String?
 
   user         User        @relation(fields: [userId], references: [id])
   customer     Customer?   @relation(fields: [customerId], references: [id])
@@ -50,6 +50,8 @@ model Customer {
   name      String
   email     String?
   phone     String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
   sales     Sale[]
   createdAt DateTime @default(now())
 }
@@ -61,22 +63,24 @@ model SaleItem {
 
   productName  String
   quantity     Int
-  unitPrice    Decimal  @db.Decimal(10, 2)
-  subtotal     Decimal  @db.Decimal(10, 2)
+  unitPrice    Float
+  subtotal     Float
 
-  sale         Sale              @relation(fields: [saleId], references: [id])
-  variant      ProductVariant    @relation(fields: [variantId], references: [id])
+  sale         Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
 }
 
 model Product {
-  id        String           @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  // sku & price are stored at variant level (ProductVariant)
-  category  ProductCategory
-  active    Boolean          @default(true)
-  description String?
-  gender      String?
-  style       String?
+  sku       String   @unique
+  price     Float
+  category  Category
+  size      String?
+  color     String?
+  active    Boolean  @default(true)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
 
   // Relation to variants (each product can have multiple variants)
   variants    ProductVariant[]
@@ -84,6 +88,10 @@ model Product {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+enum Category {
+  ROPA
+  CALZADO
 }
 
 model ProductVariant {
@@ -96,7 +104,7 @@ model ProductVariant {
   stock      Int      @default(0)
   minStock   Int?
 
-  product    Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

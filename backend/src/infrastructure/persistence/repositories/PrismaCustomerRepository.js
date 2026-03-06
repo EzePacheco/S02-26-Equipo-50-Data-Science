@@ -29,22 +29,30 @@ class PrismaCustomerRepository extends ICustomerRepository {
   /**
    * Busca un cliente por su email
    * @param {string} email - Correo electrónico del cliente
+   * @param {string} [userId] - User ID del dueño
    * @returns {Promise<Object|null>} Cliente encontrado o null
    */
-  async findByEmail(email) {
-    return await prisma.customer.findUnique({
-      where: { email },
+  async findByEmail(email, userId) {
+    if (!email) return null;
+    const where = { email };
+    if (userId) where.userId = userId;
+    return await prisma.customer.findFirst({
+      where,
     });
   }
 
   /**
    * Busca un cliente por su teléfono
    * @param {string} phone - Teléfono del cliente
+   * @param {string} [userId] - User ID del dueño
    * @returns {Promise<Object|null>} Cliente encontrado o null
    */
-  async findByPhone(phone) {
+  async findByPhone(phone, userId) {
+    if (!phone) return null;
+    const where = { phone };
+    if (userId) where.userId = userId;
     return await prisma.customer.findFirst({
-      where: { phone },
+      where,
     });
   }
 
@@ -59,6 +67,7 @@ class PrismaCustomerRepository extends ICustomerRepository {
         name: customerData.name,
         email: customerData.email,
         phone: customerData.phone,
+        userId: customerData.userId,
       },
     });
   }
@@ -95,8 +104,9 @@ class PrismaCustomerRepository extends ICustomerRepository {
    * Obtiene todos los clientes con sus ventas
    * @returns {Promise<Array>} Lista de clientes
    */
-  async findAll() {
+  async findAll(userId) {
     return await prisma.customer.findMany({
+      where: { userId },
       include: {
         sales: true,
       },

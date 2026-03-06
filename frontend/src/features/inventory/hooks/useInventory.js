@@ -1,12 +1,21 @@
-// useInventory.js
-// Custom hook for managing inventory - connected to backend API
+/**
+ * useInventory.js
+ * Hook personalizado para gestionar inventario
+ * Conectado a la API del backend
+ */
 
 import { useState, useEffect, useCallback } from 'react';
 import { productsApi } from '../../products/api/productsApi';
 import { inventoryApi } from '../../inventory/api/inventoryApi';
 
+/** @type {string[]} */
 export const CATEGORIES = ['ROPA', 'CALZADO'];
 
+/**
+ * Obtiene el estado del stock según la cantidad
+ * @param {number} quantity - Cantidad en stock
+ * @returns {string} Estado: 'critical', 'medium' o 'good'
+ */
 export function getStockStatus(quantity) {
   if (quantity === 0) return 'critical';
   if (quantity < 3) return 'critical';
@@ -14,7 +23,7 @@ export function getStockStatus(quantity) {
   return 'good';
 }
 
-export function useInventory(categoryFilter = 'todos') {
+export function useInventory(categoryFilter = 'Todas las categorías') {
   const [products, setProducts] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +52,7 @@ export function useInventory(categoryFilter = 'todos') {
       setInventory(inventoryData);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching inventory:', err);
+      console.error('Error al obtener inventario:', err);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +62,7 @@ export function useInventory(categoryFilter = 'todos') {
     fetchData();
   }, [fetchData]);
 
-  const filteredProducts = categoryFilter === 'todos'
+  const filteredProducts = categoryFilter === 'Todas las categorías'
     ? products
     : products.filter((p) => p.category === categoryFilter);
 
@@ -67,7 +76,7 @@ export function useInventory(categoryFilter = 'todos') {
         initialStock: initialStock || 0,
         minStock: minStock || null,
       });
-      
+
       await fetchData();
       return newProduct;
     } catch (err) {
@@ -136,7 +145,7 @@ export function useInventory(categoryFilter = 'todos') {
     try {
       return await inventoryApi.getLowStock();
     } catch (err) {
-      console.error('Error fetching low stock:', err);
+      console.error('Error al obtener productos con stock bajo:', err);
       return [];
     }
   }, []);

@@ -142,6 +142,18 @@ class PrismaProductRepository extends IProductRepository {
    * @returns {Promise<void>}
    */
   async delete(id) {
+    // Check if product has sales
+    const salesCount = await prisma.saleItem.count({ where: { productId: id } });
+    if (salesCount > 0) {
+      // Soft delete to preserve sale history
+      return await prisma.product.update({
+        where: { id },
+        data: { active: false },
+      });
+    }
+
+    // Hard delete if no sales exist
+    await prisma.inventory.deleteMany({ where: { productId: id } }).catch(() => { });
     return await prisma.product.delete({
       where: { id },
     });
@@ -151,11 +163,13 @@ class PrismaProductRepository extends IProductRepository {
    * Obtiene todos los productos
    * @returns {Promise<Array>} Lista de productos con inventario
    */
-  async findAll() {
+  async findAll(userId) {
     return await prisma.product.findMany({
+      where: { userId, active: true },
       include: {
         variants: true,
       },
+      orderBy: { createdAt: 'desc' }
     });
   }
 
@@ -164,9 +178,9 @@ class PrismaProductRepository extends IProductRepository {
    * @param {string} category - Categoría del producto
    * @returns {Promise<Array>} Lista de productos de la categoría
    */
-  async findByCategory(category) {
+  async findByCategory(category, userId) {
     return await prisma.product.findMany({
-      where: { category },
+      where: { category, userId, active: true },
       include: {
         variants: true,
       },
@@ -177,9 +191,9 @@ class PrismaProductRepository extends IProductRepository {
    * Obtiene solo productos activos
    * @returns {Promise<Array>} Lista de productos activos
    */
-  async findActive() {
+  async findActive(userId) {
     return await prisma.product.findMany({
-      where: { active: true },
+      where: { active: true, userId },
       include: {
         variants: true,
       },

@@ -1,9 +1,11 @@
-// CreateStoreDTO.js
-// Capa de aplicación: Data Transfer Object para crear una tienda
-// Se utiliza durante el onboarding del usuario para capturar los datos mínimos necesarios:
-// - name: Nombre de la tienda (ej: "Mi Tienda de Ropa")
-// - category: Categoría seleccionada (ROPA o CALZADO)
-// - userId: ID del usuario autenticado que está creando la tienda
+/**
+ * CreateStoreDTO.js
+ * Capa de aplicación: Data Transfer Object para crear una tienda
+ * Se utiliza durante el onboarding del usuario para capturar los datos mínimos necesarios:
+ * - name: Nombre de la tienda (ej: "Mi Tienda de Ropa")
+ * - category: Categoría seleccionada (ROPA o CALZADO)
+ * - userId: ID del usuario autenticado que está creando la tienda
+ */
 
 import StoreSchema from '../../domain/schemas/store.schema.js';
 import ValidationError from '../../domain/errors/ValidationError.js';

@@ -24,7 +24,8 @@ class CustomerController {
         });
       }
 
-      const customer = await this.customerService.createCustomer({ name, email, phone });
+      const userId = req.user?.userId;
+      const customer = await this.customerService.createCustomer({ name, email, phone, userId });
 
       return res.status(201).json({
         success: true,
@@ -45,7 +46,8 @@ class CustomerController {
    */
   async getAll(req, res, next) {
     try {
-      const customers = await this.customerService.getAllCustomers();
+      const userId = req.user?.userId;
+      const customers = await this.customerService.getAllCustomers(userId);
       return res.status(200).json({
         success: true,
         data: customers,
@@ -130,7 +132,8 @@ class CustomerController {
           error: 'Se requiere un parametro de busqueda (q)',
         });
       }
-      const customers = await this.customerService.searchCustomers(q);
+      const userId = req.user?.userId;
+      const customers = await this.customerService.searchCustomers(q, userId);
       return res.status(200).json({
         success: true,
         data: customers,
