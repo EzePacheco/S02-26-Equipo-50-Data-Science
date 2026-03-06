@@ -1,8 +1,26 @@
-// salesApi.js
-// API calls for sales - connected to backend
+/**
+ * salesApi.js
+ * Funciones API para ventas
+ * Maneja las operaciones CRUD de ventas conectadas al backend
+ */
 
 import { post, get, API_ENDPOINTS } from '../../../app/config/api.config.js';
 
+/**
+ * Funciones API para gestión de ventas
+ * @typedef {Object} SalesApi
+ * @property {Function} getAll - Obtiene todas las ventas
+ * @property {Function} getById - Obtiene una venta por ID
+ * @property {Function} getByDateRange - Obtiene ventas por rango de fechas
+ * @property {Function} create - Crea una nueva venta
+ * @property {Function} cancel - Cancela una venta existente
+ */
+
+/**
+ * Obtiene todas las ventas
+ * @param {Object} [filters] - Filtros opcionales
+ * @returns {Promise<Array>} Lista de ventas
+ */
 export const salesApi = {
   getAll: async (filters = {}) => {
     try {
@@ -10,9 +28,9 @@ export const salesApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to fetch sales');
+      throw new Error(response.data.error || 'Error al obtener ventas');
     } catch (error) {
-      console.error('Error fetching sales:', error);
+      console.error('Error al obtener ventas:', error);
       throw error;
     }
   },
@@ -23,9 +41,9 @@ export const salesApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Sale not found');
+      throw new Error(response.data.error || 'Venta no encontrada');
     } catch (error) {
-      console.error('Error fetching sale:', error);
+      console.error('Error al obtener venta:', error);
       throw error;
     }
   },
@@ -37,9 +55,9 @@ export const salesApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to fetch sales by date range');
+      throw new Error(response.data.error || 'Error al obtener ventas por fecha');
     } catch (error) {
-      console.error('Error fetching sales by date range:', error);
+      console.error('Error al obtener ventas por fecha:', error);
       throw error;
     }
   },
@@ -62,9 +80,9 @@ export const salesApi = {
       if (response.data.success) {
         return response.data.data;
       }
-      throw new Error(response.data.error || 'Failed to create sale');
+      throw new Error(response.data.error || 'Error al crear venta');
     } catch (error) {
-      console.error('Error creating sale:', error);
+      console.error('Error al crear venta:', error);
       throw error;
     }
   },
@@ -75,9 +93,9 @@ export const salesApi = {
       if (response.data.success) {
         return { ...response.data.data, cancelled: true, cancelled_at: new Date().toISOString() };
       }
-      throw new Error(response.data.error || 'Failed to cancel sale');
+      throw new Error(response.data.error || 'Error al cancelar venta');
     } catch (error) {
-      console.error('Error cancelling sale:', error);
+      console.error('Error al cancelar venta:', error);
       throw error;
     }
   }

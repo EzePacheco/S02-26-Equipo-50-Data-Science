@@ -1,8 +1,29 @@
-// authApi.js
-// API calls for authentication
+/**
+ * authApi.js
+ * Funciones API para autenticación
+ * Maneja login, registro, logout y gestión de sesión de usuario
+ */
 
 import { post, get, API_ENDPOINTS } from '../../../app/config/api.config.js';
 
+/**
+ * Funciones API para autenticación
+ * @typedef {Object} AuthApi
+ * @property {Function} login - Inicia sesión con credenciales
+ * @property {Function} register - Registra un nuevo usuario
+ * @property {Function} logout - Cierra la sesión actual
+ * @property {Function} getCurrentUser - Obtiene el usuario actual
+ * @property {Function} getStoredUser - Obtiene el usuario desde localStorage
+ * @property {Function} isAuthenticated - Verifica si hay sesión activa
+ */
+
+/**
+ * Realiza el inicio de sesión del usuario
+ * @param {Object} credentials - Credenciales del usuario
+ * @param {string} credentials.email - Correo electrónico
+ * @param {string} credentials.password - Contraseña
+ * @returns {Promise<Object>} Datos del usuario autenticado
+ */
 export const authApi = {
   login: async (credentials) => {
     const response = await post(API_ENDPOINTS.AUTH.LOGIN, credentials);
@@ -12,7 +33,7 @@ export const authApi = {
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     }
-    throw new Error(response.data.error || 'Login failed');
+    throw new Error(response.data.error || 'Error al iniciar sesión');
   },
 
   register: async (userData) => {
@@ -23,7 +44,7 @@ export const authApi = {
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     }
-    throw new Error(response.data.error || 'Registration failed');
+    throw new Error(response.data.error || 'Error al registrar usuario');
   },
 
   logout: async () => {
@@ -36,7 +57,7 @@ export const authApi = {
     if (response.data.success) {
       return response.data.data;
     }
-    throw new Error(response.data.error || 'Failed to get user');
+    throw new Error(response.data.error || 'Error al obtener usuario');
   },
 
   getStoredUser: () => {

@@ -1,9 +1,20 @@
-// useSales.js
-// Custom hook for managing sales - connected to backend API
+/**
+ * useSales.js
+ * Hook personalizado para gestionar ventas
+ * Conectado a la API del backend
+ */
 
 import { useState, useEffect, useCallback } from 'react';
 import { salesApi } from '../../sales/api/salesApi';
 
+/**
+ * Métodos de pago disponibles
+ * @typedef {Object} PaymentMethod
+ * @property {string} value - Valor del método
+ * @property {string} label - Etiqueta a mostrar
+ */
+
+/** @type {PaymentMethod[]} */
 export const PAYMENT_METHODS = [
   { value: 'efectivo', label: 'Efectivo' },
   { value: 'tarjeta', label: 'Tarjeta' },
@@ -11,6 +22,12 @@ export const PAYMENT_METHODS = [
   { value: 'plin', label: 'Plin' },
 ];
 
+/**
+ * Compara dos fechas para ver si son del mismo día
+ * @param {string} dateStr - Fecha en formato string
+ * @param {Date} compareDate - Fecha a comparar
+ * @returns {boolean} True si son del mismo día
+ */
 function isSameDay(dateStr, compareDate) {
   const dateToUse = dateStr || '';
   if (!dateToUse) return false;
@@ -22,6 +39,11 @@ function isSameDay(dateStr, compareDate) {
   );
 }
 
+/**
+ * Hook para gestionar ventas
+ * @param {string} [period='today'] - Período de filtro: 'today' o 'all'
+ * @returns {Object} Estados y funciones para gestionar ventas
+ */
 export function useSales(period = 'today') {
   const [allSales, setAllSales] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +59,7 @@ export function useSales(period = 'today') {
       setAllSales(data || []);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching sales:', err);
+      console.error('Error al obtener ventas:', err);
       setAllSales([]);
     } finally {
       setIsLoading(false);
