@@ -4,13 +4,13 @@ describe('SaleItem Entity', () => {
   describe('constructor', () => {
     test('debe crear instancia con valores correctos', () => {
       const item = new SaleItem({
-        productId: 'prod-uuid',
+        variantId: 'variant-uuid',
         productName: 'Camisa',
         quantity: 2,
         unitPrice: 50,
       });
 
-      expect(item.productId).toBe('prod-uuid');
+      expect(item.variantId).toBe('variant-uuid');
       expect(item.productName).toBe('Camisa');
       expect(item.quantity).toBe(2);
       expect(item.unitPrice).toBe(50);
@@ -18,7 +18,7 @@ describe('SaleItem Entity', () => {
 
     test('debe convertir unitPrice a numero', () => {
       const item = new SaleItem({
-        productId: 'p1',
+        variantId: 'p1',
         productName: 'Pantalón',
         quantity: 1,
         unitPrice: '99.99',
@@ -32,7 +32,7 @@ describe('SaleItem Entity', () => {
   describe('subtotal', () => {
     test('debe calcular subtotal correctamente', () => {
       const item = new SaleItem({
-        productId: 'p1',
+        variantId: 'v1',
         productName: 'Zapatillas',
         quantity: 3,
         unitPrice: 100,
@@ -43,7 +43,7 @@ describe('SaleItem Entity', () => {
 
     test('debe calcular subtotal con decimales', () => {
       const item = new SaleItem({
-        productId: 'p1',
+        variantId: 'v2',
         productName: 'Gorra',
         quantity: 2,
         unitPrice: 25.50,
@@ -54,7 +54,7 @@ describe('SaleItem Entity', () => {
 
     test('debe manejar cantidad de 1', () => {
       const item = new SaleItem({
-        productId: 'p1',
+        variantId: 'v3',
         productName: 'Bufanda',
         quantity: 1,
         unitPrice: 45,
