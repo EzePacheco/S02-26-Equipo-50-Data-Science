@@ -23,6 +23,8 @@ CREATE TABLE "Product" (
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
 
+ALTER TABLE "Product" ADD COLUMN "active" BOOLEAN NOT NULL DEFAULT true;
+
 -- CreateTable
 CREATE TABLE "ProductVariant" (
     "id" TEXT NOT NULL,

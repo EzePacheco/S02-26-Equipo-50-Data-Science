@@ -43,6 +43,7 @@ class ProductController {
         data: product,
       });
     } catch (error) {
+
       next(error);
     }
   }
@@ -66,13 +67,8 @@ class ProductController {
         products = await this.productService.getAllProducts(userId);
       }
 
-      return res.status(200).json({
-        success: true,
-        data: products,
-      });
-    } catch (error) {
-      next(error);
-    }
+      return res.status(200).json({ success: true, data: products });
+    } catch (error) { next(error); }
   }
 
   /**
@@ -84,15 +80,9 @@ class ProductController {
    */
   async getById(req, res, next) {
     try {
-      const { id } = req.params;
-      const product = await this.productService.getProductById(id);
-      return res.status(200).json({
-        success: true,
-        data: product,
-      });
-    } catch (error) {
-      next(error);
-    }
+      const product = await this.productService.getProductById(req.params.id);
+      return res.status(200).json({ success: true, data: product });
+    } catch (error) { next(error); }
   }
 
   /**
@@ -160,12 +150,9 @@ class ProductController {
    */
   async delete(req, res, next) {
     try {
-      const { id } = req.params;
-      await this.productService.deleteProduct(id);
+      await this.productService.deleteProduct(req.params.id);
       return res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+    } catch (error) { next(error); }
   }
 }
 

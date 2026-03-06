@@ -59,7 +59,7 @@ model Customer {
 model SaleItem {
   id           String   @id @default(uuid())
   saleId       String
-  productId    String
+  variantId    String
 
   productName  String
   quantity     Int
@@ -82,20 +82,26 @@ model Product {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
 
-  inventory Inventory?
+  // Relation to variants (each product can have multiple variants)
+  variants    ProductVariant[]
   saleItems SaleItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Inventory {
-  id        String   @id @default(uuid())
-  productId String   @unique
-  quantity  Int
-  minStock  Int?
+model ProductVariant {
+  id         String   @id @default(uuid())
+  productId  String
+  sku        String   @unique
+  size       String?
+  color      String?
+  price      Decimal  @db.Decimal(10, 2)
+  stock      Int      @default(0)
+  minStock   Int?
 
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
