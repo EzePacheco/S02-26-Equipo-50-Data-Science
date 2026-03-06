@@ -1,6 +1,8 @@
-// store.controller.js
-// Capa de interfaz: Manejador de peticiones HTTP para Store
-// Coordina la creación y consulta de tiendas durante el onboarding
+/**
+ * store.controller.js
+ * Capa de interfaz: Manejador de peticiones HTTP para Store
+ * Coordina la creación y consulta de tiendas durante el onboarding
+ */
 
 import CreateStoreDTO from '../../application/dto/CreateStoreDTO.js';
 

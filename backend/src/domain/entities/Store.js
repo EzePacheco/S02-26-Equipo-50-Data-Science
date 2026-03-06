@@ -1,6 +1,8 @@
-// Store.js
-// Capa de dominio: Entidad Store representa una tienda en el sistema
-// Se utiliza durante el onboarding para asociar un usuario con su tienda
+/**
+ * Store.js
+ * Capa de dominio: Entidad Store representa una tienda en el sistema
+ * Se utiliza durante el onboarding para asociar un usuario con su tienda
+ */
 
 export default class Store {
   /**

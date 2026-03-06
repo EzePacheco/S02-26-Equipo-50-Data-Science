@@ -1,4 +1,6 @@
 # Dependencies
+frontend/node_modules/
+backend/node_modules/
 node_modules/
 .pnp
 .pnp.js
@@ -47,3 +49,4 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
+.aider*

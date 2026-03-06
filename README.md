@@ -22,39 +22,39 @@ DATAMARK es una solución integral para pequeños comercios del sector textil y 
 - Prisma ORM
 - JWT + bcryptjs
 
-## Decisiones Tecnicas
+## Decisiones Técnicas
 
 ### Neon (PostgreSQL Serverless)
-Permite branching de base de datos para desarrollo sin afectar produccion. Escalabilidad automatica sin provisioning de servidores.
+Permite branching de base de datos para desarrollo sin afectar producción. Escalabilidad automática sin provisioning de servidores.
 
 ### Railway
-Simplifica el despliegue de APIs Node.js con gestion automatica de variables de entorno, SSL y escalabilidad.
+Simplifica el despliegue de APIs Node.js con gestión automática de variables de entorno, SSL y escalabilidad.
 
 ### Vercel
-Optimizado para frontend React con CI/CD automatico, edge functions y optimizacion de rendimiento out-of-the-box.
+Optimizado para frontend React con CI/CD automático, edge functions y optimización de rendimiento.
 
 ### Prisma ORM
-Type-safety completo con TypeScript, migraciones simples y abstraccion de consultas que evita SQL injection. Superior al raw SQL para mantenimiento a largo plazo.
+Type-safety completo, migraciones simples y abstracción de consultas que evita SQL injection.
 
 ### JWT vs Session-based Auth
-Stateless, ideal para arquitecturas SPA. Sin almacenamiento server-side y compatible con multiples clientes (web, mobile).
+Stateless, ideal para arquitecturas SPA. Sin almacenamiento server-side y compatible con múltiples clientes.
 
 ### Clean Architecture
-Separacion estricta de dominio y framework. Facilita testing, cambios de tecnologia y escalabilidad futura.
+Separación estricta de dominio y framework. Facilita testing, cambios de tecnología y escalabilidad futura.
 
 ## Seguridad
 
-- Hashing de contrasenas con bcrypt (cost factor 10)
-- Autenticacion via JWT en todas las rutas protegidas
-- Validacion de input con Zod
-- CORS configurado via ALLOWED_ORIGINS
+- Hashing de contraseñas con bcrypt
+- Autenticación vía JWT en todas las rutas protegidas
+- Validación de input con Zod
+- CORS configurado vía ALLOWED_ORIGINS
 - Secrets almacenados en variables de entorno
 
 ## Roadmap
 
 - OAuth con Facebook Login
-- Exportacion de datos a CSV
-- Sistema de recuperacion de contrasena
+- Exportación de datos a CSV
+- Sistema de recuperación de contraseña
 - Soporte multi-tienda por usuario
 
 ## Estructura del Proyecto

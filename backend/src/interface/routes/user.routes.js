@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import authMiddleware from '../../infrastructure/web/middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -9,10 +10,10 @@ const router = Router();
  */
 export function configureUserRoutes(userController) {
   router.post('/', (req, res, next) => userController.create(req, res, next));
-  router.get('/', (req, res, next) => userController.getAll(req, res, next));
-  router.get('/:id', (req, res, next) => userController.getById(req, res, next));
-  router.put('/:id', (req, res, next) => userController.update(req, res, next));
-  router.delete('/:id', (req, res, next) => userController.delete(req, res, next));
+  router.get('/', authMiddleware, (req, res, next) => userController.getAll(req, res, next));
+  router.get('/:id', authMiddleware, (req, res, next) => userController.getById(req, res, next));
+  router.put('/:id', authMiddleware, (req, res, next) => userController.update(req, res, next));
+  router.delete('/:id', authMiddleware, (req, res, next) => userController.delete(req, res, next));
 
   return router;
 }

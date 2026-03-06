@@ -66,11 +66,12 @@ model SaleItem {
 
   sale         Sale              @relation(fields: [saleId], references: [id])
   variant      ProductVariant    @relation(fields: [variantId], references: [id])
+  product      Product           @relation(fields: [productName], references: [name])
 }
 
 model Product {
   id        String           @id @default(uuid())
-  name      String
+  name      String           @unique
   // sku & price are stored at variant level (ProductVariant)
   category  ProductCategory
   active    Boolean          @default(true)
@@ -97,6 +98,7 @@ model ProductVariant {
   minStock   Int?
 
   product    Product  @relation(fields: [productId], references: [id])
+  saleItems  SaleItem[]
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
