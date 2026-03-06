@@ -1,4 +1,4 @@
-# 📖 Guía de Configuración del Proyecto DATAMARK
+# Guía de Configuración del Proyecto DATAMARK
 
 ## Requisitos del Sistema
 

@@ -1,14 +1,14 @@
 # DATAMARK Backend
 
-SaaS B2P para pequenos negocios de ropa y calzado en Peru.
+SaaS B2B para pequeños negocios de ropa y calzado en Perú.
 
-## Tecnologias
+## Tecnologías
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Base de datos**: PostgreSQL (Neon)
+- **Base de Datos**: PostgreSQL (Neon)
 - **ORM**: Prisma
-- **Autenticacion**: JWT + bcrypt
+- **Autenticación**: JWT + bcrypt
 
 ## Estructura del Proyecto (Clean Architecture)
 
@@ -16,14 +16,14 @@ SaaS B2P para pequenos negocios de ropa y calzado en Peru.
 backend/
 ├── prisma/           # Esquema y migraciones de base de datos
 └── src/
-    ├── server.js     # Punto de entrada de la aplicacion
+    ├── server.js     # Punto de entrada de la aplicación
     ├── application/  # Logica de negocio (servicios, DTOs)
     ├── domain/       # Entidades, esquemas, interfaces de repositorios
     ├── infrastructure/  # Persistencia de base de datos (Prisma)
     └── interface/    # Controladores y rutas
 ```
 
-## Configuracion
+## Configuración
 
 ```bash
 # Instalar dependencias
@@ -41,7 +41,7 @@ npm run dev
 
 ## Variables de Entorno
 
-Crear archivo `.env` en el directorio raiz:
+Crear archivo `.env` en el directorio raíz:
 
 ```env
 DATABASE_URL="postgresql://..."
@@ -61,6 +61,6 @@ PORT=3000
 
 ## Scripts
 
-- `npm run dev` - Iniciar servidor de desarrollo
-- `npm test` - Ejecutar pruebas
-- `npx prisma studio` - Abrir interfaz grafica de Prisma
+- `npm run dev` - Iniciar servidor de desarrollo- `npm run build` - Generar cliente Prisma para producción
+- `npm start` - Ejecutar servidor en producción- `npm test` - Ejecutar pruebas
+- `npx prisma studio` - Abrir interfaz gráfica de Prisma

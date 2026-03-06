@@ -82,7 +82,7 @@ Separación estricta de dominio y framework. Facilita testing, cambios de tecnol
 - npm 9+
 - PostgreSQL 14+ (Neon serverless recomendado)
 
-## ⚡ Inicio Rápido
+## Inicio Rápido
 
 ### 1. Backend
 
@@ -110,11 +110,12 @@ npm run dev
 - **Backend API:** http://localhost:3000/api
 - **Health Check:** http://localhost:3000/api/health
 
-## 📚 Documentación Completa
+## Documentación Completa
 
 - [Guía de Configuración Detallada](./SETUP.md)
 - [Guía de Usuario](./USER_GUIDE.md)
-- [Referencia de API](#api-endpoints)
+- [Referencia de Backend](./backend/README.md)
+- [Referencia de Frontend](./frontend/README.md)
 
 ## Configuración del Proyecto
 
@@ -132,12 +133,12 @@ ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
 
 ```env
 VITE_API_URL_DEV=http://localhost:3000/api
-VITE_API_URL_PROD=https://tu-api-railway.up.railway.app/api
+VITE_API_URL_PROD=https://resplendent-reverence-production.up.railway.app/api
 ```
 
 ## Seguridad
 
-✅ **Implementado:**
+Implementado:
 - Hashing de contraseñas con bcrypt (cost factor 10)
 - Autenticación via JWT en todas las rutas protegidas
 - Validación de input con Zod
@@ -146,7 +147,7 @@ VITE_API_URL_PROD=https://tu-api-railway.up.railway.app/api
 - Rutas protegidas con middleware de autenticación
 - Token incluido automáticamente en peticiones desde frontend
 
-⚠️ **Mejoras Futuras:**
+Mejoras Futuras:
 - OAuth con Facebook Login
 - sistema de recuperación de contraseña
 - Two-factor authentication (2FA)
@@ -155,18 +156,8 @@ VITE_API_URL_PROD=https://tu-api-railway.up.railway.app/api
 
 ## Deployment
 
-```
-┌──────────────┐      ┌──────────────┐
-│ Vercel       │─────▶│ Railway      │
-│ (Frontend)   │      │ (Backend)    │
-└──────────────┘      └──────┬───────┘
-                             │
-                             ▼
-                    ┌──────────────┐
-                    │ Neon         │
-                    │ (PostgreSQL) │
-                    └──────────────┘
-```
+- Vercel (Frontend) conecta a Railway (Backend)
+- Railway (Backend) conecta a Neon (PostgreSQL)
 
 ### Railway
 - Conectar repositorio GitHub

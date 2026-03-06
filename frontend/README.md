@@ -1,15 +1,15 @@
 # DATAMARK Frontend
 
-SaaS B2P para pequenos negocios de ropa y calzado en Peru.
+SaaS B2B para pequeños negocios de ropa y calzado en Perú.
 
-## Tecnologias
+## Tecnologías
 
 - **Framework**: React 19
 - **Build Tool**: Vite 7
 - **Estilos**: Tailwind CSS 4
 - **HTTP Client**: Axios
 - **Enrutamiento**: React Router DOM 7
-- **Validacion**: Zod
+- **Validación**: Zod
 
 ## Estructura del Proyecto
 
