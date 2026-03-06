@@ -239,7 +239,7 @@ export default function CustomerList() {
                                     <TableHead>Email</TableHead>
                                     <TableHead>Teléfono</TableHead>
                                     <TableHead>Registrado</TableHead>
-                                    <TableHead className="text-right">Acciones</TableHead>
+                                    <TableHead className="text-left pl-6">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -261,8 +261,8 @@ export default function CustomerList() {
                                                     ? new Date(customer.createdAt).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })
                                                     : '–'}
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end gap-1">
+                                            <TableCell className="text-center">
+                                                <div className="flex justify-start gap-1">
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"

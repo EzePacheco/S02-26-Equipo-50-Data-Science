@@ -97,16 +97,16 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
   // Desktop table
   return (
     <Card>
-      <Table>
+      <Table className="w-full table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead>Producto</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Talla</TableHead>
-            <TableHead>Color</TableHead>
-            <TableHead className="text-right">Precio</TableHead>
-            <TableHead className="text-center">Cantidad</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableHead >Producto</TableHead>
+            <TableHead >Categoría</TableHead>
+            <TableHead >Talla</TableHead>
+            <TableHead >Color</TableHead>
+            <TableHead className="text-left">Precio</TableHead>
+            <TableHead className="text-between">Cantidad</TableHead>
+            <TableHead className="text-left pl-6">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -120,20 +120,18 @@ function InventoryList({ products, onEdit, onDelete, onQuantityChange, isMobile 
                 transition={{ duration: 0.2 }}
                 className="border-b border-gray-200 transition-colors hover:bg-gray-50"
               >
-                <TableCell className="font-medium text-gray-900">{product.name}</TableCell>
-                <TableCell className="text-gray-600">{product.category}</TableCell>
-                <TableCell className="text-gray-600">{product.size || '–'}</TableCell>
+                <TableCell className="font-medium text-gray-900 truncate">{product.name}</TableCell>
+                <TableCell className="text-gray-600 truncate">{product.category}</TableCell>
+                <TableCell className="text-gray-600 pl-5">{product.size || '–'}</TableCell>
                 <TableCell className="text-gray-600">{product.color || '–'}</TableCell>
-                <TableCell className="text-right font-mono font-semibold text-gray-900">
+                <TableCell className="text-left font-mono font-semibold text-gray-900 pl-1">
                   {formatCurrency(product.price || product.sale_price)}
                 </TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-center gap-2">
-                    <StockBadge quantity={product.inventory?.quantity ?? 0} />
-                  </div>
+                <TableCell className="text-left font-mono font-semibold text-gray-900 pl-5">
+                  <StockBadge quantity={product.inventory?.quantity ?? 0} />
                 </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-1">
+                <TableCell className="text-left">
+                  <div className="flex justify-start gap-1">
                     <Button
                       variant="ghost"
                       size="icon"
