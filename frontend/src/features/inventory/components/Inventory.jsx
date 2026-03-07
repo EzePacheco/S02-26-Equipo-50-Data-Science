@@ -58,7 +58,7 @@ export default function Inventory() {
     );
 
     // Count products with critical stock across all (unfiltered) products
-    const lowStockCount = allProducts.filter((p) => getStockStatus(p.quantity) === 'critical').length;
+    const lowStockCount = allProducts.filter((p) => getStockStatus(p.inventory?.quantity ?? 0) === 'critical').length;
 
     const handleQuickQuantityChange = (id, currentQty, delta) => {
         const newQty = Math.max(0, currentQty + delta);

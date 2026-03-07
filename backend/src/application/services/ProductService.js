@@ -22,11 +22,10 @@ class ProductService {
     const dto = new CreateProductDTO(rawData);
     const productData = dto.getData();
 
-    for (const variant of productData.variants) {
-      const existing = await this.productRepository.findBySku(variant.sku);
-      if (existing) {
-        throw new ValidationError(`El SKU ${variant.sku} ya está en uso`);
-      }
+    // Check if SKU already exists
+    const existing = await this.productRepository.findBySku(productData.sku);
+    if (existing) {
+      throw new ValidationError(`El SKU ${productData.sku} ya está en uso`);
     }
 
     const { initialStock, minStock, ...data } = productData;
@@ -78,6 +77,8 @@ class ProductService {
    * @returns {Promise<Object>}
    */
   async updateProduct(id, rawData) {
+    const dto = new UpdateProductDTO(rawData);
+    const productData = dto.getData();
 
     const { initialStock, minStock, ...data } = productData;
     const updatedProduct = await this.productRepository.update(id, data);

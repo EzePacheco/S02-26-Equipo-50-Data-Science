@@ -41,7 +41,7 @@ class UpdateProductDTO {
    * Obtiene los valores validados
    * @returns {Object} Datos del producto
    */
-  getValues() {
+  getData() {
     return this.data;
   }
 }

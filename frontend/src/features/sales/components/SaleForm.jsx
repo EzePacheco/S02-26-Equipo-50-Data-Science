@@ -61,7 +61,6 @@ export default function SaleForm({ onSubmit, isLoading, onSuccess }) {
         customerName: customers.find(c => c.id === selectedCustomerId)?.name || null,
         quantity,
         unitPrice: unitPrice,
-        purchasePrice: selectedProduct.purchase_price || 0,
         totalPrice: totalPrice,
         paymentMethod: paymentMethod,
       });

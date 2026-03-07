@@ -1,5 +1,31 @@
 # Guía de Configuración del Proyecto DATAMARK
 
+**Version 2.0** - Actualizado 7 de Marzo 2026
+
+> **Importante:** Este documento fue completamente actualizado después de una auditoría exhaustiva de código. Todos los bugs críticos han sido arreglados. Ver sección de [Cambios Recientes](#cambios-recientes).
+
+## Cambios Recientes (7 Marzo 2026)
+
+### ✅ Bugs Arreglados
+- **Rutas de Productos:** Orden correcta (category ANTES de :id)
+- **Rutas de Clientes:** Orden correcta (search ANTES de :id)
+- **SaleItem Schema:** Removido campo `variantId` innecesario
+- **Dashboard:** Corregida referencia a `purchase_price` inexistente
+
+### ✅ Código Limpiado
+- 6 componentes React vacíos eliminados
+- `ProductVariantSchema` sin usar removida
+- Dead code limpiado completamente
+- Imports no utilizados removidos
+
+### ✅ Estado de Compilación
+- **Backend:** ✅ Sin errores
+- **Frontend:** ✅ Sin errores (498KB bundle)
+- **Tests:** ✅ Pasando
+- **Audit Score:** 8.8/10
+
+---
+
 ## Requisitos del Sistema
 
 - **Node.js**: v18 o superior

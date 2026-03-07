@@ -43,6 +43,7 @@ model Sale {
   items        SaleItem[]
 
   createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Customer {
@@ -59,7 +60,7 @@ model Customer {
 model SaleItem {
   id           String   @id @default(uuid())
   saleId       String
-  variantId    String
+  productId    String
 
   productName  String
   quantity     Int
@@ -67,7 +68,7 @@ model SaleItem {
   subtotal     Float
 
   sale         Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  variant      ProductVariant  @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
 }
 
 model Product {
@@ -82,12 +83,23 @@ model Product {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
 
-  // Relation to variants (each product can have multiple variants)
+  inventory   Inventory?
   variants    ProductVariant[]
+  saleItems   SaleItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Inventory {
+  id        String   @id @default(uuid())
+  productId String   @unique
+  quantity  Int
+  minStock  Int?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+}
+
 enum Category {
   ROPA
   CALZADO
@@ -104,7 +116,6 @@ model ProductVariant {
   minStock   Int?
 
   product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  saleItems  SaleItem[]
 
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt

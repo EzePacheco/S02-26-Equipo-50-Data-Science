@@ -76,7 +76,10 @@ class AuthService {
   }
 
   generateToken(user) {
-    const secret = process.env.JWT_SECRET || 'defaultsecret';
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET no configurado en variables de entorno');
+    }
     return jwt.sign(
       { userId: user.id, email: user.email },
       secret,
@@ -85,7 +88,10 @@ class AuthService {
   }
 
   verifyToken(token) {
-    const secret = process.env.JWT_SECRET || 'defaultsecret';
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET no configurado en variables de entorno');
+    }
     try {
       return jwt.verify(token, secret);
     } catch (error) {

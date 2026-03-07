@@ -125,11 +125,9 @@ export default function Dashboard() {
         ? ((monthTotal - prevMonthTotal) / prevMonthTotal) * 100
         : 0;
 
-    // Ganancia estimada del mes
+    // Ganancia (actualmente = ingresos totales, sin costo de compra disponible)
     const monthProfit = monthSales.reduce((sum, sale) => {
-      const revenue = Number(sale.total_price || sale.totalAmount || 0);
-      const cost = Number(sale.purchase_price || sale.purchasePrice || 0) * Number(sale.quantity || 1);
-      return sum + (revenue - cost);
+      return sum + (Number(sale.total_price || sale.totalAmount || 0));
     }, 0);
 
     // Stock bajo (usamos el umbral estándar de 3 unidades definido en Inventory)

@@ -34,17 +34,20 @@ class SaleService {
     createSaleDTO.validate();
 
     for (const item of items) {
-      
-      const variant = await this.productRepository.findVariantById(item.variantId || item.productId);
-      if (!variant) {
-        throw new NotFoundError(`Variante con ID ${item.variantId || item.productId} no encontrada`);
+      // Validate product exists
+      const product = await this.productRepository.findById(item.productId);
+      if (!product) {
+        throw new NotFoundError(`Producto con ID ${item.productId} no encontrado`);
       }
 
-      const inv = await this.inventoryRepository.findById(variant.id);
-      const available = inv ? (Array.isArray(inv) ? inv.reduce((s, v) => s + (v.stock || 0), 0) : (inv.stock || inv.quantity || 0)) : 0;
+      // Check inventory stock
+      if (!product.inventory) {
+        throw new Error(`Sin inventario para el producto ${item.productName}`);
+      }
 
+      const available = product.inventory.quantity || 0;
       if (available < item.quantity) {
-        throw new Error(`Stock insuficiente para la variante ${item.productName}. Disponible: ${available}`);
+        throw new Error(`Stock insuficiente para ${item.productName}. Disponible: ${available}`);
       }
     }
 

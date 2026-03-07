@@ -1,6 +1,18 @@
 import jwt from 'jsonwebtoken';
 import ValidationError from '../../../domain/errors/ValidationError.js';
 
+/**
+ * Obtiene JWT_SECRET de forma segura
+ * @throws {Error} Si JWT_SECRET no está configurado
+ */
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET no configurado en variables de entorno');
+  }
+  return secret;
+}
+
 const authMiddleware = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -13,7 +25,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     const token = authHeader.substring(7);
-    const secret = process.env.JWT_SECRET || 'defaultsecret';
+    const secret = getJwtSecret();
     
     const decoded = jwt.verify(token, secret);
     req.user = decoded;

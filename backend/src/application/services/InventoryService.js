@@ -27,12 +27,15 @@ class InventoryService {
    * @throws {Error} Si no se encuentra el inventario
    */
   async getInventoryByProductId(productId) {
-    
-    const variants = await this.inventoryRepository.findByProductId(productId);
-    if (!variants || variants.length === 0) throw new Error('Inventario no encontrado para este producto');
+    const inventory = await this.inventoryRepository.findByProductId(productId);
+    if (!inventory || inventory.length === 0) throw new Error('Inventario no encontrado para este producto');
 
-    
-    return variants.map(v => InventoryFactory({ id: v.id, productId: v.productId, quantity: v.stock, minStock: v.minStock }));
+    return inventory.map(inv => InventoryFactory({ 
+      id: inv.id, 
+      productId: inv.productId, 
+      quantity: inv.quantity, 
+      minStock: inv.minStock 
+    }));
   }
 
   /**
@@ -43,14 +46,18 @@ class InventoryService {
    * @throws {Error} Si el producto no existe o la cantidad es negativa
    */
   async updateStock(productId, quantity) {
-    const variants = await this.inventoryRepository.findByProductId(productId);
-    if (!variants || variants.length === 0) throw new Error('Producto no encontrado');
-    if (variants.length > 1) throw new Error('Producto tiene múltiples variantes; actualice la variante específica');
+    const inventory = await this.inventoryRepository.findByProductId(productId);
+    if (!inventory || inventory.length === 0) throw new Error('Producto no encontrado');
 
-    const variant = variants[0];
+    const inv = inventory[0];
     if (quantity < 0) throw new Error('La cantidad no puede ser negativa');
 
-    const inventoryEntity = InventoryFactory({ id: variant.id, productId: variant.productId, quantity, minStock: variant.minStock });
+    const inventoryEntity = InventoryFactory({ 
+      id: inv.id, 
+      productId: inv.productId, 
+      quantity, 
+      minStock: inv.minStock 
+    });
     return await this.inventoryRepository.update(inventoryEntity);
   }
 
@@ -60,8 +67,12 @@ class InventoryService {
    */
   async getAllInventory() {
     const allItems = await this.inventoryRepository.findAll();
-    // allItems are variants with product included
-    return allItems.map(item => InventoryFactory({ id: item.id, productId: item.productId, quantity: item.stock, minStock: item.minStock }));
+    return allItems.map(item => InventoryFactory({ 
+      id: item.id, 
+      productId: item.productId, 
+      quantity: item.quantity, 
+      minStock: item.minStock 
+    }));
   }
 
   /**
@@ -71,7 +82,12 @@ class InventoryService {
   async getLowStockItems() {
     const itemsData = await this.inventoryRepository.findLowStock();
     if (!itemsData) return [];
-    return itemsData.map(data => InventoryFactory({ id: data.id, productId: data.productId, quantity: data.stock, minStock: data.minStock }));
+    return itemsData.map(data => InventoryFactory({ 
+      id: data.id, 
+      productId: data.productId, 
+      quantity: data.quantity, 
+      minStock: data.minStock 
+    }));
   }
 
   /**
@@ -82,12 +98,16 @@ class InventoryService {
    * @throws {Error} Si el producto no existe en inventario
    */
   async adjustStock(productId, adjustment) {
-    const variants = await this.inventoryRepository.findByProductId(productId);
-    if (!variants || variants.length === 0) throw new Error('Producto no encontrado en inventario');
-    if (variants.length > 1) throw new Error('Producto tiene múltiples variantes; ajuste la variante específica');
+    const inventory = await this.inventoryRepository.findByProductId(productId);
+    if (!inventory || inventory.length === 0) throw new Error('Producto no encontrado en inventario');
 
-    const variant = variants[0];
-    const inventoryEntity = InventoryFactory({ id: variant.id, productId: variant.productId, quantity: variant.stock, minStock: variant.minStock });
+    const inv = inventory[0];
+    const inventoryEntity = InventoryFactory({ 
+      id: inv.id, 
+      productId: inv.productId, 
+      quantity: inv.quantity, 
+      minStock: inv.minStock 
+    });
 
     if (adjustment < 0) {
       inventoryEntity.decrease(Math.abs(adjustment));
@@ -111,7 +131,7 @@ class InventoryService {
     if (variants.length > 1) throw new Error('Producto tiene múltiples variantes; actualice la variante específica');
 
     const variant = variants[0];
-    const inventoryEntity = InventoryFactory({ id: variant.id, productId: variant.productId, quantity: variant.stock, minStock: minStock });
+    const inventoryEntity = InventoryFactory({ id: variant.id, productId: variant.productId, quantity: variant.quantity, minStock: minStock });
 
     return await this.inventoryRepository.update(inventoryEntity);
   }

@@ -18,7 +18,7 @@ class PrismaSaleRepository extends ISaleRepository {
           paymentMethod: saleData.paymentMethod || null,
           items: {
             create: saleData.items.map((item) => ({
-              variantId: item.variantId || item.productId,
+              productId: item.productId,
               productName: item.productName,
               quantity: item.quantity,
               unitPrice: item.unitPrice,
@@ -39,22 +39,12 @@ class PrismaSaleRepository extends ISaleRepository {
         },
       });
 
+      // Decrement inventory for each sold item
       for (const item of saleData.items) {
-        
-        if (item.variantId) {
-          await tx.productVariant.update({ where: { id: item.variantId }, data: { stock: { decrement: item.quantity } } });
-          continue;
-        }
-
-        const variants = await tx.productVariant.findMany({ where: { productId: item.productId }, orderBy: { createdAt: 'asc' } });
-        if (!variants || variants.length === 0) continue;
-
-        const sufficient = variants.find(v => (v.stock || 0) >= item.quantity);
-        if (sufficient) {
-          await tx.productVariant.update({ where: { id: sufficient.id }, data: { stock: { decrement: item.quantity } } });
-        } else {
-          await tx.productVariant.update({ where: { id: variants[0].id }, data: { stock: { decrement: item.quantity } } });
-        }
+        await tx.inventory.update({
+          where: { productId: item.productId },
+          data: { quantity: { decrement: item.quantity } },
+        });
       }
 
       return sale;
@@ -70,7 +60,13 @@ class PrismaSaleRepository extends ISaleRepository {
     return await prisma.sale.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: { inventory: true },
+            },
+          },
+        },
         customer: true,
         user: {
           select: {
@@ -90,7 +86,13 @@ class PrismaSaleRepository extends ISaleRepository {
   async findAll() {
     return await prisma.sale.findMany({
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: { inventory: true },
+            },
+          },
+        },
         customer: true,
         user: {
           select: {
@@ -115,7 +117,13 @@ class PrismaSaleRepository extends ISaleRepository {
     return await prisma.sale.findMany({
       where: { userId },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: { inventory: true },
+            },
+          },
+        },
         customer: true,
       },
       orderBy: {
@@ -133,7 +141,13 @@ class PrismaSaleRepository extends ISaleRepository {
     return await prisma.sale.findMany({
       where: { customerId },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: { inventory: true },
+            },
+          },
+        },
         customer: true,
       },
       orderBy: {
@@ -164,7 +178,13 @@ class PrismaSaleRepository extends ISaleRepository {
     return await prisma.sale.findMany({
       where,
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: { inventory: true },
+            },
+          },
+        },
         customer: true,
       },
       orderBy: {
